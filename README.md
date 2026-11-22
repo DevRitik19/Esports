@@ -4,7 +4,7 @@ The esports site for **Yugaantar 2026 · Gameverse** at Scaler School of Technol
 
 | Game | Entry | Format |
 |---|---|---|
-| Call of Duty: Mobile | squads of 5+1 | online BO1 groups, then an offline bracket (CODM Carnage 2.0: Rift Ops) |
+| Call of Duty: Mobile | squads of 5+1 | 29 teams in 7 groups over three online mode days, then the top 8 offline (CODM Carnage 2.0: Rift Ops) |
 | Valorant | teams of 5 | single elimination: BO1 online, Semifinals and Final offline |
 | BGMI | squads of 4+1 | battle royale lobbies of up to 20, reshuffled every match, cumulative points |
 | Free Fire MAX | squads of 4+1 | battle royale groups of up to 12, top 2 through, 3rd places to a Wildcard LCQ |
@@ -52,7 +52,7 @@ The rule documents for each game are in [`docs/`](docs). The site shows a short 
   - Qualifying rows are marked with where they're going, e.g. *→ Semifinals* or *→ Wildcard LCQ*, as projected until the stage is complete.
   - Long tables (Smash Karts has ~360 players) show the top 40 and a *Find your team* box.
 - **Valorant and FIFA:** the bracket, round by round. Byes are listed on one line.
-- **CODM:** group tables, seeding and the offline bracket.
+- **CODM:** group tables, the best runner-up race, seeding and the offline bracket. Its Schedule tab is a wave board like the published fixtures image: 7 waves × 7 lobbies, each match-up's Hardpoint, Domination and S&D results side by side, and a *Find your team* picker.
 
 ![Free Fire standings](docs/screenshots/lobby-standings.png)
 
@@ -163,7 +163,7 @@ Unstop ──► registrations sheet (one tab per game)
 3. After registration closes:
    - **Lobby games:** open the game's control room → *Create stages* → *Fill from eligible teams* → *Draw lobbies*.
    - **Valorant, FIFA:** *Draw bracket*.
-   - **CODM:** Setup → draw groups → generate fixtures → generate bracket.
+   - **CODM:** Setup → *Apply groups and fixtures* (the official 29 teams and 138 matches; pick any name that doesn't match a registration) → set the S&D day's first wave once it's decided → *Generate bracket* after the group stage.
 4. Add referees under Staff and tag each with their games (e.g. `valo-ref`).
 
 ### A lobby night (Free Fire, BGMI, Smash Karts)
@@ -189,10 +189,11 @@ Each game's facts live in [`src/games/registry.ts`](src/games/registry.ts): rost
 
 The Free Fire docs disagree on some points. The defaults follow the latest one, the 17–23 Nov operations plan; the 84/104-team rulebooks use 8-7-6… instead. See *Open questions* in `context.md`.
 
-**CODM** is unchanged:
-- groups by registration count, one mode per evening (8–10 PM, 3 slots × 5 lobbies);
-- wins → head-to-head → tiebreaker match → coin toss;
-- seeds 1–8 into an offline bracket on 27–29 Nov.
+**CODM** follows the Master Tournament Doc (Final) in `docs/`:
+- 29 teams in 7 groups (six of 4, Group G of 5). Every pair plays once per mode, one mode a day: Hardpoint on Summit (Mon 23 Nov), Domination on Raid (Tue 24), S&D on Firing Range (Wed 25, time TBD). 46 BO1 matches a day across 7 waves × 7 lobbies; a team's wave and lobby stay the same all three days. The schedule is `src/content/codm-schedule.ts`.
+- 1 point per win. Level teams: wins against each other, then a tiebreaker match. Score difference never counts.
+- The 7 group winners (Seeds 1–7, by points then coin toss) and the best runner-up (Seed 8) play the offline bracket on 27–29 Nov. Seeds 7 and 8 swap if Seed 8 shares Seed 1's group.
+- Online, captains check in once a day, 30 minutes before the first wave. Offline vetoes are per mode from a 5-map pool: Ban×4, or Ban–Ban–Pick–Pick for the Final's second Hardpoint and S&D.
 
 The details are on `/codm/rules`.
 
@@ -233,7 +234,7 @@ The tests cover:
 - **Lobby dealing:** reshuffles that avoid repeat opponents, scheduling, and checks on entered results.
 - **Brackets:** any size up to 128, with byes spread out and walked over.
 - **Sync parsing:** run against the real header rows of the Unstop sheet, with invented people.
-- **CODM:** standings, seeds, scheduler, veto and late-penalty timings.
+- **CODM:** the published schedule (every pair once per mode, no team twice in a wave, the doc's times), standings, the best runner-up, seeds, vetoes, day check-in and late penalties.
 
 ## Production setup
 
