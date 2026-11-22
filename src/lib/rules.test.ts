@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { disputeOpen, lateKind, lateTier, mapsNeeded, resolveVeto, roomOverdue, roomReleased, selfCheckInOpen, seriesModes, validVeto, vetoOpen, vetoPlayed, vetoTurns } from "./rules.ts";
+import { disputeOpen, groupCheckInBy, groupCheckInOpen, lateKind, lateTier, mapsNeeded, resolveVeto, roomOverdue, roomReleased, sameDayGroupMatches, selfCheckInOpen, seriesModes, validVeto, vetoOpen, vetoPlayed, vetoTurns } from "./rules.ts";
 import type { Match } from "./types.ts";
 
 const T = "2026-11-14T15:00:00+05:30";
@@ -97,4 +97,14 @@ test("late penalties: 5–10 min depends on mode and stage", () => {
   assert.equal(late(7, { bestOf: 3 }), "forfeit first map");
   assert.equal(late(12, { bestOf: 1, mode: "HP" }), "forfeit match");
   assert.equal(late(15, { bestOf: 5 }), "disqualification");
+});
+
+test("group days: one check-in, 30 min before the day's first wave, covers every match that day", () => {
+  const g = (id: string, at: string, a = "x", b = "y"): Match => ({ ...match(), id, stage: "group", bestOf: 1, scheduledAt: at, a: { ref: a, teamId: a, label: a, projected: false }, b: { ref: b, teamId: b, label: b, projected: false } });
+  const day = [g("W1", "2026-11-23T21:30:00+05:30", "p", "q"), g("W2", "2026-11-23T21:50:00+05:30"), g("W5", "2026-11-23T22:50:00+05:30"), g("N1", "2026-11-24T12:30:00+05:30")];
+  assert.equal(groupCheckInBy(day, day[2]), new Date("2026-11-23T21:00:00+05:30").toISOString());
+  assert.deepEqual(sameDayGroupMatches(day, day[1], "x").map((m) => m.id), ["W2", "W5"]);
+  assert.equal(groupCheckInOpen(day, day[2], Date.parse("2026-11-23T19:59:00+05:30")), false);
+  assert.equal(groupCheckInOpen(day, day[2], Date.parse("2026-11-23T20:00:00+05:30")), true);
+  assert.equal(groupCheckInOpen(day, day[2], Date.parse("2026-11-23T23:06:00+05:30")), false);
 });

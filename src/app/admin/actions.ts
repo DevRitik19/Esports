@@ -105,15 +105,28 @@ export const saveRoom = staff(async (form, { db }) => {
   return "Room details saved. Both teams see them from 15 min before match time.";
 });
 
+/** CODM group days take one check-in: the team's other group matches that IST day. */
+async function sameDayMatchIds(db: Db, matchId: string, teamId: string): Promise<string[]> {
+  const m = check<{ stage: string; scheduled_at: string | null; game_id: string }>(await db.from("matches").select("stage, scheduled_at, game_id").eq("id", matchId).single());
+  if (m.game_id !== "codm" || m.stage !== "group" || !m.scheduled_at) return [matchId];
+  const day = new Date(Date.parse(m.scheduled_at) + 330 * 60_000).toISOString().slice(0, 10);
+  const rows = check<{ id: string }[]>(await db.from("matches").select("id").eq("game_id", "codm").eq("stage", "group")
+    .or(`side_a.eq.${teamId},side_b.eq.${teamId}`)
+    .gte("scheduled_at", `${day}T00:00:00+05:30`).lt("scheduled_at", `${day}T23:59:59.999+05:30`));
+  return rows.length ? rows.map((r) => r.id) : [matchId];
+}
+
 export const toggleCheckIn = staff(async (form, { db, email }) => {
   const matchId = str(form, "id");
   const teamId = str(form, "team");
+  const ids = await sameDayMatchIds(db, matchId, teamId);
   if (form.get("undo")) {
-    check(await db.from("check_ins").update({ checked_in_at: null }).eq("match_id", matchId).eq("team_id", teamId));
-    return "Check-in removed.";
+    check(await db.from("check_ins").update({ checked_in_at: null }).in("match_id", ids).eq("team_id", teamId));
+    return ids.length > 1 ? `Check-in removed for all ${ids.length} of the team's matches today.` : "Check-in removed.";
   }
-  check(await db.from("check_ins").upsert({ match_id: matchId, team_id: teamId, checked_in_at: new Date().toISOString(), recorded_by: email }));
-  return "Checked in.";
+  const at = new Date().toISOString();
+  check(await db.from("check_ins").upsert(ids.map((id) => ({ match_id: id, team_id: teamId, checked_in_at: at, recorded_by: email }))));
+  return ids.length > 1 ? `Checked in for all ${ids.length} of the team's matches today.` : "Checked in.";
 });
 
 export const toggleJoined = staff(async (form, { db }) => {

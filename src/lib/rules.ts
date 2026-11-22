@@ -95,6 +95,37 @@ export function lateTier(
   return { minutesLate, penalty: tierFor(minutesLate, opts.kind ?? "offline"), window: worst.window };
 }
 
+// ---------------------------------------------------------------------------
+// Online group stage: one check-in a day, 30 min before the day's first wave
+// ---------------------------------------------------------------------------
+
+const istDay = (iso: string) => new Date(at(iso) + 330 * MIN).toISOString().slice(0, 10);
+
+/** A team's group matches on the same IST day as `m`, in start order. */
+export function sameDayGroupMatches(matches: Match[], m: Match, teamId?: string): Match[] {
+  if (m.stage !== "group" || !m.scheduledAt) return [];
+  const day = istDay(m.scheduledAt);
+  return matches
+    .filter((x) => x.stage === "group" && x.scheduledAt && istDay(x.scheduledAt) === day && (!teamId || sideOf(x, teamId)))
+    .sort((x, y) => x.scheduledAt!.localeCompare(y.scheduledAt!));
+}
+
+/** Check-in deadline for a group match: 30 min before the day's first wave, for every team. */
+export function groupCheckInBy(matches: Match[], m: Match): string | undefined {
+  const first = sameDayGroupMatches(matches, m)[0]?.scheduledAt;
+  return first ? new Date(at(first) - CHECK_IN_BEFORE_MIN * MIN).toISOString() : undefined;
+}
+
+/**
+ * Self check-in for an online group day: from an hour before the deadline
+ * until the team's own match is 15 min old (late check-ins still count late).
+ */
+export function groupCheckInOpen(matches: Match[], m: Match, now: number): boolean {
+  const by = groupCheckInBy(matches, m);
+  if (!by || !m.scheduledAt || m.status !== "scheduled") return false;
+  return now >= at(by) - SELF_CHECK_IN_OPENS_MIN * MIN && now <= at(m.scheduledAt) + SELF_CHECK_IN_CLOSES_AFTER_MIN * MIN;
+}
+
 /** Teams can check themselves in from the dashboard during this window. */
 export function selfCheckInOpen(m: Match, now: number): boolean {
   if (!m.scheduledAt || m.status !== "scheduled") return false;

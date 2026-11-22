@@ -6,7 +6,7 @@ import type { ViewerPlayer } from "@/lib/auth";
 import { matchDayFor, teamMap } from "@/lib/data";
 import { fmtTime } from "@/lib/format";
 import { checkInDeadline, disputeOpenFor, h2hCheckInOpen, modeStats, revealAt, roomRevealed, type Dashboard } from "@/lib/player";
-import { LOBBY_JOIN_MIN, sideOf, subOpen, vetoOpen, vetoTurns } from "@/lib/rules";
+import { groupCheckInBy, LOBBY_JOIN_MIN, mapsNeeded, sideOf, subOpen, vetoOpen, vetoPlayed, vetoTurns } from "@/lib/rules";
 import { CheckInForm, DisputeForm, SubForm, VetoForm } from "./forms";
 import { DisputeList } from "./H2hSection";
 import { RoomDetails } from "./RoomDetails";
@@ -23,9 +23,12 @@ export function CodmSection({ player, d, now }: { player: ViewerPlayer; d: Dashb
   const stats = modeStats(d.history, d.teamId);
   const seriesWon = d.history.filter((m) => m.winner === sideOf(m, d.teamId)).length;
   const nextDay = next ? matchDayFor(t, next) : undefined;
+  const nextMode = next?.mode ?? nextDay?.mode;
+  const nextMap = next?.map ?? nextDay?.map;
+  // Online, one check-in a day covers every match; offline, each series has its own.
+  const checkInBy = next?.scheduledAt ? (next.stage === "group" && groupCheckInBy(t.matches, next)) || checkInDeadline(game, next.scheduledAt) : undefined;
   const nextCheckIn = next ? d.checkIns[next.id] : undefined;
   const invitedAt = next ? d.rooms[next.id]?.invitedAt : null;
-  const nextVeto = next ? d.mapVetoes[next.id]?.[0] : undefined;
   const sideName = (m: typeof next, s: "A" | "B") => teams.get((s === "A" ? m!.a : m!.b).teamId ?? "")?.name ?? s;
 
   return (
@@ -40,17 +43,18 @@ export function CodmSection({ player, d, now }: { player: ViewerPlayer; d: Dashb
             <MatchCard game="codm" match={next} teams={teams} />
             {next.stage === "group" && (
               <p className="text-sm text-muted">
-                Mode for this match day: {nextDay ? <span className="font-semibold text-steel">{MODE_NAME[nextDay.mode]}</span> : "not announced yet"}
-                {nextDay?.note && <span> · {nextDay.note}</span>}
+                {nextMode ? <span className="font-semibold text-steel">{MODE_NAME[nextMode]}{nextMap ? ` on ${nextMap}` : ""}</span> : "Mode not announced yet"}
+                {next.round && next.lobby ? <>, Wave {next.round}, Lobby {next.lobby}</> : null}. No veto; the coin toss winner picks side.
               </p>
             )}
             {next.scheduledAt && (
               <ul className="flex flex-col gap-2 text-sm text-muted">
                 <li>
-                  Check in by <span className="text-text">{fmtTime(checkInDeadline(game, next.scheduledAt))}</span>
+                  Check in by <span className="text-text">{fmtTime(checkInBy!)}</span>
+                  {next.stage === "group" && " (once for all of today's matches)"}
                   {nextCheckIn?.checkedInAt ? <span className="ml-2 text-win">Checked in at {fmtTime(nextCheckIn.checkedInAt)}</span> : <span className="ml-2 text-warn">Not checked in yet</span>}
                 </li>
-                {!nextCheckIn?.checkedInAt && h2hCheckInOpen(game, next, now) && <li><CheckInForm team={team} matchId={next.id} label="Check in my team" /></li>}
+                {!nextCheckIn?.checkedInAt && h2hCheckInOpen(game, next, now, t.matches) && <li><CheckInForm team={team} matchId={next.id} label="Check in my team" /></li>}
                 <li>
                   {invitedAt ? (
                     <>
@@ -65,18 +69,21 @@ export function CodmSection({ player, d, now }: { player: ViewerPlayer; d: Dashb
                 {next.bestOf === 1 && <li>Screen recording is recommended in the group stage. Disconnects must be reported within 2 minutes.</li>}
               </ul>
             )}
-            {nextVeto && (
-              <div className="rounded-sm border border-line p-3 text-sm">
-                <p className="mb-1 text-xs font-semibold text-faint">Map veto</p>
-                <p className="text-muted">
-                  {vetoTurns(1, nextVeto.firstSide).map((turn, i) => `${nextVeto.steps[i]} (${sideName(next, turn.side)})`).join(" · ")}
-                </p>
-                <p className="mt-1">
-                  Map: <span className="font-semibold text-steel">{nextVeto.decider}</span>
-                  {nextVeto.coinToss && <span className="text-muted"> · {sideName(next, nextVeto.coinToss)} picks side</span>}
-                </p>
-              </div>
-            )}
+            {next.bestOf > 1 && (d.mapVetoes[next.id] ?? []).map((v) => {
+              const needed = mapsNeeded(next.bestOf, v.mode);
+              return (
+                <div key={v.mode} className="border border-line p-3 text-sm">
+                  <p className="mb-1 text-xs font-semibold text-faint">{MODE_NAME[v.mode]} veto</p>
+                  <p className="text-muted">
+                    {vetoTurns(needed, v.firstSide).map((turn, i) => `${turn.action === "pick" ? "Pick" : "Ban"} ${v.steps[i]} (${sideName(next, turn.side)})`).join(" · ")}
+                  </p>
+                  <p className="mt-1">
+                    Played: <span className="font-semibold text-steel">{vetoPlayed(needed, v.steps, v.decider).join(", then ")}</span>
+                    {v.coinToss && <span className="text-muted"> · {sideName(next, v.coinToss)} picks side in game 1</span>}
+                  </p>
+                </div>
+              );
+            })}
           </div>
 
           <div className="flex flex-col gap-4">
