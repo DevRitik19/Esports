@@ -16,7 +16,7 @@ export async function loadRawTournament(db: PostgrestClient, game: GameId = "cod
     db.from("config").select("key, value"),
     db.from("announcements").select("date, title, body").or(`game_id.is.null,game_id.eq.${game}`).order("date", { ascending: false }),
     db.from("map_pool").select("mode, map").order("map"),
-    db.from("match_days").select("day, mode, note").order("day"),
+    db.from("match_days").select("day, mode, map, note").order("day"),
   ]);
   const failed = [teams, players, matches, maps, config, announcements, pool, days].find((r) => r.error);
   if (failed?.error) throw new Error(`Database read failed: ${failed.error.message}`);
@@ -53,17 +53,22 @@ export async function loadRawTournament(db: PostgrestClient, game: GameId = "cod
     forfeitWinner: m.forfeit_winner ?? undefined,
     vetoNote: m.veto_note ?? undefined,
     notes: m.notes ?? undefined,
+    lobby: m.lobby ?? undefined,
+    mode: (m.mode ?? undefined) as Mode | undefined,
+    map: m.map ?? undefined,
     maps: (maps.data ?? [])
       .filter((x) => x.match_id === m.id && x.status === "final")
       .map((x) => ({ game: x.game, mode: (x.mode ?? undefined) as Mode, map: x.map, scoreA: x.score_a, scoreB: x.score_b })),
   }));
 
   const qpg = Number(cfg.get("qualifiers_per_group"));
+  const runnersUp = Number(cfg.get("best_runners_up"));
   return {
     raw: {
       config: {
         ...DEFAULT_CONFIG,
         qualifiersPerGroup: qpg > 0 ? qpg : DEFAULT_CONFIG.qualifiersPerGroup,
+        bestRunnersUp: runnersUp > 0 ? runnersUp : DEFAULT_CONFIG.bestRunnersUp,
         tiebreakers: tiebreakers.length ? tiebreakers : DEFAULT_CONFIG.tiebreakers,
         coinToss: parseCoinToss(cfg.get("coin_toss") ?? ""),
         perspective: cfg.get("perspective") || undefined,
@@ -75,7 +80,7 @@ export async function loadRawTournament(db: PostgrestClient, game: GameId = "cod
       matches: matchList,
       announcements: (announcements.data ?? []).map((a) => ({ date: a.date, title: a.title, body: a.body })),
       mapPool: (pool.data ?? []).map((p) => ({ mode: p.mode as Mode, map: p.map })),
-      matchDays: (days.data ?? []).map((d) => ({ day: d.day, mode: d.mode as Mode, note: d.note ?? undefined })),
+      matchDays: (days.data ?? []).map((d) => ({ day: d.day, mode: d.mode as Mode, map: d.map ?? undefined, note: d.note ?? undefined })),
     },
     warnings,
   };

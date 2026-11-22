@@ -189,7 +189,7 @@ function groupBy<T, U>(rows: T[], key: (r: T) => string, map: (r: T) => U): Reco
 
 /** Per-mode map record for the team, from approved results. */
 export function modeStats(matches: Match[], teamId: string) {
-  const stats = { HP: { w: 0, l: 0 }, SND: { w: 0, l: 0 }, CTRL: { w: 0, l: 0 } };
+  const stats = { HP: { w: 0, l: 0 }, SND: { w: 0, l: 0 }, DOM: { w: 0, l: 0 } };
   for (const m of matches) {
     const side = sideOf(m, teamId);
     if (!side) continue;

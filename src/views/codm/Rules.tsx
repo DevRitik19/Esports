@@ -63,7 +63,7 @@ export async function CodmRules() {
     const t = (before: number) => fmtTime(new Date(at - before * 60_000).toISOString());
     return { n: i + 1, checkIn: t(CHECK_IN_BEFORE_MIN), room: `${t(ROOM_RELEASE_BEFORE_MIN)}–${t(ROOM_LATEST_BEFORE_MIN)}`, start: t(0) };
   });
-  const pool = (["HP", "SND", "CTRL"] as Mode[]).map((mode) => ({ mode, maps: t.mapPool.filter((m) => m.mode === mode).map((m) => m.map) }));
+  const pool = (["HP", "SND", "DOM"] as Mode[]).map((mode) => ({ mode, maps: t.mapPool.filter((m) => m.mode === mode).map((m) => m.map) }));
 
   return (
     <>

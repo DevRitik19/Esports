@@ -63,12 +63,12 @@ export function CheckInForm({ team, matchId, stageId, day, label }: { team: Team
   );
 }
 
-const MODES = [["HP", "Hardpoint"], ["SND", "Search & Destroy"], ["CTRL", "Control"]] as const;
+const MODES = [["HP", "Hardpoint"], ["SND", "Search & Destroy"], ["DOM", "Domination"]] as const;
 
 export function VetoForm({ team, matchId, current }: { team: TeamRef; matchId: string; current?: string }) {
   const [state, action, pending] = useActionState<ActionState, FormData>(submitVeto, {});
   const hydrated = useHydrated();
-  const defaults = current?.split(/,\s*/) ?? ["HP", "SND", "CTRL"];
+  const defaults = current?.split(/,\s*/) ?? ["HP", "SND", "DOM"];
   return (
     <form action={action} className="flex flex-col gap-3">
       <TeamFields {...team} />

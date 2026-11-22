@@ -7,7 +7,7 @@ import { gamesFromForm, staffTags } from "@/lib/staff";
 import { TOURNAMENT_TAG } from "@/lib/data";
 import { drawGroups, groupFormat, knockoutSkeleton, roundRobin } from "@/lib/fixtures";
 import { KNOCKOUT_TIMES } from "@/content/event";
-import { resolveVeto, VETO_SEQUENCE } from "@/lib/rules";
+import { mapsNeeded, resolveVeto, VETO_SEQUENCE } from "@/lib/rules";
 import { csvToRows, parseMode, parseTournament, toCsv } from "@/lib/parse";
 import { createClient } from "@/lib/supabase/server";
 
@@ -137,21 +137,20 @@ export const saveVeto = staff(async (form, { db, email }) => {
   if (!mode) throw new Error("Pick the mode.");
   if (first !== "A" && first !== "B") throw new Error("Pick who bans first.");
   const match = check<{ best_of: 1 | 3 | 5 }>(await db.from("matches").select("best_of").eq("id", matchId).single());
-  const steps = VETO_SEQUENCE[match.best_of].map((_, i) => str(form, `step${i + 1}`));
+  if (match.best_of === 1) throw new Error("Group matches have a fixed map; there's no veto.");
+  const needed = mapsNeeded(match.best_of, mode);
+  const steps = VETO_SEQUENCE[needed].map((_, i) => str(form, `step${i + 1}`));
   const pool = check<{ map: string }[]>(await db.from("map_pool").select("map").eq("mode", mode)).map((r) => r.map);
-  const result = resolveVeto(pool, match.best_of, steps);
+  const result = resolveVeto(pool, needed, steps);
   if (!result.ok) throw new Error(result.error);
 
   check(await db.from("map_vetoes").upsert({
-    match_id: matchId, mode, first_side: first, steps, decider: result.decider,
+    match_id: matchId, mode, first_side: first, steps, decider: result.played[0],
     coin_toss: coin === "A" || coin === "B" ? coin : null,
     screenshot_url: str(form, "screenshot") || null,
     recorded_by: email, recorded_at: new Date().toISOString(),
   }));
-  if (match.best_of === 1) {
-    check(await db.from("matches").update({ veto_note: `Bans: ${result.bans.join(", ")} · Map: ${result.decider}` }).eq("id", matchId));
-  }
-  return `Veto saved. Map: ${result.decider}.`;
+  return `Veto saved. ${result.played.length > 1 ? "Maps" : "Map"}: ${result.played.join(", then ")}.`;
 });
 
 export const saveMaps = staff(async (form, { db, email, runsGame }) => {
@@ -353,7 +352,7 @@ export const saveMatchDays = staff(async (form, { db }) => {
 }, { game: "codm" });
 
 export const saveMapPool = staff(async (form, { db }) => {
-  const rows = (["HP", "SND", "CTRL"] as const).flatMap((mode) =>
+  const rows = (["HP", "SND", "DOM"] as const).flatMap((mode) =>
     str(form, mode).split(/[\n,]+/).map((m) => m.trim()).filter(Boolean).map((map) => ({ mode, map })),
   );
   check(await db.from("map_pool").delete().neq("map", ""));

@@ -21,7 +21,7 @@ export const PRIZES = [
 ];
 export const PRIZE_TOTAL = PRIZES.reduce((n, p) => n + p.amount, 0);
 
-export const MODE_NAME = { HP: "Hardpoint", SND: "Search & Destroy", CTRL: "Control" } as const;
+export const MODE_NAME = { HP: "Hardpoint", SND: "Search & Destroy", DOM: "Domination" } as const;
 
 export const KEY_DATES = [
   { when: "Sat 14 Nov, 11:59 pm", what: "Registration closes", where: "Online" },
@@ -40,7 +40,7 @@ export const KEY_DATES = [
 export const GROUP_DAY_MODES = [
   { day: "2026-11-17", mode: "HP" },
   { day: "2026-11-18", mode: "SND" },
-  { day: "2026-11-19", mode: "CTRL" },
+  { day: "2026-11-19", mode: "DOM" },
   { day: "2026-11-20", mode: "HP" },
   { day: "2026-11-21", mode: "SND" },
 ] as const;

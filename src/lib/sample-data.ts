@@ -2,21 +2,16 @@
 // `npm run export-template` as the starting CSVs for the real Google Sheet.
 // Built as sheet tabs (CSV text) so it goes through exactly the same parser.
 
-import { GROUP_DAY_MODES, KNOCKOUT_TIMES } from "../content/event.ts";
+import { KNOCKOUT_TIMES } from "../content/event.ts";
+import { officialFixtures, OFFICIAL_GROUPS } from "../content/codm-schedule.ts";
 import { COLUMNS, toCsv, type TabName } from "./parse.ts";
 
-const TEAMS: [string, string, string][] = [
-  ["Rift Reapers", "RR", "A"], ["Null Sector", "NULL", "A"], ["Vortex Unit", "VTX", "A"], ["Iron Wolves", "IW", "A"],
-  ["Phantom Grid", "PG", "B"], ["Static Kings", "SK", "B"], ["Echo Breach", "EB", "B"], ["Crimson Ops", "CO", "B"],
-  ["Nova Syndicate", "NS", "C"], ["Ghost Protocol", "GP", "C"], ["Hex Raiders", "HEX", "C"], ["Zero Hour", "ZH", "C"],
-  ["Apex Fracture", "AF", "D"], ["Shadow Relay", "SR", "D"], ["Titan Pulse", "TP", "D"], ["Last Light", "LL", "D"],
-];
 const CALLSIGNS = ["Viper", "Nyx", "Blaze", "Kairo", "Specter", "Rook", "Jinx", "Atlas", "Cipher", "Raze", "Onyx", "Flux"];
-// Five per mode: the BO1 veto bans four (§7).
+// Offline pools, five per mode: each knockout veto bans four (or bans two and picks two).
 const MAPS = {
   HP: ["Summit", "Raid", "Standoff", "Firing Range", "Takeoff"],
   SND: ["Standoff", "Crossfire", "Tunisia", "Firing Range", "Summit"],
-  CTRL: ["Raid", "Hacienda", "Terminal", "Standoff", "Summit"],
+  DOM: ["Raid", "Hacienda", "Terminal", "Standoff", "Summit"],
 };
 
 /** Deterministic pseudo-random so the sample never changes between builds. */
@@ -27,11 +22,19 @@ function rng(seed: number) {
   };
 }
 
-const id = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+const id = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "team";
+const tagOf = (name: string) => {
+  const words = name.replace(/[^A-Za-z0-9 ]+/g, " ").trim().split(/\s+/).filter(Boolean);
+  const tag = words.length > 1 ? words.map((w) => w[0]).join("") : (words[0] ?? name);
+  return tag.slice(0, 4).toUpperCase() || "TEAM";
+};
 
 function build(): Record<TabName, string> {
   const rand = rng(2026);
-  const teams = TEAMS.map(([name, tag, group]) => ({ id: id(name), name, tag, group }));
+  const teams = Object.entries(OFFICIAL_GROUPS).flatMap(([group, names]) =>
+    names.map((name) => ({ id: name === "$500" ? "dollar-500" : id(name), name, tag: tagOf(name), group })),
+  );
+  const byName = new Map(teams.map((t) => [t.name, t.id]));
 
   const teamRows = teams.map((t) => [t.id, t.name, t.tag, t.group, "", `${t.tag}·${CALLSIGNS[0]}`]);
   const playerRows = teams.flatMap((t, ti) =>
@@ -43,39 +46,22 @@ function build(): Record<TabName, string> {
     ]),
   );
 
-  // Round robin per group: 3 rounds of 2 matches, one round per evening, one mode per day.
-  // 8 matches a round over 5 lobbies: five at 8:00 PM, three at 8:40 PM.
-  const days = GROUP_DAY_MODES.slice(0, 3).map((d) => d.day);
-  const dayMode = GROUP_DAY_MODES.slice(0, 3).map((d) => d.mode);
-  const pairings = [[[0, 1], [2, 3]], [[0, 2], [1, 3]], [[0, 3], [1, 2]]];
+  // The published fixtures: Hardpoint day played, Domination day up to wave 4, S&D not yet.
+  const { fixtures } = officialFixtures((n) => byName.get(n));
   const matchRows: (string | number)[][] = [];
   const mapRows: (string | number)[][] = [];
-  let n = 0;
-
-  for (let round = 0; round < 3; round++) {
-    for (const group of ["A", "B", "C", "D"]) {
-      const g = teams.filter((t) => t.group === group);
-      for (const [x, y] of pairings[round]) {
-        n++;
-        const mid = `G${String(n).padStart(2, "0")}`;
-        const time = (n - 1) % 8 < 5 ? "20:00" : "20:40";
-        matchRows.push([mid, "group", group, round + 1, 1, g[x].id, g[y].id, days[round], time, "", "", "", ""]);
-        // Rounds 1–2 played; round 3 only partly, so the bracket shows projected slots.
-        const played = round < 2 || n % 3 === 0;
-        const mode = dayMode[round];
-        const map = MAPS[mode][Math.floor(rand() * MAPS[mode].length)];
-        if (!played) {
-          mapRows.push([mid, 1, mode, map, "", ""]);
-          continue;
-        }
-        const aWins = rand() < 0.55;
-        const [w, l] =
-          mode === "HP" ? [250, 120 + Math.floor(rand() * 120)]
-          : mode === "SND" ? [6, Math.floor(rand() * 6)]
-          : [3, Math.floor(rand() * 3)];
-        mapRows.push([mid, 1, mode, map, aWins ? w : l, aWins ? l : w]);
-      }
-    }
+  const ist = (iso: string) => new Date(Date.parse(iso) + 5.5 * 3_600_000).toISOString();
+  for (const f of fixtures) {
+    const when = f.scheduledAt ? ist(f.scheduledAt) : "";
+    matchRows.push([f.id, "group", f.group, f.wave, 1, f.a, f.b, when.slice(0, 10), when.slice(11, 16), "", "", "", "", f.lobby, f.mode, f.map]);
+    const played = f.mode === "HP" || (f.mode === "DOM" && f.wave <= 4);
+    if (!played) continue;
+    const aWins = rand() < 0.55;
+    const [w, l] =
+      f.mode === "HP" ? [250, 120 + Math.floor(rand() * 120)]
+      : f.mode === "SND" ? [7, Math.floor(rand() * 7)]
+      : [200, 80 + Math.floor(rand() * 110)];
+    mapRows.push([f.id, 1, f.mode, f.map, aWins ? w : l, aWins ? l : w]);
   }
 
   const at = (id: string) => [KNOCKOUT_TIMES[id].slice(0, 10), KNOCKOUT_TIMES[id].slice(11, 16)];
@@ -98,17 +84,18 @@ function build(): Record<TabName, string> {
     Maps: toCsv([COLUMNS.Maps, ...mapRows]),
     Config: toCsv([
       COLUMNS.Config,
-      ["qualifiers_per_group", 2],
+      ["qualifiers_per_group", 1],
+      ["best_runners_up", 1],
       ["tiebreakers", "h2h, playoff"],
       ["perspective", "TPP"],
-      ["event_dates", "17–29 Nov 2026"],
-      ["registration_deadline", "Sat 14 Nov 2026, 11:59 PM"],
+      ["event_dates", "23–29 Nov 2026"],
+      ["registration_deadline", ""],
       ["registration_url", ""],
     ]),
     Announcements: toCsv([
       COLUMNS.Announcements,
-      ["2026-11-16", "Captains' briefing tonight", "Briefing, CODM ID check and a test lobby. Group Stage starts Tue 17 Nov at 8 PM with Hardpoint."],
-      ["2026-11-15", "Groups drawn, fixtures live", "16 squads in 4 groups. Fixtures, map pool, perspective (TPP) and the mode of each day are up."],
+      ["2026-11-23", "Hardpoint night is done", "All 46 Hardpoint matches are in. Domination on Raid starts Tue 24 Nov: check in by 12:00 PM, first wave 12:30 PM."],
+      ["2026-11-22", "Groups and fixtures are final", "29 squads in 7 groups. Your wave and lobby stay the same on all three days; only the mode, map and start time change."],
     ]),
     MapPool: toCsv([
       COLUMNS.MapPool,

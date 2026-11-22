@@ -119,7 +119,7 @@ export function CodmSection({ player, d, now }: { player: ViewerPlayer; d: Dashb
         {[
           { k: "Group pos", v: row && row.played > 0 ? `#${row.position}` : "–" },
           { k: "Series W-L", v: `${seriesWon}-${d.history.length - seriesWon}` },
-          ...(["HP", "SND", "CTRL"] as const).map((m) => ({ k: MODE_NAME[m], v: `${stats[m].w}-${stats[m].l}` })),
+          ...(["HP", "SND", "DOM"] as const).map((m) => ({ k: MODE_NAME[m], v: `${stats[m].w}-${stats[m].l}` })),
         ].map((s, i) => (
           <div key={s.k} className={`flex flex-col gap-0.5 py-4 pr-4 ${i % 2 ? "pl-4 md:pl-5" : "md:pl-5"} ${i ? "md:border-l md:border-line" : "md:pl-0"}`}>
             <dt className="text-sm text-muted">{s.k}</dt>
