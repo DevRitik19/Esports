@@ -48,7 +48,9 @@ const cfg: [string, string | number | undefined][] = [
   ["registration_deadline", raw.config.registrationDeadline],
 ];
 // The migrations already set some keys, so these overwrite.
-for (const [k, v] of cfg) out.push(`insert into config (key, value) values (${q(k)}, ${q(String(v ?? ""))}) on conflict (key) do update set value = excluded.value;`);
+// Config values are never null: an unset one is an empty string.
+const text = (v: string) => `'${v.replace(/'/g, "''")}'`;
+for (const [k, v] of cfg) out.push(`insert into config (key, value) values (${q(k)}, ${text(String(v ?? ""))}) on conflict (key) do update set value = excluded.value;`);
 for (const a of raw.announcements) out.push(`insert into announcements (date, title, body) values (${q(a.date)}, ${q(a.title)}, ${q(a.body)});`);
 for (const m of raw.mapPool) out.push(`insert into map_pool (mode, map) values (${q(m.mode)}, ${q(m.map)});`);
 

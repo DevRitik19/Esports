@@ -209,14 +209,14 @@ npm run db:reset            # rebuild supabase/seed.sql and reload the database
 npm run dev                 # http://localhost:3000
 ```
 
-The seed has the CODM sample tournament plus invented registrations for every other game, some of them still forming. Login emails land in Mailpit at http://127.0.0.1:54324.
+The seed has the CODM tournament on the 29 official teams (Hardpoint day played, Domination half done) plus invented registrations for every other game, some of them still forming. Login emails land in Mailpit at http://127.0.0.1:54324.
 
 | Email | Role |
 |---|---|
 | admin@example.com | admin |
 | ref@example.com | referee, every game |
 | ff.ref@example.com | referee, Free Fire only |
-| rr.viper@example.com | CODM captain (Rift Reapers) |
+| liqu.viper@example.com | CODM captain (LIQUID) |
 | `lead.<team-id>@example.com` | leader of any other seeded team, e.g. lead.freefire-ash-unit@example.com |
 
 To try the sync locally, set `SYNC_SECRET` in `.env.local` and call `curl -H "Authorization: Bearer $SYNC_SECRET" "localhost:3000/api/sync?dry=1"`. Leave out `dry=1` to write.
