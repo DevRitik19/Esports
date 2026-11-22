@@ -118,7 +118,7 @@ async function Me() {
     .map((player, i) => ({ player, x: loaded[i], team: summaries.get(player.teamId) }))
     .filter((s) => s.team)
     .map((s) => ({ ...s, team: s.team!, next: nextStart(s.x) }))
-    .sort((a, b) => (a.next ?? "~").localeCompare(b.next ?? "~"));
+    .sort((a, b) => (a.next ?? "9999").localeCompare(b.next ?? "9999"));
 
   const todos: Todo[] = sections.flatMap(({ x, team }) => (x.kind === "lobby" ? lobbyTodos(x.d, team.name, now) : h2hTodos(x.d, team.name, now)));
   const todo = pickTodo(todos);

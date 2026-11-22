@@ -207,25 +207,20 @@ Sheet gotchas:
   - Raise the per-IP OTP limits (default 30 per 5 min).
   - The free-tier project pauses after 7 days idle.
 
-## Format and timing (from the format doc + 8–10 PM window)
-- Groups by registration count: ≤8 → 1 group (seeding only), 9–24 → 4 groups (top 2), 25–48 → 8 groups (winners). Always 8 qualifiers. Admin → Setup → "Draw groups" does the random draw (extras go to Group A first). Run it on the recorded call.
-- Evenings: slots at **8:00, 8:40 and 9:20 PM** (40 min each: veto, lobby join ≤10 min, map, score entry). Check-in is 30 min before each slot, so the first check-in is 7:30 PM. 5 lobbies, ≤2 matches per team per day, a free slot between.
-- Rounds go one per day while they fit, so groups of 4 play Tue/Wed/Thu = HP/S&D/Control, and groups of 5–6 use all five days. Fri/Sat are spare for 4-team groups.
-- Modes: Tue HP · Wed S&D · Thu Control · Fri HP · Sat S&D. Sun 22 tiebreakers only. Seeded as match days in `seed.sql`; production admins set them under Content.
-- Standings: wins → head-to-head → buffer-day tiebreaker matches (`stage = tiebreak`, they don't add wins) → recorded coin toss (`coin_toss` setting, e.g. `t03 > t07`). Only ties that affect qualifying or a qualifier's position are flagged.
-- Seeds: winners 1–4, runners-up 5–8 (8 groups: winners ranked together), each by wins → points won → coin toss. QF pairs that would be two teams from one group get swapped.
-- Offline: QFs Fri 27 (10:30, 12:30, 2:30, 4:30), SFs Sat 28 (11:00, 2:00), 3rd place Sun 29 11:30, Final 3:00 PM. "Generate bracket" sets these times.
+## CODM format (Master Tournament Doc, Final, 22 Nov)
+- Source: `docs/CODM Master Tournament Doc (Final).docx`, the 7-lobby timed schedule and the fixtures image, all in `docs/`. The groups and waves are data in `src/content/codm-schedule.ts`, with tests that it's a full round robin per mode, no team plays twice in a wave, and the back-to-back teams are the doc's four.
+- 29 teams, 7 groups (A–F of 4, G of 5). Three mode days with a fixed map and no veto: Mon 23 HP/Summit (check-in 9:00, waves 9:30–11:50 PM, no breaks), Tue 24 DOM/Raid (check-in 12:00, waves 12:30 PM, breaks after waves 3 and 5, done 3:40), Wed 25 S&D/Firing Range (35-min waves, time TBD; set it in Setup and every wave moves).
+- Matches are `HP-W3-L2` style: mode, wave (`round`), lobby. `matches.lobby/mode/map` added in `20261122000000_codm_final_format.sql`, which also renames the Control mode to Domination (`DOM`).
+- Qualifying: `qualifiers_per_group = 1`, `best_runners_up = 1`. Ties: h2h, then tiebreaker matches (`stage = tiebreak`; between groups they settle the runner-up spot). No score difference, no 3-team bye.
+- Seeds: winners by points then coin toss, best runner-up 8th; Seeds 7/8 swap if 8 shares 1's group.
+- One check-in per team per online day (30 min before the first wave), recorded on all that day's matches by the leader or a referee.
+- Offline veto per mode from 5 maps: Ban×4 (one map), Ban–Ban–Pick–Pick (Final HP and S&D; higher seed's pick first). Late 5–10 min: online S&D forfeit first round, online HP/DOM warning, offline forfeit first map.
 
-| Teams | Groups | Matches | Evenings used (5 lobbies × 3 slots) |
-|---|---|---|---|
-| 8 | 1 × 8 | 28 | 5 (some days 2 per team) |
-| 16 | 4 × 4 | 24 | 3 (8 a night, done by 9:20) |
-| 24 | 4 × 6 | 60 | 5 (12 a night, done by 10:00) |
-| 32 | 8 × 4 | 48 | 4 (15/15/15/3) |
-| 36 | 8 × 4–5 | 64 | 5 |
-| 38 | 8 × 4–5 | 72 | 5, full |
-| 40 | 8 × 5 | 80 | spills 5 into Sunday |
-| 48 | 8 × 6 | 120 | doesn't fit (45 over) |
+### Still open in the doc
+- 25 Nov S&D timings; tiebreaker time.
+- Group-stage perspective (TPP/FPP) and the offline map pool, 48 h ahead.
+- Proposed: HP/DOM 5–10 min penalty, disqualified team's remaining matches, 5-map pools.
+- Full name of "Sapne Suhane..."; Darkhold/LIQUID/beAtBreAkers@! UIDs; restricting the registration sheet.
 
 ## Visual design ("ops board")
 - Asphalt `#1c1f22` and gunmetal surfaces, chalk text `#eceae4`, one accent: signal yellow `#f4c430`, used only for attention (primary buttons, the next-match countdown, live rail, qualifying rows, champion). Flare `#ff5436` for live/errors.
@@ -234,6 +229,7 @@ Sheet gotchas:
 - Custom primitives (`.panel`, `.rail`, `.link`, `.rift-line`) live in `@layer components` so Tailwind utilities can override them.
 
 ## Changelog
+- **2026-11-22:** CODM moved to the final format: 7 groups and the published 7-wave × 7-lobby schedule, best runner-up, Domination, per-mode offline veto, day check-in. Admin Setup applies the official draw to the synced teams; the Schedule tab is a wave board; referees filter their list by day and lobby. Fixed matches without a time sorting first.
 - **2026-11-06:** `sheets` branch built: display-only, rosters from the Unstop sheet and results from one results sheet (two tabs per game), no database or logins. Its privacy check against the real sheet found two players with an email typed as their IGN or a phone number as their game ID. The same filter now runs in `main`'s sync: those values are hidden and listed as issues (`contact_in_field`); a real sync left 0 email- or phone-like values in public fields. Lobby rooms, check-ins and disputes are now limited to that game's staff in RLS too.
 - **2026-11-05/06:** Multi-game rebuild on branch `platform`, merged into `main`. Feature commits:
   - data model and game registry;

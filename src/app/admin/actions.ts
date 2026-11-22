@@ -5,9 +5,10 @@ import { canStaff, requireAdmin, requireStaff } from "@/lib/auth";
 import { GAMES, isGameId } from "@/games/registry";
 import { gamesFromForm, staffTags } from "@/lib/staff";
 import { TOURNAMENT_TAG } from "@/lib/data";
-import { drawGroups, groupFormat, knockoutSkeleton, roundRobin } from "@/lib/fixtures";
-import { KNOCKOUT_TIMES } from "@/content/event";
-import { resolveVeto, VETO_SEQUENCE } from "@/lib/rules";
+import { knockoutSkeleton } from "@/lib/fixtures";
+import { KNOCKOUT_TIMES, MODE_NAME } from "@/content/event";
+import { matchOfficialTeams, MODE_DAYS, officialFixtures, OFFICIAL_GROUPS, picksFromFixtures, waveStarts } from "@/content/codm-schedule";
+import { mapsNeeded, resolveVeto, VETO_SEQUENCE } from "@/lib/rules";
 import { csvToRows, parseMode, parseTournament, toCsv } from "@/lib/parse";
 import { createClient } from "@/lib/supabase/server";
 
@@ -104,15 +105,28 @@ export const saveRoom = staff(async (form, { db }) => {
   return "Room details saved. Both teams see them from 15 min before match time.";
 });
 
+/** CODM group days take one check-in: the team's other group matches that IST day. */
+async function sameDayMatchIds(db: Db, matchId: string, teamId: string): Promise<string[]> {
+  const m = check<{ stage: string; scheduled_at: string | null; game_id: string }>(await db.from("matches").select("stage, scheduled_at, game_id").eq("id", matchId).single());
+  if (m.game_id !== "codm" || m.stage !== "group" || !m.scheduled_at) return [matchId];
+  const day = new Date(Date.parse(m.scheduled_at) + 330 * 60_000).toISOString().slice(0, 10);
+  const rows = check<{ id: string }[]>(await db.from("matches").select("id").eq("game_id", "codm").eq("stage", "group")
+    .or(`side_a.eq.${teamId},side_b.eq.${teamId}`)
+    .gte("scheduled_at", `${day}T00:00:00+05:30`).lt("scheduled_at", `${day}T23:59:59.999+05:30`));
+  return rows.length ? rows.map((r) => r.id) : [matchId];
+}
+
 export const toggleCheckIn = staff(async (form, { db, email }) => {
   const matchId = str(form, "id");
   const teamId = str(form, "team");
+  const ids = await sameDayMatchIds(db, matchId, teamId);
   if (form.get("undo")) {
-    check(await db.from("check_ins").update({ checked_in_at: null }).eq("match_id", matchId).eq("team_id", teamId));
-    return "Check-in removed.";
+    check(await db.from("check_ins").update({ checked_in_at: null }).in("match_id", ids).eq("team_id", teamId));
+    return ids.length > 1 ? `Check-in removed for all ${ids.length} of the team's matches today.` : "Check-in removed.";
   }
-  check(await db.from("check_ins").upsert({ match_id: matchId, team_id: teamId, checked_in_at: new Date().toISOString(), recorded_by: email }));
-  return "Checked in.";
+  const at = new Date().toISOString();
+  check(await db.from("check_ins").upsert(ids.map((id) => ({ match_id: id, team_id: teamId, checked_in_at: at, recorded_by: email }))));
+  return ids.length > 1 ? `Checked in for all ${ids.length} of the team's matches today.` : "Checked in.";
 });
 
 export const toggleJoined = staff(async (form, { db }) => {
@@ -137,21 +151,20 @@ export const saveVeto = staff(async (form, { db, email }) => {
   if (!mode) throw new Error("Pick the mode.");
   if (first !== "A" && first !== "B") throw new Error("Pick who bans first.");
   const match = check<{ best_of: 1 | 3 | 5 }>(await db.from("matches").select("best_of").eq("id", matchId).single());
-  const steps = VETO_SEQUENCE[match.best_of].map((_, i) => str(form, `step${i + 1}`));
+  if (match.best_of === 1) throw new Error("Group matches have a fixed map; there's no veto.");
+  const needed = mapsNeeded(match.best_of, mode);
+  const steps = VETO_SEQUENCE[needed].map((_, i) => str(form, `step${i + 1}`));
   const pool = check<{ map: string }[]>(await db.from("map_pool").select("map").eq("mode", mode)).map((r) => r.map);
-  const result = resolveVeto(pool, match.best_of, steps);
+  const result = resolveVeto(pool, needed, steps);
   if (!result.ok) throw new Error(result.error);
 
   check(await db.from("map_vetoes").upsert({
-    match_id: matchId, mode, first_side: first, steps, decider: result.decider,
+    match_id: matchId, mode, first_side: first, steps, decider: result.played[0],
     coin_toss: coin === "A" || coin === "B" ? coin : null,
     screenshot_url: str(form, "screenshot") || null,
     recorded_by: email, recorded_at: new Date().toISOString(),
   }));
-  if (match.best_of === 1) {
-    check(await db.from("matches").update({ veto_note: `Bans: ${result.bans.join(", ")} · Map: ${result.decider}` }).eq("id", matchId));
-  }
-  return `Veto saved. Map: ${result.decider}.`;
+  return `Veto saved. ${result.played.length > 1 ? "Maps" : "Map"}: ${result.played.join(", then ")}.`;
 });
 
 export const saveMaps = staff(async (form, { db, email, runsGame }) => {
@@ -215,7 +228,7 @@ export const importCsv = staff(async (form, { db }) => {
   if (kind === "Teams") {
     const { raw, warnings } = parseTournament({ Teams: text });
     if (!raw.teams.length) throw new Error(warnings[0] ?? "No teams found — check the header row.");
-    check(await db.from("teams").upsert(raw.teams.map((t) => ({ id: t.id, name: t.name, tag: t.tag, group_name: t.group || null, logo_url: t.logoUrl ?? null }))));
+    check(await db.from("teams").upsert(raw.teams.map((t) => ({ id: t.id, game_id: "codm", name: t.name, tag: t.tag, group_name: t.group || null, logo_url: t.logoUrl ?? null }))));
     return `${raw.teams.length} team(s) imported.${warnings.length ? ` Skipped: ${warnings.join("; ")}` : ""}`;
   }
 
@@ -262,56 +275,84 @@ export const importCsv = staff(async (form, { db }) => {
     }
     const { raw, warnings } = parseTournament({ Teams: teamsCsv, Matches: text });
     check(await db.from("matches").upsert(raw.matches.map((m) => ({
-      id: m.id, stage: m.stage, group_name: m.group ?? null, round: m.round ?? null, best_of: m.bestOf,
+      id: m.id, game_id: "codm", stage: m.stage, group_name: m.group ?? null, round: m.round ?? null, best_of: m.bestOf,
       side_a: m.sideA, side_b: m.sideB, scheduled_at: m.scheduledAt ?? null,
       status_override: m.statusOverride ?? null, forfeit_winner: m.forfeitWinner ?? null, veto_note: m.vetoNote ?? null, notes: m.notes ?? null,
+      lobby: m.lobby ?? null, mode: m.mode ?? null, map: m.map ?? null,
     }))));
     return `${raw.matches.length} match(es) imported.${warnings.length ? ` Notes: ${warnings.join("; ")}` : ""}`;
   }
   throw new Error("Pick what you're importing.");
 }, { game: "codm" });
 
-export const drawTeamGroups = staff(async (_form, { db }) => {
-  const teams = check<{ id: string }[]>(await db.from("teams").select("id"));
-  if (!teams.length) throw new Error("Import teams first.");
-  const groupMatches = check<{ id: string }[]>(await db.from("matches").select("id").eq("stage", "group").limit(1));
-  if (groupMatches.length) throw new Error("Group fixtures already exist. Delete them before drawing again.");
-  const fmt = groupFormat(teams.length);
-  if (fmt.openingRound) throw new Error(`${teams.length} teams needs an opening knockout round, which doesn't fit the online evenings. Cap registrations at 48.`);
-  const draw = drawGroups(teams.map((t) => t.id), fmt.groups);
-  for (const g of new Set(draw.values())) {
-    check(await db.from("teams").update({ group_name: g }).in("id", [...draw].filter(([, x]) => x === g).map(([id]) => id)));
+/**
+ * Master Tournament Doc: the groups and the 7-lobby wave schedule are fixed.
+ * Sets each registered team's group, replaces the group fixtures with the
+ * published 138, and sets the qualifying rules and the three mode days.
+ */
+export const applyOfficialDraw = staff(async (form, { db }) => {
+  const teams = check<{ id: string; name: string }[]>(await db.from("teams").select("id, name").eq("game_id", "codm"));
+  if (!teams.length) throw new Error("Sync the CODM registrations first.");
+  const applied = check<{ id: string; side_a: string; side_b: string }[]>(await db.from("matches").select("id, side_a, side_b").eq("game_id", "codm").like("id", "HP-W%"));
+  const earlier = picksFromFixtures(applied.map((m) => ({ id: m.id, a: { teamId: m.side_a }, b: { teamId: m.side_b } })));
+  const chosen = Object.fromEntries(Object.values(OFFICIAL_GROUPS).flat().map((n, i) => [n, str(form, `pick${i}`)]).filter(([, v]) => v));
+  const { ids, missing } = matchOfficialTeams(teams, { ...earlier, ...chosen });
+  if (missing.length) throw new Error(`Pick the registered team for: ${missing.join(", ")}.`);
+
+  const group = check<{ id: string }[]>(await db.from("matches").select("id").eq("game_id", "codm").in("stage", ["group", "tiebreak"]));
+  if (group.length) {
+    const played = check<{ match_id: string }[]>(await db.from("maps").select("match_id").in("match_id", group.map((m) => m.id)).limit(1));
+    if (played.length) throw new Error("Group results are already in. Fix single matches on their own pages instead.");
+    check(await db.from("matches").delete().in("id", group.map((m) => m.id)));
   }
-  check(await db.from("config").upsert({ key: "qualifiers_per_group", value: String(fmt.qualifiersPerGroup) }));
-  return `${teams.length} teams drawn into ${fmt.groups} group(s); top ${fmt.qualifiersPerGroup} of each qualify.`;
+
+  const official = new Map([...ids].map(([name, id]) => [id, name]));
+  const groupOf = new Map(Object.entries(OFFICIAL_GROUPS).flatMap(([g, names]) => names.map((n) => [n, g])));
+  check(await db.from("teams").update({ group_name: null }).eq("game_id", "codm"));
+  for (const g of Object.keys(OFFICIAL_GROUPS)) {
+    check(await db.from("teams").update({ group_name: g }).in("id", [...official].filter(([, n]) => groupOf.get(n) === g).map(([id]) => id)));
+  }
+
+  const { fixtures } = officialFixtures((n) => ids.get(n));
+  check(await db.from("matches").insert(fixtures.map((f) => ({
+    id: f.id, game_id: "codm", stage: "group", group_name: f.group, round: f.wave, lobby: f.lobby, mode: f.mode, map: f.map,
+    best_of: 1, side_a: f.a, side_b: f.b, scheduled_at: f.scheduledAt ?? null,
+  }))));
+  check(await db.from("config").upsert([
+    { key: "qualifiers_per_group", value: "1" },
+    { key: "best_runners_up", value: "1" },
+    { key: "tiebreakers", value: "h2h, playoff" },
+  ]));
+  check(await db.from("match_days").upsert(MODE_DAYS.map((d) => ({ day: d.date, mode: d.mode, map: d.map }))));
+  const unlisted = teams.length - official.size;
+  return `${fixtures.length} group matches created for 29 teams in 7 groups.${unlisted ? ` ${unlisted} other registered team(s) have no group.` : ""}`;
 }, { game: "codm" });
 
-export const generateGroupFixtures = staff(async (form, { db }) => {
-  const teams = check<{ id: string; group_name: string | null }[]>(await db.from("teams").select("id, group_name").order("name"));
-  const existing = check<{ id: string; stage: string; side_a: string; side_b: string }[]>(await db.from("matches").select("id, stage, side_a, side_b"));
-  if (!teams.length) throw new Error("Import teams first.");
-  if (!teams.some((t) => t.group_name)) throw new Error("Draw the groups first.");
-  const start = toIso(str(form, "date"), str(form, "time"));
-  if (!start) throw new Error("Pick a start date and time.");
-  const num = (key: string, fallback: number) => intOrNull(str(form, key)) ?? fallback;
-  const fixtures = roundRobin(teams.map((t) => ({ id: t.id, group: t.group_name ?? "" })), existing, {
-    start, days: num("days", 5), slotsPerDay: num("slots", 3), gapMinutes: num("gap", 40) || 40, parallel: num("parallel", 5),
-    restSlots: num("rest", 1), maxPerTeamPerDay: num("per_team", 2),
-  });
-  if (!fixtures.length) return "No new fixtures needed — every pair already has a match.";
-  check(await db.from("matches").insert(fixtures.map((f) => ({ id: f.id, stage: "group", group_name: f.group, round: f.round, best_of: 1, side_a: f.a, side_b: f.b, scheduled_at: f.scheduledAt }))));
-  return `${fixtures.length} group match(es) created.`;
+/** Sets (or moves) a mode day's first wave; every wave on that day follows. */
+export const setModeDayStart = staff(async (form, { db }) => {
+  const day = MODE_DAYS.find((d) => d.date === str(form, "date"));
+  if (!day) throw new Error("Pick a mode day.");
+  const time = str(form, "time");
+  if (!/^\d{2}:\d{2}$/.test(time)) throw new Error("Pick the first wave's time.");
+  const starts = waveStarts(day, time)!;
+  const rows = check<{ id: string; round: number | null }[]>(await db.from("matches").select("id, round").eq("game_id", "codm").eq("stage", "group").eq("mode", day.mode));
+  if (!rows.length) throw new Error("Apply the official groups and fixtures first.");
+  for (const [w, at] of starts.entries()) {
+    const ids = rows.filter((r) => r.round === w + 1).map((r) => r.id);
+    if (ids.length) check(await db.from("matches").update({ scheduled_at: at }).in("id", ids));
+  }
+  return `${MODE_NAME[day.mode]} day: first wave at ${time}, check-in 30 minutes before. ${rows.length} matches moved.`;
 }, { game: "codm" });
 
 export const generateBracket = staff(async (form, { db }) => {
-  const teams = check<{ group_name: string | null }[]>(await db.from("teams").select("group_name"));
-  const cfg = check<{ value: string }[]>(await db.from("config").select("value").eq("key", "qualifiers_per_group"));
+  const teams = check<{ group_name: string | null }[]>(await db.from("teams").select("group_name").eq("game_id", "codm"));
+  const cfg = new Map(check<{ key: string; value: string }[]>(await db.from("config").select("key, value").in("key", ["qualifiers_per_group", "best_runners_up"])).map((r) => [r.key, Number(r.value) || 0]));
   const groups = new Set(teams.map((t) => t.group_name).filter(Boolean)).size;
-  const qualifiers = groups * (Number(cfg[0]?.value) || 2);
+  const qualifiers = groups * (cfg.get("qualifiers_per_group") || 1) + (cfg.get("best_runners_up") ?? 0);
   const existing = new Set(check<{ id: string }[]>(await db.from("matches").select("id")).map((m) => m.id));
   const skeleton = knockoutSkeleton(qualifiers, form.get("third") === "on").filter((m) => !existing.has(m.id));
   if (!skeleton.length) return "Bracket already exists.";
-  check(await db.from("matches").insert(skeleton.map((m) => ({ id: m.id, stage: m.stage, best_of: m.bestOf, side_a: m.a, side_b: m.b, scheduled_at: KNOCKOUT_TIMES[m.id] ?? null }))));
+  check(await db.from("matches").insert(skeleton.map((m) => ({ id: m.id, game_id: "codm", stage: m.stage, best_of: m.bestOf, side_a: m.a, side_b: m.b, scheduled_at: KNOCKOUT_TIMES[m.id] ?? null }))));
   return `${skeleton.length} knockout match(es) created for ${qualifiers} qualifiers, at the offline schedule times.`;
 }, { game: "codm" });
 
@@ -353,7 +394,7 @@ export const saveMatchDays = staff(async (form, { db }) => {
 }, { game: "codm" });
 
 export const saveMapPool = staff(async (form, { db }) => {
-  const rows = (["HP", "SND", "CTRL"] as const).flatMap((mode) =>
+  const rows = (["HP", "SND", "DOM"] as const).flatMap((mode) =>
     str(form, mode).split(/[\n,]+/).map((m) => m.trim()).filter(Boolean).map((map) => ({ mode, map })),
   );
   check(await db.from("map_pool").delete().neq("map", ""));

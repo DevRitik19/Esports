@@ -3,7 +3,7 @@
 // Usage: npm run seed-sql   (then `npx supabase db reset` to apply)
 
 import { writeFileSync } from "node:fs";
-import { GROUP_DAY_MODES } from "../src/content/event.ts";
+import { MODE_DAYS } from "../src/content/codm-schedule.ts";
 import { parseTournament } from "../src/lib/parse.ts";
 import { SAMPLE_TABS } from "../src/lib/sample-data.ts";
 
@@ -29,7 +29,7 @@ out.push("");
 
 for (const m of raw.matches) {
   out.push(
-    `insert into matches (id, game_id, stage, group_name, round, best_of, side_a, side_b, scheduled_at) values (${q(m.id)}, 'codm', ${q(m.stage)}, ${q(m.group)}, ${q(m.round)}, ${m.bestOf}, ${q(m.sideA)}, ${q(m.sideB)}, ${q(m.scheduledAt)});`,
+    `insert into matches (id, game_id, stage, group_name, round, lobby, mode, map, best_of, side_a, side_b, scheduled_at) values (${q(m.id)}, 'codm', ${q(m.stage)}, ${q(m.group)}, ${q(m.round)}, ${q(m.lobby)}, ${q(m.mode)}, ${q(m.map)}, ${m.bestOf}, ${q(m.sideA)}, ${q(m.sideB)}, ${q(m.scheduledAt)});`,
   );
   for (const g of m.maps) {
     // Backdate so seeded results don't open a fresh 10-minute dispute window.
@@ -41,17 +41,21 @@ out.push("");
 
 const cfg: [string, string | number | undefined][] = [
   ["qualifiers_per_group", raw.config.qualifiersPerGroup],
+  ["best_runners_up", raw.config.bestRunnersUp],
   ["tiebreakers", raw.config.tiebreakers.join(", ")],
   ["perspective", raw.config.perspective],
   ["event_dates", raw.config.eventDates],
   ["registration_deadline", raw.config.registrationDeadline],
 ];
-for (const [k, v] of cfg) out.push(`insert into config (key, value) values (${q(k)}, ${q(String(v ?? ""))});`);
+// The migrations already set some keys, so these overwrite.
+// Config values are never null: an unset one is an empty string.
+const text = (v: string) => `'${v.replace(/'/g, "''")}'`;
+for (const [k, v] of cfg) out.push(`insert into config (key, value) values (${q(k)}, ${text(String(v ?? ""))}) on conflict (key) do update set value = excluded.value;`);
 for (const a of raw.announcements) out.push(`insert into announcements (date, title, body) values (${q(a.date)}, ${q(a.title)}, ${q(a.body)});`);
 for (const m of raw.mapPool) out.push(`insert into map_pool (mode, map) values (${q(m.mode)}, ${q(m.map)});`);
 
-// Mode of the day for all five group evenings, as published on 15 Nov.
-for (const d of GROUP_DAY_MODES) out.push(`insert into match_days (day, mode) values (${q(d.day)}, ${q(d.mode)});`);
+// The three mode days; the migration inserts them too, so this overwrites.
+for (const d of MODE_DAYS) out.push(`insert into match_days (day, mode, map) values (${q(d.date)}, ${q(d.mode)}, ${q(d.map)}) on conflict (day) do update set mode = excluded.mode, map = excluded.map;`);
 
 // Invented registrations for the other games, so every flow can be tried locally.
 const WORDS = ["Ash", "Blitz", "Cobalt", "Dusk", "Ember", "Frost", "Gale", "Haze", "Ion", "Jolt", "Krait", "Lynx", "Mako", "Nova", "Onyx", "Pike", "Quake", "Rook", "Sable", "Talon"];

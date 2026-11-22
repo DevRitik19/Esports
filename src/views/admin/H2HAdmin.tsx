@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { StatusChip } from "@/components/StatusChip";
 import { KnockoutSetup } from "@/app/admin/knockout/KnockoutSetup";
+import { LobbyFilter } from "@/components/LobbyFilter";
+import { LOBBIES } from "@/content/codm-schedule";
 import { getAdminOverview } from "@/lib/admin";
 import { GAMES, type GameId } from "@/games/registry";
 import { canStaff, requireStaff } from "@/lib/auth";
@@ -27,7 +29,7 @@ async function Overview({ game }: { game: GameId }) {
   const pending = Object.values(o.pendingByMatch).reduce((a, b) => a + b, 0);
   const live = t.matches.filter((m) => m.status === "live").length;
   const byes = t.matches.filter((m) => m.a.bye || m.b.bye).length;
-  const matches = [...t.matches].filter((m) => !m.a.bye && !m.b.bye).sort((x, y) => (x.scheduledAt ?? "~").localeCompare(y.scheduledAt ?? "~") || x.id.localeCompare(y.id));
+  const matches = [...t.matches].filter((m) => !m.a.bye && !m.b.bye).sort((x, y) => (x.scheduledAt ?? "9999").localeCompare(y.scheduledAt ?? "9999") || x.id.localeCompare(y.id));
 
   return (
     <>
@@ -54,7 +56,9 @@ async function Overview({ game }: { game: GameId }) {
       {matches.length === 0 ? (
         <p className="panel mt-6 p-5 text-sm text-muted">{game === "codm" ? <>No matches yet. Import teams and generate fixtures on the <Link href="/admin/setup" className="link">Setup</Link> page.</> : "No matches yet. Draw the bracket above once registration closes."}</p>
       ) : (
-        <div className="panel mt-6 overflow-x-auto">
+        <>
+        {game === "codm" && <div className="mt-6"><LobbyFilter scope="codm-admin" lobbies={LOBBIES} /></div>}
+        <div data-board="codm-admin" className="panel mt-4 overflow-x-auto">
           <table className="w-full min-w-[640px] text-sm">
             <thead>
               <tr className="text-left text-[11px] text-faint">
@@ -67,10 +71,12 @@ async function Overview({ game }: { game: GameId }) {
             </thead>
             <tbody>
               {matches.map((m) => (
-                <tr key={m.id} className="border-t border-line">
+                <tr key={m.id} data-mode={m.mode} data-lobby={m.lobby} className="border-t border-line">
                   <td className="px-4 py-2.5">
                     <span className="font-cond text-xs">{m.id}</span>
-                    <span className="ml-2 text-xs text-faint">{m.stage === "group" ? `Grp ${m.group ?? ""}` : STAGE_LABEL[m.stage]} · BO{m.bestOf}</span>
+                    <span className="ml-2 text-xs text-faint">
+                      {m.stage === "group" ? `Grp ${m.group ?? ""}${m.lobby ? `, Wave ${m.round}, Lobby ${m.lobby}` : ""}` : STAGE_LABEL[m.stage]} · BO{m.bestOf}
+                    </span>
                   </td>
                   <td className="px-4 py-2.5">
                     {name(m.a.teamId, m.a.label)} <span className="text-faint">vs</span> {name(m.b.teamId, m.b.label)}
@@ -91,6 +97,7 @@ async function Overview({ game }: { game: GameId }) {
             </tbody>
           </table>
         </div>
+        </>
       )}
     </>
   );

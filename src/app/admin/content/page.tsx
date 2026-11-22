@@ -61,7 +61,7 @@ async function Content() {
                     <span>{fmtDay(dayIso(day))}</span>
                     <select name={`mode_${day}`} defaultValue={current?.mode ?? ""} className={inputClass}>
                       <option value="">Not announced</option>
-                      {(["HP", "SND", "CTRL"] as const).map((mode) => <option key={mode} value={mode}>{MODE_NAME[mode]}</option>)}
+                      {(["HP", "SND", "DOM"] as const).map((mode) => <option key={mode} value={mode}>{MODE_NAME[mode]}</option>)}
                     </select>
                     <input name={`note_${day}`} defaultValue={current?.note ?? ""} placeholder="Note (optional)" className={inputClass} />
                   </div>
@@ -75,7 +75,7 @@ async function Content() {
           <h2 className="font-cond text-lg font-bold">Map pool</h2>
           <p className="mt-1 text-xs text-muted">One map per line. Announce ≥48 hours before each stage. The group-stage veto bans 4, so each mode needs exactly 5 maps then.</p>
           <ActionForm action={saveMapPool} submit="Save map pool" className="mt-4 grid gap-3 sm:grid-cols-3">
-            {(["HP", "SND", "CTRL"] as const).map((mode) => (
+            {(["HP", "SND", "DOM"] as const).map((mode) => (
               <label key={mode} className="flex flex-col gap-1 text-xs text-muted">
                 {mode === "SND" ? "S&D" : mode}
                 <textarea name={mode} rows={5} defaultValue={t.mapPool.filter((m) => m.mode === mode).map((m) => m.map).join("\n")} className={inputClass} />

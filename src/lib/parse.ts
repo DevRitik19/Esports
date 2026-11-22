@@ -25,7 +25,7 @@ export const COLUMNS: Record<TabName, string[]> = {
   Players: ["team_id", "ign", "game_uid", "role"],
   Matches: [
     "match_id", "stage", "group", "round", "best_of", "team_a", "team_b",
-    "date", "time", "status", "forfeit_winner", "veto_note", "notes",
+    "date", "time", "status", "forfeit_winner", "veto_note", "notes", "lobby", "mode", "map",
   ],
   Maps: ["match_id", "game", "mode", "map", "score_a", "score_b"],
   Config: ["key", "value"],
@@ -109,7 +109,7 @@ export function csvToRows(tab: string, text: string): Row[] {
 const MODE_ALIASES: Record<string, Mode> = {
   hp: "HP", hardpoint: "HP",
   snd: "SND", "s&d": "SND", sd: "SND", "search&destroy": "SND", "searchanddestroy": "SND",
-  ctrl: "CTRL", control: "CTRL", dom: "CTRL", domination: "CTRL", "control/domination": "CTRL",
+  dom: "DOM", domination: "DOM", ctrl: "DOM", control: "DOM", "control/domination": "DOM",
 };
 
 export function parseMode(s: string): Mode | undefined {
@@ -158,9 +158,11 @@ const slug = (s: string) => s.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").r
 // Tabs → RawTournament
 // ---------------------------------------------------------------------------
 
-// Wins → head-to-head → tiebreaker match on the buffer day (format doc, "Standings and tiebreakers").
+// Master Tournament Doc: 7 group winners and the best runner-up qualify; wins,
+// then head-to-head, then a tiebreaker match. Score difference never counts.
 export const DEFAULT_CONFIG: TournamentConfig = {
-  qualifiersPerGroup: 2,
+  qualifiersPerGroup: 1,
+  bestRunnersUp: 1,
   tiebreakers: ["h2h", "playoff"],
 };
 
@@ -199,6 +201,10 @@ export function parseTournament(tabs: Partial<Record<TabName, string>>): {
       const n = int(value);
       if (n && n > 0) config.qualifiersPerGroup = n;
       else warn(`${r.__line}: qualifiers_per_group must be a positive number`);
+    } else if (key === "best_runners_up") {
+      const n = int(value);
+      if (n !== undefined && n >= 0) config.bestRunnersUp = n;
+      else warn(`${r.__line}: best_runners_up must be 0 or more`);
     } else if (key === "tiebreakers") {
       const { valid, invalid } = parseTiebreakers(value);
       if (invalid.length) warn(`${r.__line}: tiebreakers can only be ${TIEBREAKERS.join(", ")}`);
@@ -265,7 +271,7 @@ export function parseTournament(tabs: Partial<Record<TabName, string>>): {
       if (matchId && (r.score_a || r.score_b)) warn(`${r.__line}: scores must be whole numbers`);
       continue; // a row with no scores yet is just a planned map
     }
-    if (!mode) warn(`${r.__line}: unknown mode "${r.mode}" (use HP, SND or CTRL)`);
+    if (!mode) warn(`${r.__line}: unknown mode "${r.mode}" (use HP, SND or DOM)`);
     const list = mapsByMatch.get(matchId) ?? [];
     list.push({ game: int(r.game) ?? list.length + 1, mode: mode ?? "HP", map: r.map ?? "", scoreA, scoreB });
     mapsByMatch.set(matchId, list);
@@ -324,6 +330,9 @@ export function parseTournament(tabs: Partial<Record<TabName, string>>): {
       forfeitWinner,
       vetoNote: r.veto_note || undefined,
       notes: r.notes || undefined,
+      lobby: int(r.lobby),
+      mode: parseMode(r.mode ?? ""),
+      map: r.map || undefined,
       maps: (mapsByMatch.get(id) ?? []).sort((x, y) => x.game - y.game),
     });
   }

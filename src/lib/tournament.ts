@@ -210,17 +210,12 @@ export function computeGroups(raw: RawTournament, series: Map<string, SeriesResu
     );
 
     // Only ties that decide who qualifies, or a qualifier's position, need settling.
+    // With best runners-up, the place just below the qualifying spots counts too.
     const position = (id: string) => ordered.indexOf(id) + 1;
+    const counted = config.qualifiersPerGroup + (config.bestRunnersUp ? 1 : 0);
     const ties: GroupTie[] = ctx.unresolved
-      .filter((c) => Math.min(...c.map(position)) <= config.qualifiersPerGroup)
-      .map((c) => {
-        const tie: GroupTie = { teams: c };
-        if (c.length >= 3) {
-          const [top, next] = [...c].sort((x, y) => stats.get(y)!.scoreFor - stats.get(x)!.scoreFor);
-          if (stats.get(top)!.scoreFor > stats.get(next)!.scoreFor) tie.bye = top;
-        }
-        return tie;
-      });
+      .filter((c) => Math.min(...c.map(position)) <= counted)
+      .map((c) => ({ teams: c }));
     const tied = new Set(ties.flatMap((x) => x.teams));
 
     const complete = groupMatches.length > 0 && groupMatches.every((m) => isDone(series.get(m.id)!.status));
@@ -241,8 +236,7 @@ export function computeGroups(raw: RawTournament, series: Map<string, SeriesResu
 
 /**
  * Qualified teams ranked across groups: all group winners first, then
- * runners-up, … Inside each set: wins, then rounds/points won across the
- * group stage, then a referee coin toss.
+ * runners-up, … Inside each set: points, then a referee coin toss.
  */
 export function computeSeeds(groups: GroupTable[], coinToss: string[][] = []): { seeds: string[]; ties: string[][] } {
   const rows = groups.flatMap((g) => g.rows.filter((r) => r.qualified));
@@ -250,15 +244,40 @@ export function computeSeeds(groups: GroupTable[], coinToss: string[][] = []): {
   const seeds: string[] = [];
   for (const pos of [...new Set(rows.map((r) => r.position))].sort((x, y) => x - y)) {
     const set = rows.filter((r) => r.position === pos);
-    for (const byWins of partitionDesc(set.map((r) => r.teamId), (id) => set.find((r) => r.teamId === id)!.points)) {
-      for (const level of partitionDesc(byWins, (id) => set.find((r) => r.teamId === id)!.scoreFor)) {
-        const tossed = level.length > 1 ? byCoinToss(level, coinToss) : level;
-        if (!tossed) ties.push(level);
-        seeds.push(...(tossed ?? [...level].sort()));
-      }
+    for (const level of partitionDesc(set.map((r) => r.teamId), (id) => set.find((r) => r.teamId === id)!.points)) {
+      const tossed = level.length > 1 ? byCoinToss(level, coinToss) : level;
+      if (!tossed) ties.push(level);
+      seeds.push(...(tossed ?? [...level].sort()));
     }
   }
   return { seeds, ties };
+}
+
+/**
+ * The best runners-up: the teams placed just below the qualifying spots in
+ * each group, ranked by points. Teams level across the cut play tiebreaker
+ * matches (stage "tiebreak" between teams of different groups); score
+ * difference never counts, since the modes score on different scales.
+ */
+export function computeRunnersUp(
+  groups: GroupTable[],
+  config: { qualifiersPerGroup: number; bestRunnersUp?: number },
+  playoffs: (GroupResult & { at: number })[],
+  names: Map<string, string>,
+): { chosen: string[]; ties: string[][] } {
+  const count = config.bestRunnersUp ?? 0;
+  const rows = groups.flatMap((g) => g.rows.filter((r) => r.position === config.qualifiersPerGroup + 1));
+  if (!count || !rows.length) return { chosen: [], ties: [] };
+  const stats = new Map(rows.map((r) => [r.teamId, r]));
+  const ctx: TieContext = { stats, results: [], playoffs, coinToss: [], names, unresolved: [] };
+  const ordered = partitionDesc(rows.map((r) => r.teamId), (id) => stats.get(id)!.points).flatMap((c) => breakTie(c, ["playoff"], ctx));
+  const position = (id: string) => ordered.indexOf(id);
+  // A level cluster only matters when it straddles the cut.
+  const ties = ctx.unresolved.filter((c) => {
+    const at = c.map(position);
+    return Math.min(...at) < count && Math.max(...at) >= count;
+  });
+  return { chosen: ordered.slice(0, count), ties };
 }
 
 /** Quarterfinal pairs as seed numbers, top seed first. */
@@ -345,10 +364,27 @@ export function buildTournament(
     const a = teamById.get(m.sideA);
     const b = teamById.get(m.sideB);
     if (!a || !b) warn(`${m.id}: group matches need real team_ids (got "${m.sideA}" vs "${m.sideB}")`);
-    else if (a.group !== b.group) warn(`${m.id}: ${a.name} (group ${a.group}) vs ${b.name} (group ${b.group}) — not in the same group`);
+    // Tiebreakers between groups settle the best runner-up spot.
+    else if (a.group !== b.group && (m.stage === "group" || !raw.config.bestRunnersUp)) {
+      warn(`${m.id}: ${a.name} (group ${a.group}) vs ${b.name} (group ${b.group}) — not in the same group`);
+    }
   }
 
   const groups = computeGroups({ ...raw, matches: inputs }, series);
+  const crossPlayoffs = inputs
+    .filter((m) => m.stage === "tiebreak" && teamById.get(m.sideA)?.group !== teamById.get(m.sideB)?.group)
+    .sort((x, y) => (x.scheduledAt ?? "").localeCompare(y.scheduledAt ?? "") || x.id.localeCompare(y.id))
+    .flatMap((m, i) => {
+      const r = toResult(m, series.get(m.id)!);
+      return r ? [{ ...r, at: m.scheduledAt ? Date.parse(m.scheduledAt) : i + 1 }] : [];
+    });
+  const names = new Map(raw.teams.map((t) => [t.id, t.name]));
+  const runnersUp = computeRunnersUp(groups, raw.config, crossPlayoffs, names);
+  for (const g of groups) {
+    for (const r of g.rows) {
+      if (runnersUp.chosen.includes(r.teamId)) Object.assign(r, { qualified: true, bestRunnerUp: true });
+    }
+  }
   const groupByName = new Map(groups.map((g) => [g.group, g]));
   const { seeds, ties: seedTies } = computeSeeds(groups, raw.config.coinToss);
   const { slots: qfSlots, swaps: qfSwaps } = quarterfinalSlots(seeds, (id) => teamById.get(id)?.group ?? "");
@@ -451,6 +487,7 @@ export function buildTournament(
     groups,
     seeds,
     seedTies,
+    runnerUpTies: runnersUp.ties,
     qfSwaps,
     source: meta.source,
     warnings,

@@ -73,7 +73,7 @@ export function MatchCard({ game, match, teams, showStage = true }: { game: stri
   const scoreB = !started ? undefined : bo1 && only ? only.scoreB : match.mapWinsB;
 
   const stage = match.stage === "group"
-    ? `Group ${match.group ?? ""}${match.round ? `, round ${match.round}` : ""}`
+    ? `Group ${match.group ?? ""}${match.lobby && match.round ? `, Wave ${match.round}, Lobby ${match.lobby}` : match.round ? `, round ${match.round}` : ""}`
     : `${STAGE_LABEL[match.stage]}${match.stage === "tiebreak" && match.group ? `, Group ${match.group}` : ""}`;
 
   return (

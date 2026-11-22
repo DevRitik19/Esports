@@ -2,7 +2,7 @@
 // Sheet; the backend branch fills the same shapes from Postgres. Keep this
 // file free of runtime code so scripts can import it under plain Node.
 
-export type Mode = "HP" | "SND" | "CTRL";
+export type Mode = "HP" | "SND" | "DOM";
 /** "tiebreak" = a BO1 played on the buffer day between teams level on wins and head-to-head. */
 /** r128..r16 = early knockout rounds (Round of 128 .. Round of 16) for open brackets. */
 export type Stage = "group" | "tiebreak" | "r128" | "r64" | "r32" | "r16" | "qf" | "sf" | "third" | "final";
@@ -57,6 +57,11 @@ export interface MatchInput {
   sideB: SlotRef;
   /** ISO 8601 with offset, e.g. 2026-11-08T18:00:00+05:30 */
   scheduledAt?: string;
+  /** Group stage: the lobby (1–7) it runs in; the wave is `round`. */
+  lobby?: number;
+  /** Group stage: the day's fixed mode and map (no veto). */
+  mode?: Mode;
+  map?: string;
   /** Only "forfeit" and "live" need to be set by hand; everything else is derived. */
   statusOverride?: "live" | "forfeit" | "cancelled";
   forfeitWinner?: "A" | "B";
@@ -103,6 +108,8 @@ export interface StandingRow {
   scoreAgainst: number;
   diff: number;
   qualified: boolean;
+  /** Qualified as one of the best runners-up rather than on group position. */
+  bestRunnerUp?: boolean;
   /** Level on every tiebreaker in a position that matters (qualifying or seeding). */
   unresolvedTie: boolean;
   form: ("W" | "L")[];
@@ -110,8 +117,6 @@ export interface StandingRow {
 
 export interface GroupTie {
   teams: string[];
-  /** 3+ teams: most rounds/points won across the group, who waits for the final tiebreaker. */
-  bye?: string;
 }
 
 export interface GroupTable {
@@ -127,6 +132,8 @@ export type Tiebreaker = "h2h" | "playoff" | "diff" | "scored";
 
 export interface TournamentConfig {
   qualifiersPerGroup: number;
+  /** Extra qualifiers: the best teams placed just below the qualifying spots, across groups. */
+  bestRunnersUp?: number;
   tiebreakers: Tiebreaker[];
   /** Referee coin tosses, each an order of team ids (winner first). Used when everything else is level. */
   coinToss?: string[][];
@@ -152,6 +159,7 @@ export interface MatchDay {
   /** YYYY-MM-DD in IST */
   day: string;
   mode: Mode;
+  map?: string;
   note?: string;
 }
 
@@ -169,8 +177,10 @@ export interface Tournament extends Omit<RawTournament, "matches"> {
   groups: GroupTable[];
   /** Overall seed order of qualified teams (index 0 = seed 1). */
   seeds: string[];
-  /** Teams level on wins and points won within a seeding set; coin toss needed. */
+  /** Teams level on wins within a seeding set; coin toss needed. */
   seedTies: string[][];
+  /** Runners-up level for the best runner-up spot(s), after any tiebreaker matches. */
+  runnerUpTies: string[][];
   /** Seeds swapped so two teams from one group don't meet in a Quarterfinal. */
   qfSwaps: [number, number][];
   source: "database" | "sheet" | "sample";

@@ -5,7 +5,7 @@ import { dayKey } from "./format";
 import { getLobbyGame } from "./lobby/data";
 import { placementPoints } from "./lobby/standings";
 import type { LobbyMatch, LobbyResult, LobbyStage, LobbyStandingRow } from "./lobby/types";
-import { selfCheckInOpen, sideOf } from "./rules";
+import { groupCheckInOpen, selfCheckInOpen, sideOf } from "./rules";
 import { createServiceClient } from "./supabase/server";
 import { STAGE_LABEL } from "./tournament";
 import type { Match, Mode, Team, Tournament } from "./types";
@@ -44,9 +44,12 @@ export function checkInWindow(game: GameDef, startsAt: string | undefined, now: 
   return now <= start ? "open" : "closed";
 }
 
-/** H2h self check-in. CODM keeps its rulebook window (open a little past match time). */
-export function h2hCheckInOpen(game: GameDef, m: Match, now: number): boolean {
-  if (game.id === "codm") return selfCheckInOpen(m, now);
+/**
+ * H2h self check-in. CODM keeps its rulebook window (open a little past match
+ * time); its online group days take one check-in before the first wave.
+ */
+export function h2hCheckInOpen(game: GameDef, m: Match, now: number, matches: Match[] = []): boolean {
+  if (game.id === "codm") return m.stage === "group" && matches.length ? groupCheckInOpen(matches, m, now) : selfCheckInOpen(m, now);
   return m.status === "scheduled" && checkInWindow(game, m.scheduledAt, now) === "open";
 }
 
@@ -142,7 +145,7 @@ export async function getDashboard(teamId: string, gameId: GameId, now: number):
   const game = GAMES[gameId];
   const codm = gameId === "codm";
   const t = await getTournament(gameId);
-  const mine = matchesForTeam(t, teamId).sort((x, y) => (x.scheduledAt ?? "~").localeCompare(y.scheduledAt ?? "~"));
+  const mine = matchesForTeam(t, teamId).sort((x, y) => (x.scheduledAt ?? "9999").localeCompare(y.scheduledAt ?? "9999"));
   const ids = mine.map((m) => m.id);
   const db = createServiceClient();
 
@@ -189,7 +192,7 @@ function groupBy<T, U>(rows: T[], key: (r: T) => string, map: (r: T) => U): Reco
 
 /** Per-mode map record for the team, from approved results. */
 export function modeStats(matches: Match[], teamId: string) {
-  const stats = { HP: { w: 0, l: 0 }, SND: { w: 0, l: 0 }, CTRL: { w: 0, l: 0 } };
+  const stats = { HP: { w: 0, l: 0 }, SND: { w: 0, l: 0 }, DOM: { w: 0, l: 0 } };
   for (const m of matches) {
     const side = sideOf(m, teamId);
     if (!side) continue;
@@ -265,8 +268,8 @@ export function groupEvenings(stages: LobbyStage[], mine: LobbyMatch[]): LobbyEv
     byKey.set(key, ev);
   }
   const evenings = [...byKey.values()];
-  for (const ev of evenings) ev.matches.sort((x, y) => (x.scheduledAt ?? "~").localeCompare(y.scheduledAt ?? "~") || x.round - y.round);
-  return evenings.sort((x, y) => (x.firstAt ?? x.matches[0]?.scheduledAt ?? "~").localeCompare(y.firstAt ?? y.matches[0]?.scheduledAt ?? "~") || x.stage.ord - y.stage.ord);
+  for (const ev of evenings) ev.matches.sort((x, y) => (x.scheduledAt ?? "9999").localeCompare(y.scheduledAt ?? "9999") || x.round - y.round);
+  return evenings.sort((x, y) => (x.firstAt ?? x.matches[0]?.scheduledAt ?? "9999").localeCompare(y.firstAt ?? y.matches[0]?.scheduledAt ?? "9999") || x.stage.ord - y.stage.ord);
 }
 
 /** Points a published entry scored. */

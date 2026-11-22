@@ -46,28 +46,44 @@ export function subOpen(m: Match, now: number): boolean {
 
 export interface LateTier {
   minutesLate: number;
-  penalty: "on time" | "warning" | "forfeit first map" | "forfeit match" | "disqualification";
+  penalty: "on time" | "warning" | "forfeit first round" | "forfeit first map" | "forfeit match" | "disqualification";
   /** Which window was missed by more (§6: "missing either window triggers the Late Penalty Tier"). */
   window?: "check-in" | "lobby";
 }
 
-function tierFor(minutesLate: number): LateTier["penalty"] {
-  return minutesLate < 5 ? "warning" : minutesLate < 10 ? "forfeit first map" : minutesLate < 15 ? "forfeit match" : "disqualification";
+/**
+ * Late penalties (Master Tournament Doc, "Late penalties"). 5–10 min late
+ * costs an online S&D team its first round, an online Hardpoint/Domination
+ * team only a warning, and an offline team its first map.
+ */
+export type LateKind = "online-snd" | "online-objective" | "offline";
+
+export function lateKind(m: { bestOf: number; mode?: Mode }): LateKind {
+  if (m.bestOf > 1) return "offline";
+  return m.mode === "SND" ? "online-snd" : "online-objective";
+}
+
+function tierFor(minutesLate: number, kind: LateKind): LateTier["penalty"] {
+  if (minutesLate < 5) return "warning";
+  if (minutesLate < 10) return kind === "online-snd" ? "forfeit first round" : kind === "offline" ? "forfeit first map" : "warning";
+  return minutesLate < 15 ? "forfeit match" : "disqualification";
 }
 
 /**
- * Late Penalty Tier (§12). Two windows count (§6): checking in 30 min before
- * match time, and joining the lobby within 10 min of the invite. A window still
- * open at `now` doesn't count against the team yet.
+ * Late Penalty Tier. Two windows count: checking in 30 min before match time
+ * (online, before the day's first wave: pass it as `checkInBy`), and joining
+ * the lobby within 10 min of the invite. A window still open at `now` doesn't
+ * count against the team yet.
  */
 export function lateTier(
   scheduledAt: string,
   checkedInAt: string | undefined,
   now: number,
   lobby: { invitedAt?: string; joinedAt?: string } = {},
+  opts: { kind?: LateKind; checkInBy?: string } = {},
 ): LateTier {
   const lateness: { window: "check-in" | "lobby"; ms: number }[] = [];
-  const checkInDeadline = at(scheduledAt) - CHECK_IN_BEFORE_MIN * MIN;
+  const checkInDeadline = opts.checkInBy ? at(opts.checkInBy) : at(scheduledAt) - CHECK_IN_BEFORE_MIN * MIN;
   lateness.push({ window: "check-in", ms: (checkedInAt ? at(checkedInAt) : now) - checkInDeadline });
   if (lobby.invitedAt) {
     const joinDeadline = at(lobby.invitedAt) + LOBBY_JOIN_MIN * MIN;
@@ -76,7 +92,38 @@ export function lateTier(
   const worst = lateness.reduce((x, y) => (y.ms > x.ms ? y : x));
   if (worst.ms <= 0) return { minutesLate: 0, penalty: "on time" };
   const minutesLate = Math.floor(worst.ms / MIN);
-  return { minutesLate, penalty: tierFor(minutesLate), window: worst.window };
+  return { minutesLate, penalty: tierFor(minutesLate, opts.kind ?? "offline"), window: worst.window };
+}
+
+// ---------------------------------------------------------------------------
+// Online group stage: one check-in a day, 30 min before the day's first wave
+// ---------------------------------------------------------------------------
+
+const istDay = (iso: string) => new Date(at(iso) + 330 * MIN).toISOString().slice(0, 10);
+
+/** A team's group matches on the same IST day as `m`, in start order. */
+export function sameDayGroupMatches(matches: Match[], m: Match, teamId?: string): Match[] {
+  if (m.stage !== "group" || !m.scheduledAt) return [];
+  const day = istDay(m.scheduledAt);
+  return matches
+    .filter((x) => x.stage === "group" && x.scheduledAt && istDay(x.scheduledAt) === day && (!teamId || sideOf(x, teamId)))
+    .sort((x, y) => x.scheduledAt!.localeCompare(y.scheduledAt!));
+}
+
+/** Check-in deadline for a group match: 30 min before the day's first wave, for every team. */
+export function groupCheckInBy(matches: Match[], m: Match): string | undefined {
+  const first = sameDayGroupMatches(matches, m)[0]?.scheduledAt;
+  return first ? new Date(at(first) - CHECK_IN_BEFORE_MIN * MIN).toISOString() : undefined;
+}
+
+/**
+ * Self check-in for an online group day: from an hour before the deadline
+ * until the team's own match is 15 min old (late check-ins still count late).
+ */
+export function groupCheckInOpen(matches: Match[], m: Match, now: number): boolean {
+  const by = groupCheckInBy(matches, m);
+  if (!by || !m.scheduledAt || m.status !== "scheduled") return false;
+  return now >= at(by) - SELF_CHECK_IN_OPENS_MIN * MIN && now <= at(m.scheduledAt) + SELF_CHECK_IN_CLOSES_AFTER_MIN * MIN;
 }
 
 /** Teams can check themselves in from the dashboard during this window. */
@@ -93,34 +140,45 @@ export function roomOverdue(m: Match, hasRoom: boolean, now: number): boolean {
 }
 
 // ---------------------------------------------------------------------------
-// Map veto (§7)
+// Map veto (offline stages)
 // ---------------------------------------------------------------------------
 
 export type VetoAction = "ban" | "pick";
 
-/** §7: BO1 Ban–Ban–Ban–Ban, BO3 Ban–Ban–Pick–Pick–Ban–Ban, BO5 Ban–Pick–Pick–Pick–Pick–Ban; the remaining map is played/decider. */
-export const VETO_SEQUENCE: Record<1 | 3 | 5, VetoAction[]> = {
+/**
+ * Each mode is vetoed from a pool of 5 maps, higher seed first. One map
+ * needed: Ban–Ban–Ban–Ban and the last map is played. Two maps needed
+ * (Hardpoint and S&D in the Grand Final): Ban–Ban–Pick–Pick; the higher
+ * seed's pick is played first, the lower seed's second.
+ */
+export const VETO_SEQUENCE: Record<1 | 2, VetoAction[]> = {
   1: ["ban", "ban", "ban", "ban"],
-  3: ["ban", "ban", "pick", "pick", "ban", "ban"],
-  5: ["ban", "pick", "pick", "pick", "pick", "ban"],
+  2: ["ban", "ban", "pick", "pick"],
 };
 
-/** Whose turn each veto step is: the higher seed / coin-toss winner first, then alternating. */
-export function vetoTurns(bestOf: 1 | 3 | 5, first: "A" | "B"): { side: "A" | "B"; action: VetoAction }[] {
+export const VETO_POOL_SIZE = 5;
+
+/** How many maps a mode needs in a series: two for Hardpoint and S&D in a BO5, else one. */
+export function mapsNeeded(bestOf: number, mode: Mode): 1 | 2 {
+  return bestOf === 5 && mode !== "DOM" ? 2 : 1;
+}
+
+/** Whose turn each veto step is: the higher seed first, then alternating. */
+export function vetoTurns(needed: 1 | 2, first: "A" | "B"): { side: "A" | "B"; action: VetoAction }[] {
   const other = first === "A" ? "B" : "A";
-  return VETO_SEQUENCE[bestOf].map((action, i) => ({ side: i % 2 === 0 ? first : other, action }));
+  return VETO_SEQUENCE[needed].map((action, i) => ({ side: i % 2 === 0 ? first : other, action }));
 }
 
 export type VetoResult =
-  | { ok: true; decider: string; picks: string[]; bans: string[] }
+  | { ok: true; played: string[]; bans: string[] }
   | { ok: false; error: string };
 
-/** Checks a recorded veto against the mode's map pool and works out the remaining map. */
-export function resolveVeto(pool: string[], bestOf: 1 | 3 | 5, steps: string[]): VetoResult {
-  const seq = VETO_SEQUENCE[bestOf];
+/** Checks a recorded veto against the mode's map pool and works out the map(s) played, in order. */
+export function resolveVeto(pool: string[], needed: 1 | 2, steps: string[]): VetoResult {
+  const seq = VETO_SEQUENCE[needed];
   const maps = [...new Set(pool)];
-  if (maps.length !== seq.length + 1) {
-    return { ok: false, error: `This veto needs exactly ${seq.length + 1} maps in the pool for this mode (it has ${maps.length}).` };
+  if (maps.length !== VETO_POOL_SIZE) {
+    return { ok: false, error: `The veto needs exactly ${VETO_POOL_SIZE} maps in the pool for this mode (it has ${maps.length}).` };
   }
   if (steps.length !== seq.length) return { ok: false, error: `Record all ${seq.length} veto steps.` };
   const left = new Set(maps);
@@ -128,19 +186,29 @@ export function resolveVeto(pool: string[], bestOf: 1 | 3 | 5, steps: string[]):
     if (!left.has(map)) return { ok: false, error: `Step ${i + 1}: "${map}" isn't available.` };
     left.delete(map);
   }
+  const picks = steps.filter((_, i) => seq[i] === "pick");
   return {
     ok: true,
-    decider: [...left][0],
-    picks: steps.filter((_, i) => seq[i] === "pick"),
+    played: needed === 1 ? [...left] : picks,
     bans: steps.filter((_, i) => seq[i] === "ban"),
   };
 }
 
-export const DEFAULT_BO3_ORDER: Mode[] = ["HP", "SND", "CTRL"];
+/** Maps a saved veto plays, in order. `decider` is the last map left for a one-map veto. */
+export function vetoPlayed(needed: 1 | 2, steps: string[], decider: string): string[] {
+  return needed === 1 ? [decider] : steps.filter((_, i) => VETO_SEQUENCE[2][i] === "pick");
+}
+
+/** Game order: HP → S&D → Domination, and the Grand Final adds HP and S&D on new maps. */
+export function seriesModes(bestOf: number): Mode[] {
+  return bestOf === 5 ? ["HP", "SND", "DOM", "HP", "SND"] : ["HP", "SND", "DOM"];
+}
+
+export const DEFAULT_BO3_ORDER: Mode[] = ["HP", "SND", "DOM"];
 
 /**
  * Semifinal Veto Power lets the holder "reorder or swap one mode" in the BO3
- * sequence: either a reordering of HP/S&D/Control, or the default order with
+ * sequence: either a reordering of HP/S&D/Domination, or the default order with
  * exactly one game's mode replaced.
  */
 export function validVeto(order: Mode[]): boolean {

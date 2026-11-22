@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { disputeOpen, lateTier, resolveVeto, roomOverdue, roomReleased, selfCheckInOpen, validVeto, vetoOpen, vetoTurns } from "./rules.ts";
+import { disputeOpen, groupCheckInBy, groupCheckInOpen, lateKind, lateTier, mapsNeeded, resolveVeto, roomOverdue, roomReleased, sameDayGroupMatches, selfCheckInOpen, seriesModes, validVeto, vetoOpen, vetoPlayed, vetoTurns } from "./rules.ts";
 import type { Match } from "./types.ts";
 
 const T = "2026-11-14T15:00:00+05:30";
@@ -40,8 +40,8 @@ test("late penalty tiers from the 30-minute check-in deadline", () => {
 });
 
 test("veto: reorder or swap exactly one mode", () => {
-  assert.equal(validVeto(["CTRL", "HP", "SND"]), true); // reorder
-  assert.equal(validVeto(["HP", "SND", "HP"]), true); // swap Control for HP
+  assert.equal(validVeto(["DOM", "HP", "SND"]), true); // reorder
+  assert.equal(validVeto(["HP", "SND", "HP"]), true); // swap Domination for HP
   assert.equal(validVeto(["SND", "SND", "SND"]), false); // two swaps
   assert.equal(validVeto(["HP", "SND"]), false);
 });
@@ -66,17 +66,45 @@ test("self check-in window and overdue room", () => {
   assert.equal(roomOverdue(match(), true, t(-5)), false);
 });
 
-test("BO1 veto: four alternating bans leave the played map", () => {
+test("one-map veto: four alternating bans leave the played map", () => {
   const pool = ["Summit", "Raid", "Standoff", "Firing Range", "Takeoff"];
   assert.deepEqual(vetoTurns(1, "B").map((x) => x.side), ["B", "A", "B", "A"]);
   const r = resolveVeto(pool, 1, ["Raid", "Summit", "Takeoff", "Standoff"]);
-  assert.deepEqual(r, { ok: true, decider: "Firing Range", picks: [], bans: ["Raid", "Summit", "Takeoff", "Standoff"] });
+  assert.deepEqual(r, { ok: true, played: ["Firing Range"], bans: ["Raid", "Summit", "Takeoff", "Standoff"] });
   assert.equal(resolveVeto(pool, 1, ["Raid", "Raid", "Takeoff", "Standoff"]).ok, false);
   assert.equal(resolveVeto(pool.slice(0, 4), 1, ["Raid", "Summit", "Takeoff"]).ok, false);
 });
 
-test("BO3 veto keeps picks in order", () => {
-  const pool = ["M1", "M2", "M3", "M4", "M5", "M6", "M7"];
-  const r = resolveVeto(pool, 3, ["M1", "M2", "M3", "M4", "M5", "M6"]);
-  assert.deepEqual(r, { ok: true, decider: "M7", picks: ["M3", "M4"], bans: ["M1", "M2", "M5", "M6"] });
+test("two-map veto: Ban–Ban–Pick–Pick, higher seed's pick first, one map unused", () => {
+  const pool = ["M1", "M2", "M3", "M4", "M5"];
+  assert.deepEqual(vetoTurns(2, "A").map((x) => `${x.side}${x.action}`), ["Aban", "Bban", "Apick", "Bpick"]);
+  assert.deepEqual(resolveVeto(pool, 2, ["M1", "M2", "M3", "M4"]), { ok: true, played: ["M3", "M4"], bans: ["M1", "M2"] });
+  assert.deepEqual(vetoPlayed(2, ["M1", "M2", "M3", "M4"], "M3"), ["M3", "M4"]);
+  assert.equal(mapsNeeded(5, "HP"), 2);
+  assert.equal(mapsNeeded(5, "DOM"), 1);
+  assert.equal(mapsNeeded(3, "SND"), 1);
+  assert.deepEqual(seriesModes(5), ["HP", "SND", "DOM", "HP", "SND"]);
+});
+
+test("late penalties: 5–10 min depends on mode and stage", () => {
+  const due = "2026-11-24T12:30:00+05:30";
+  const checkInBy = "2026-11-24T12:00:00+05:30";
+  const late = (min: number, kind: Parameters<typeof lateKind>[0]) =>
+    lateTier(due, undefined, Date.parse(checkInBy) + min * 60_000, {}, { kind: lateKind(kind), checkInBy }).penalty;
+  assert.equal(late(3, { bestOf: 1, mode: "SND" }), "warning");
+  assert.equal(late(7, { bestOf: 1, mode: "SND" }), "forfeit first round");
+  assert.equal(late(7, { bestOf: 1, mode: "DOM" }), "warning");
+  assert.equal(late(7, { bestOf: 3 }), "forfeit first map");
+  assert.equal(late(12, { bestOf: 1, mode: "HP" }), "forfeit match");
+  assert.equal(late(15, { bestOf: 5 }), "disqualification");
+});
+
+test("group days: one check-in, 30 min before the day's first wave, covers every match that day", () => {
+  const g = (id: string, at: string, a = "x", b = "y"): Match => ({ ...match(), id, stage: "group", bestOf: 1, scheduledAt: at, a: { ref: a, teamId: a, label: a, projected: false }, b: { ref: b, teamId: b, label: b, projected: false } });
+  const day = [g("W1", "2026-11-23T21:30:00+05:30", "p", "q"), g("W2", "2026-11-23T21:50:00+05:30"), g("W5", "2026-11-23T22:50:00+05:30"), g("N1", "2026-11-24T12:30:00+05:30")];
+  assert.equal(groupCheckInBy(day, day[2]), new Date("2026-11-23T21:00:00+05:30").toISOString());
+  assert.deepEqual(sameDayGroupMatches(day, day[1], "x").map((m) => m.id), ["W2", "W5"]);
+  assert.equal(groupCheckInOpen(day, day[2], Date.parse("2026-11-23T19:59:00+05:30")), false);
+  assert.equal(groupCheckInOpen(day, day[2], Date.parse("2026-11-23T20:00:00+05:30")), true);
+  assert.equal(groupCheckInOpen(day, day[2], Date.parse("2026-11-23T23:06:00+05:30")), false);
 });

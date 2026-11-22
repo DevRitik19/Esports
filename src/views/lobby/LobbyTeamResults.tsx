@@ -12,7 +12,7 @@ export async function LobbyTeamResults({ game, team }: { game: GameId; team: Tea
   const stageName = new Map(g.stages.map((s) => [s.id, s.name]));
   const upcoming = mine
     .filter((m) => m.status === "scheduled" || m.status === "live")
-    .sort((a, b) => (a.scheduledAt ?? "~").localeCompare(b.scheduledAt ?? "~"));
+    .sort((a, b) => (a.scheduledAt ?? "9999").localeCompare(b.scheduledAt ?? "9999"));
   const stages = g.stages
     .map((s) => ({ stage: s, row: g.standings[s.id]?.rows.find((r) => r.teamId === team.id), st: g.standings[s.id] }))
     .filter((x) => x.row);

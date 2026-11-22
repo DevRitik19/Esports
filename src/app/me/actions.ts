@@ -7,7 +7,7 @@ import { getTournament } from "@/lib/data";
 import { dayKey } from "@/lib/format";
 import { getLobbyGame } from "@/lib/lobby/data";
 import { checkInWindow, disputeOpenFor, h2hCheckInOpen } from "@/lib/player";
-import { sideOf, subOpen, validVeto, vetoOpen } from "@/lib/rules";
+import { sameDayGroupMatches, sideOf, subOpen, validVeto, vetoOpen } from "@/lib/rules";
 import { createServiceClient } from "@/lib/supabase/server";
 import type { Mode } from "@/lib/types";
 
@@ -90,20 +90,22 @@ export async function raiseDispute(_: ActionState, form: FormData): Promise<Acti
 
 export async function checkIn(_: ActionState, form: FormData): Promise<ActionState> {
   try {
-    const { viewer, player, match, game } = await myMatch(form);
-    if (!h2hCheckInOpen(game, match, Date.now())) {
+    const { viewer, player, match, game, t } = await myMatch(form);
+    if (!h2hCheckInOpen(game, match, Date.now(), t.matches)) {
       const early = match.scheduledAt && Date.now() < Date.parse(match.scheduledAt);
       return { error: early ? `Check-in opens ${game.checkInOpens} minutes before match time.` : "Check-in for this match has closed." };
     }
     const db = createServiceClient();
     const { data: existing } = await db.from("check_ins").select("checked_in_at").eq("match_id", match.id).eq("team_id", player.teamId).maybeSingle();
     if (existing?.checked_in_at) return { ok: "You're already checked in." };
-    const { error } = await db.from("check_ins").upsert({
-      match_id: match.id, team_id: player.teamId, checked_in_at: new Date().toISOString(), recorded_by: viewer.email,
-    });
+    // CODM group days: one check-in covers every match the team plays that day.
+    const day = game.id === "codm" ? sameDayGroupMatches(t.matches, match, player.teamId) : [];
+    const ids = day.length ? day.map((m) => m.id) : [match.id];
+    const at = new Date().toISOString();
+    const { error } = await db.from("check_ins").upsert(ids.map((id) => ({ match_id: id, team_id: player.teamId, checked_in_at: at, recorded_by: viewer.email })));
     if (error) throw error;
     refresh();
-    return { ok: "Checked in." };
+    return { ok: ids.length > 1 ? `Checked in for all ${ids.length} of today's matches.` : "Checked in." };
   } catch (e) {
     return fail(e);
   }

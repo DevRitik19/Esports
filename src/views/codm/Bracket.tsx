@@ -5,9 +5,9 @@ import { STAGE_LABEL } from "@/lib/tournament";
 import type { Stage } from "@/lib/types";
 
 const COLUMNS: { stage: Stage; sub: string }[] = [
-  { stage: "qf", sub: "Best of 3, fixed order HP → S&D → Control" },
-  { stage: "sf", sub: "Best of 3, the higher seed holds Veto Power" },
-  { stage: "final", sub: "Best of 5, Pro Standard" },
+  { stage: "qf", sub: "Best of 3, fixed order HP → S&D → Domination" },
+  { stage: "sf", sub: "Best of 3, the higher seed may reorder or swap one mode" },
+  { stage: "final", sub: "Best of 5: HP → S&D → Domination → HP → S&D" },
 ];
 
 export async function CodmBracket() {
