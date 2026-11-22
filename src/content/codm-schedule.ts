@@ -191,3 +191,52 @@ export function officialFixtures(
   });
   return { fixtures, missing: [...missing] };
 }
+
+/**
+ * Matches the official team names to registered teams: same name ignoring
+ * case and punctuation, else the one team whose name starts with the
+ * official one (the doc shortens "Sapne Suhane..."). `chosen` holds a
+ * referee's picks for names that didn't match on their own.
+ */
+export function matchOfficialTeams(
+  teams: { id: string; name: string }[],
+  chosen: Partial<Record<string, string>> = {},
+): { ids: Map<string, string>; missing: string[] } {
+  const ids = new Map<string, string>();
+  const taken = new Set<string>();
+  const official = Object.values(OFFICIAL_GROUPS).flat();
+  for (const name of official) {
+    const pick = chosen[name];
+    if (pick && teams.some((t) => t.id === pick)) {
+      ids.set(name, pick);
+      taken.add(pick);
+    }
+  }
+  for (const name of official) {
+    if (ids.has(name)) continue;
+    const key = nameKey(name);
+    const free = teams.filter((t) => !taken.has(t.id));
+    const exact = free.filter((t) => nameKey(t.name) === key);
+    const prefix = free.filter((t) => key.length >= 4 && nameKey(t.name).startsWith(key));
+    const hit = exact.length === 1 ? exact[0] : exact.length === 0 && prefix.length === 1 ? prefix[0] : undefined;
+    if (hit) {
+      ids.set(name, hit.id);
+      taken.add(hit.id);
+    }
+  }
+  return { ids, missing: official.filter((n) => !ids.has(n)) };
+}
+
+/** Which registered team holds each official name, read back from applied fixtures. */
+export function picksFromFixtures(matches: { id: string; a: { teamId?: string }; b: { teamId?: string } }[]): Record<string, string> {
+  const byId = new Map(matches.map((m) => [m.id, m]));
+  const out: Record<string, string> = {};
+  WAVES.forEach((wave, w) =>
+    wave.forEach(([, a, b], l) => {
+      const m = byId.get(`${MODE_DAYS[0].mode}-W${w + 1}-L${l + 1}`);
+      if (m?.a.teamId) out[a] ??= m.a.teamId;
+      if (m?.b.teamId) out[b] ??= m.b.teamId;
+    }),
+  );
+  return out;
+}
