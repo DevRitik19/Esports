@@ -246,11 +246,11 @@ The tests cover:
    - Leaders log in about once for the whole event, so a few hundred emails cover it.
 5. **Auth → Email Templates:** paste `supabase/templates/login.html` into *Magic Link* and *Confirm signup*. Use the subject "Your Yugaantar Esports login code".
 6. **Auth → Rate Limits:** raise the email limit, and raise sign-ins per IP to about 150 per 5 minutes (a venue shares one Wi-Fi IP).
-7. **Vercel:** import the repo and set the environment variables from `.env.example`:
-   - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SITE_URL`;
-   - `SYNC_SECRET`;
-   - `GOOGLE_SERVICE_ACCOUNT_JSON`, if the sheet is private;
-   - `REGISTRATION_SHEET_ID`, if it isn't the default sheet.
+7. **Render (the website):** in the Render dashboard choose *New → Blueprint* and pick this repo. [`render.yaml`](render.yaml) sets up one Node web service in Singapore on the Starter plan (the free plan sleeps when idle).
+   - Paste `NEXT_PUBLIC_SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_ROLE_KEY` from Supabase → Project Settings → API keys. The Supabase URL is already filled in, and `SYNC_SECRET` is generated.
+   - If the service gets a different address, or you add a custom domain, update `NEXT_PUBLIC_SITE_URL` and redeploy.
+   - Add `GOOGLE_SERVICE_ACCOUNT_JSON` if the Unstop sheet is private, and `REGISTRATION_SHEET_ID` if it isn't the default sheet.
+   - Every push to `main` deploys.
 8. **Sync every 5 minutes:** run [`supabase/snippets/sync-cron.sql`](supabase/snippets/sync-cron.sql) once in the SQL editor, with your site URL and secret.
 9. **Free plan:** projects pause after 7 days without traffic, which the sync job prevents.
 
