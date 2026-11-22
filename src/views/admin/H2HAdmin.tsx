@@ -27,7 +27,7 @@ async function Overview({ game }: { game: GameId }) {
   const pending = Object.values(o.pendingByMatch).reduce((a, b) => a + b, 0);
   const live = t.matches.filter((m) => m.status === "live").length;
   const byes = t.matches.filter((m) => m.a.bye || m.b.bye).length;
-  const matches = [...t.matches].filter((m) => !m.a.bye && !m.b.bye).sort((x, y) => (x.scheduledAt ?? "~").localeCompare(y.scheduledAt ?? "~") || x.id.localeCompare(y.id));
+  const matches = [...t.matches].filter((m) => !m.a.bye && !m.b.bye).sort((x, y) => (x.scheduledAt ?? "9999").localeCompare(y.scheduledAt ?? "9999") || x.id.localeCompare(y.id));
 
   return (
     <>

@@ -23,7 +23,7 @@ export function eveningsOf(matches: LobbyMatch[], stages: LobbyStage[]): Evening
   const ord = (m: LobbyMatch) => stageOf.get(m.stageId)?.ord ?? 0;
   const sorted = [...matches].sort(
     (a, b) =>
-      (a.scheduledAt ?? "~").localeCompare(b.scheduledAt ?? "~") ||
+      (a.scheduledAt ?? "9999").localeCompare(b.scheduledAt ?? "9999") ||
       ord(a) - ord(b) ||
       a.round - b.round ||
       a.lobby.localeCompare(b.lobby, undefined, { numeric: true }),

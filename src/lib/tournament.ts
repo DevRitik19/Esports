@@ -266,7 +266,7 @@ export function computeRunnersUp(
   names: Map<string, string>,
 ): { chosen: string[]; ties: string[][] } {
   const count = config.bestRunnersUp ?? 0;
-  const rows = groups.flatMap((g) => g.rows.filter((r) => r.position === config.qualifiersPerGroup + 1 && r.played > 0));
+  const rows = groups.flatMap((g) => g.rows.filter((r) => r.position === config.qualifiersPerGroup + 1));
   if (!count || !rows.length) return { chosen: [], ties: [] };
   const stats = new Map(rows.map((r) => [r.teamId, r]));
   const ctx: TieContext = { stats, results: [], playoffs, coinToss: [], names, unresolved: [] };

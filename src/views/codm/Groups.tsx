@@ -84,7 +84,7 @@ export async function CodmGroups() {
               </li>
             ))}
           </ol>
-          {!t.groups.every((g) => g.complete) && <p className="mt-3 text-xs text-warn">Projected — groups still in progress.</p>}
+          {!t.groups.every((g) => g.complete) && <p className="mt-3 text-xs text-warn">Projected: groups still in progress.</p>}
           {t.groups.every((g) => g.complete) && t.seedTies.map((c) => (
             <p key={c.join()} className="mt-3 text-xs text-warn">⚑ {names(c)} are level on points. A referee coin toss decides their seeds.</p>
           ))}

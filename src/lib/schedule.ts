@@ -3,6 +3,7 @@ import { GAMES, type GameId } from "@/games/registry";
 import { getTournament } from "@/lib/data";
 import { getLobbyGame } from "@/lib/lobby/data";
 import { STAGE_LABEL } from "@/lib/tournament";
+import { MODE_NAME } from "@/content/event";
 
 /** One match on a team's own schedule, for both match formats. */
 export interface TeamEvent {
@@ -28,10 +29,12 @@ export async function teamSchedule(game: GameId, teamId: string): Promise<TeamEv
       const mine = m.a.teamId === teamId ? m.b : m.b.teamId === teamId ? m.a : undefined;
       if (!mine || mine.bye) continue;
       const round = m.stage === "group" ? `Group ${m.group ?? ""}`.trim() : STAGE_LABEL[m.stage];
+      // CODM group matches run in waves and lobbies, one fixed mode and map a day.
+      const wave = m.lobby && m.round ? `Wave ${m.round}, Lobby ${m.lobby}` : undefined;
       out.push({
         id: m.id,
-        title: `${def.short} ${round}`,
-        detail: `vs ${name(mine.teamId, mine.label)} · BO${m.bestOf}`,
+        title: wave && m.mode ? `${def.short} ${MODE_NAME[m.mode]}, ${wave}` : `${def.short} ${round}`,
+        detail: wave ? `vs ${name(mine.teamId, mine.label)} · ${round}${m.map ? ` · ${m.map}` : ""}` : `vs ${name(mine.teamId, mine.label)} · BO${m.bestOf}`,
         startsAt: m.scheduledAt,
         minutes: 25 * m.bestOf,
         status: m.status === "live" ? "live" : m.status === "completed" || m.status === "forfeit" ? "completed" : m.status === "cancelled" ? "cancelled" : "scheduled",
@@ -52,5 +55,5 @@ export async function teamSchedule(game: GameId, teamId: string): Promise<TeamEv
       });
     }
   }
-  return out.sort((a, b) => (a.startsAt ?? "~").localeCompare(b.startsAt ?? "~") || a.id.localeCompare(b.id));
+  return out.sort((a, b) => (a.startsAt ?? "9999").localeCompare(b.startsAt ?? "9999") || a.id.localeCompare(b.id));
 }
