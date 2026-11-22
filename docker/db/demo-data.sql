@@ -1,5 +1,6 @@
--- Demo tournament: invented teams and players (every address is @example.com),
--- Free Fire and BGMI qualifiers part-played, the Valorant bracket drawn and
+-- Demo tournament: invented players (every address is @example.com), CODM on the
+-- 29 official team names with Hardpoint day played, Free Fire and BGMI
+-- qualifiers part-played, the Valorant bracket drawn and
 -- a few staff accounts. Regenerate with docker/db/export-demo.sh.
 
 SET session_replication_role = replica;
@@ -33,125 +34,223 @@ fifa	FIFA	6	2026-11-29 05:15:00+00	\N	{}
 \.
 
 COPY public.announcements (id, date, title, body, created_at, game_id) FROM stdin;
-1	2026-11-16	Captains' briefing tonight	Briefing, CODM ID check and a test lobby. Group Stage starts Tue 17 Nov at 8 PM with Hardpoint.	2026-11-05 20:28:43.98121+00	\N
-2	2026-11-15	Groups drawn, fixtures live	16 squads in 4 groups. Fixtures, map pool, perspective (TPP) and the mode of each day are up.	2026-11-05 20:28:43.98121+00	\N
+5	2026-11-23	Hardpoint night is done	All 46 Hardpoint matches are in. Domination on Raid starts Tue 24 Nov: check in by 12:00 PM, first wave 12:30 PM.	2026-11-22 10:52:58.912252+00	\N
+6	2026-11-22	Groups and fixtures are final	29 squads in 7 groups. Your wave and lobby stay the same on all three days; only the mode, map and start time change.	2026-11-22 10:52:58.912252+00	\N
 \.
 
-COPY public.matches (id, stage, group_name, round, best_of, side_a, side_b, scheduled_at, status_override, forfeit_winner, veto_note, notes, updated_at, game_id) FROM stdin;
-G01	group	A	1	1	rift-reapers	null-sector	2026-11-17 14:30:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-G02	group	A	1	1	vortex-unit	iron-wolves	2026-11-17 14:30:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-G03	group	B	1	1	phantom-grid	static-kings	2026-11-17 14:30:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-G04	group	B	1	1	echo-breach	crimson-ops	2026-11-17 14:30:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-G05	group	C	1	1	nova-syndicate	ghost-protocol	2026-11-17 14:30:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-G06	group	C	1	1	hex-raiders	zero-hour	2026-11-17 15:10:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-G07	group	D	1	1	apex-fracture	shadow-relay	2026-11-17 15:10:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-G08	group	D	1	1	titan-pulse	last-light	2026-11-17 15:10:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-G09	group	A	2	1	rift-reapers	vortex-unit	2026-11-18 14:30:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-G10	group	A	2	1	null-sector	iron-wolves	2026-11-18 14:30:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-G11	group	B	2	1	phantom-grid	echo-breach	2026-11-18 14:30:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-G12	group	B	2	1	static-kings	crimson-ops	2026-11-18 14:30:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-G13	group	C	2	1	nova-syndicate	hex-raiders	2026-11-18 14:30:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-G14	group	C	2	1	ghost-protocol	zero-hour	2026-11-18 15:10:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-G15	group	D	2	1	apex-fracture	titan-pulse	2026-11-18 15:10:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-G16	group	D	2	1	shadow-relay	last-light	2026-11-18 15:10:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-G17	group	A	3	1	rift-reapers	iron-wolves	2026-11-19 14:30:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-G18	group	A	3	1	null-sector	vortex-unit	2026-11-19 14:30:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-G19	group	B	3	1	phantom-grid	crimson-ops	2026-11-19 14:30:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-G20	group	B	3	1	static-kings	echo-breach	2026-11-19 14:30:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-G21	group	C	3	1	nova-syndicate	zero-hour	2026-11-19 14:30:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-G22	group	C	3	1	ghost-protocol	hex-raiders	2026-11-19 15:10:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-G23	group	D	3	1	apex-fracture	last-light	2026-11-19 15:10:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-G24	group	D	3	1	shadow-relay	titan-pulse	2026-11-19 15:10:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-QF1	qf	\N	\N	3	S1	S8	2026-11-27 05:00:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-QF2	qf	\N	\N	3	S4	S5	2026-11-27 07:00:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-QF3	qf	\N	\N	3	S2	S7	2026-11-27 09:00:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-QF4	qf	\N	\N	3	S3	S6	2026-11-27 11:00:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-SF1	sf	\N	\N	3	W:QF1	W:QF2	2026-11-28 05:30:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-SF2	sf	\N	\N	3	W:QF3	W:QF4	2026-11-28 08:30:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-THIRD	third	\N	\N	3	L:SF1	L:SF2	2026-11-29 06:00:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-FINAL	final	\N	\N	5	W:SF1	W:SF2	2026-11-29 09:30:00+00	\N	\N	\N	\N	2026-11-05 20:28:43.98121+00	codm
-VAL-R64-01	r64	\N	1	1	valorant-onyx-squad	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-02	r64	\N	1	1	valorant-sable-squad	valorant-cobalt-unit	2026-11-18 07:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-03	r64	\N	1	1	valorant-nova-squad	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-04	r64	\N	1	1	valorant-ion-unit	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-05	r64	\N	1	1	valorant-dusk-unit	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-06	r64	\N	1	1	valorant-quake-squad	valorant-cobalt-squad	2026-11-18 07:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-07	r64	\N	1	1	valorant-cobalt-crew	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-08	r64	\N	1	1	valorant-ember-unit	valorant-ion-squad	2026-11-18 07:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-09	r64	\N	1	1	valorant-lynx-unit	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-10	r64	\N	1	1	valorant-ash-crew	valorant-frost-unit	2026-11-18 07:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-11	r64	\N	1	1	valorant-lynx-squad	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-12	r64	\N	1	1	valorant-jolt-squad	valorant-rook-unit	2026-11-18 08:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-13	r64	\N	1	1	valorant-frost-crew	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-14	r64	\N	1	1	valorant-blitz-squad	valorant-haze-squad	2026-11-18 08:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-15	r64	\N	1	1	valorant-pike-squad	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-16	r64	\N	1	1	valorant-blitz-crew	valorant-ember-crew	2026-11-18 08:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-17	r64	\N	1	1	valorant-dusk-crew	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-18	r64	\N	1	1	valorant-krait-squad	valorant-ash-unit	2026-11-18 08:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-19	r64	\N	1	1	valorant-talon-unit	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-20	r64	\N	1	1	valorant-mako-unit	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-21	r64	\N	1	1	valorant-onyx-unit	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-22	r64	\N	1	1	valorant-blitz-unit	valorant-dusk-squad	2026-11-18 09:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-23	r64	\N	1	1	valorant-haze-unit	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-24	r64	\N	1	1	valorant-rook-squad	valorant-ash-squad	2026-11-18 09:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-25	r64	\N	1	1	valorant-frost-squad	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-26	r64	\N	1	1	valorant-krait-unit	valorant-nova-unit	2026-11-18 09:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-27	r64	\N	1	1	valorant-quake-unit	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-28	r64	\N	1	1	valorant-gale-unit	valorant-ember-squad	2026-11-18 09:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-29	r64	\N	1	1	valorant-talon-squad	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-30	r64	\N	1	1	valorant-jolt-unit	valorant-pike-unit	2026-11-18 10:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-31	r64	\N	1	1	valorant-gale-squad	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R64-32	r64	\N	1	1	valorant-mako-squad	valorant-sable-unit	2026-11-18 10:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R32-01	r32	\N	2	1	W:VAL-R64-01	W:VAL-R64-02	2026-11-20 07:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R32-02	r32	\N	2	1	W:VAL-R64-03	W:VAL-R64-04	2026-11-20 07:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R32-03	r32	\N	2	1	W:VAL-R64-05	W:VAL-R64-06	2026-11-20 07:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R32-04	r32	\N	2	1	W:VAL-R64-07	W:VAL-R64-08	2026-11-20 07:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R32-05	r32	\N	2	1	W:VAL-R64-09	W:VAL-R64-10	2026-11-20 08:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R32-06	r32	\N	2	1	W:VAL-R64-11	W:VAL-R64-12	2026-11-20 08:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R32-07	r32	\N	2	1	W:VAL-R64-13	W:VAL-R64-14	2026-11-20 08:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R32-08	r32	\N	2	1	W:VAL-R64-15	W:VAL-R64-16	2026-11-20 08:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R32-09	r32	\N	2	1	W:VAL-R64-17	W:VAL-R64-18	2026-11-20 09:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R32-10	r32	\N	2	1	W:VAL-R64-19	W:VAL-R64-20	2026-11-20 09:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R32-11	r32	\N	2	1	W:VAL-R64-21	W:VAL-R64-22	2026-11-20 09:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R32-12	r32	\N	2	1	W:VAL-R64-23	W:VAL-R64-24	2026-11-20 09:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R32-13	r32	\N	2	1	W:VAL-R64-25	W:VAL-R64-26	2026-11-20 10:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R32-14	r32	\N	2	1	W:VAL-R64-27	W:VAL-R64-28	2026-11-20 10:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R32-15	r32	\N	2	1	W:VAL-R64-29	W:VAL-R64-30	2026-11-20 10:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R32-16	r32	\N	2	1	W:VAL-R64-31	W:VAL-R64-32	2026-11-20 10:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R16-01	r16	\N	3	1	W:VAL-R32-01	W:VAL-R32-02	2026-11-23 07:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R16-02	r16	\N	3	1	W:VAL-R32-03	W:VAL-R32-04	2026-11-23 07:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R16-03	r16	\N	3	1	W:VAL-R32-05	W:VAL-R32-06	2026-11-23 07:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R16-04	r16	\N	3	1	W:VAL-R32-07	W:VAL-R32-08	2026-11-23 07:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R16-05	r16	\N	3	1	W:VAL-R32-09	W:VAL-R32-10	2026-11-23 08:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R16-06	r16	\N	3	1	W:VAL-R32-11	W:VAL-R32-12	2026-11-23 08:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R16-07	r16	\N	3	1	W:VAL-R32-13	W:VAL-R32-14	2026-11-23 08:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R16-08	r16	\N	3	1	W:VAL-R32-15	W:VAL-R32-16	2026-11-23 08:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R8-01	qf	\N	4	1	W:VAL-R16-01	W:VAL-R16-02	2026-11-23 10:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R8-02	qf	\N	4	1	W:VAL-R16-03	W:VAL-R16-04	2026-11-23 10:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R8-03	qf	\N	4	1	W:VAL-R16-05	W:VAL-R16-06	2026-11-23 10:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-R8-04	qf	\N	4	1	W:VAL-R16-07	W:VAL-R16-08	2026-11-23 10:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-SF1	sf	\N	5	3	W:VAL-R8-01	W:VAL-R8-02	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-SF2	sf	\N	5	3	W:VAL-R8-03	W:VAL-R8-04	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
-VAL-FINAL	final	\N	6	3	W:VAL-SF1	W:VAL-SF2	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant
+COPY public.matches (id, stage, group_name, round, best_of, side_a, side_b, scheduled_at, status_override, forfeit_winner, veto_note, notes, updated_at, game_id, lobby, mode, map) FROM stdin;
+VAL-R64-01	r64	\N	1	1	valorant-onyx-squad	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-02	r64	\N	1	1	valorant-sable-squad	valorant-cobalt-unit	2026-11-18 07:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-03	r64	\N	1	1	valorant-nova-squad	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-04	r64	\N	1	1	valorant-ion-unit	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-05	r64	\N	1	1	valorant-dusk-unit	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-06	r64	\N	1	1	valorant-quake-squad	valorant-cobalt-squad	2026-11-18 07:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-07	r64	\N	1	1	valorant-cobalt-crew	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-08	r64	\N	1	1	valorant-ember-unit	valorant-ion-squad	2026-11-18 07:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-09	r64	\N	1	1	valorant-lynx-unit	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-10	r64	\N	1	1	valorant-ash-crew	valorant-frost-unit	2026-11-18 07:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-11	r64	\N	1	1	valorant-lynx-squad	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-12	r64	\N	1	1	valorant-jolt-squad	valorant-rook-unit	2026-11-18 08:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-13	r64	\N	1	1	valorant-frost-crew	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-14	r64	\N	1	1	valorant-blitz-squad	valorant-haze-squad	2026-11-18 08:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-15	r64	\N	1	1	valorant-pike-squad	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-16	r64	\N	1	1	valorant-blitz-crew	valorant-ember-crew	2026-11-18 08:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-17	r64	\N	1	1	valorant-dusk-crew	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-18	r64	\N	1	1	valorant-krait-squad	valorant-ash-unit	2026-11-18 08:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-19	r64	\N	1	1	valorant-talon-unit	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-20	r64	\N	1	1	valorant-mako-unit	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-21	r64	\N	1	1	valorant-onyx-unit	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-22	r64	\N	1	1	valorant-blitz-unit	valorant-dusk-squad	2026-11-18 09:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-23	r64	\N	1	1	valorant-haze-unit	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-24	r64	\N	1	1	valorant-rook-squad	valorant-ash-squad	2026-11-18 09:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-25	r64	\N	1	1	valorant-frost-squad	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-26	r64	\N	1	1	valorant-krait-unit	valorant-nova-unit	2026-11-18 09:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-27	r64	\N	1	1	valorant-quake-unit	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-28	r64	\N	1	1	valorant-gale-unit	valorant-ember-squad	2026-11-18 09:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-29	r64	\N	1	1	valorant-talon-squad	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-30	r64	\N	1	1	valorant-jolt-unit	valorant-pike-unit	2026-11-18 10:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-31	r64	\N	1	1	valorant-gale-squad	BYE	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R64-32	r64	\N	1	1	valorant-mako-squad	valorant-sable-unit	2026-11-18 10:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R32-01	r32	\N	2	1	W:VAL-R64-01	W:VAL-R64-02	2026-11-20 07:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R32-02	r32	\N	2	1	W:VAL-R64-03	W:VAL-R64-04	2026-11-20 07:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R32-03	r32	\N	2	1	W:VAL-R64-05	W:VAL-R64-06	2026-11-20 07:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R32-04	r32	\N	2	1	W:VAL-R64-07	W:VAL-R64-08	2026-11-20 07:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R32-05	r32	\N	2	1	W:VAL-R64-09	W:VAL-R64-10	2026-11-20 08:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R32-06	r32	\N	2	1	W:VAL-R64-11	W:VAL-R64-12	2026-11-20 08:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R32-07	r32	\N	2	1	W:VAL-R64-13	W:VAL-R64-14	2026-11-20 08:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R32-08	r32	\N	2	1	W:VAL-R64-15	W:VAL-R64-16	2026-11-20 08:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R32-09	r32	\N	2	1	W:VAL-R64-17	W:VAL-R64-18	2026-11-20 09:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R32-10	r32	\N	2	1	W:VAL-R64-19	W:VAL-R64-20	2026-11-20 09:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R32-11	r32	\N	2	1	W:VAL-R64-21	W:VAL-R64-22	2026-11-20 09:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R32-12	r32	\N	2	1	W:VAL-R64-23	W:VAL-R64-24	2026-11-20 09:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R32-13	r32	\N	2	1	W:VAL-R64-25	W:VAL-R64-26	2026-11-20 10:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R32-14	r32	\N	2	1	W:VAL-R64-27	W:VAL-R64-28	2026-11-20 10:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R32-15	r32	\N	2	1	W:VAL-R64-29	W:VAL-R64-30	2026-11-20 10:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R32-16	r32	\N	2	1	W:VAL-R64-31	W:VAL-R64-32	2026-11-20 10:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R16-01	r16	\N	3	1	W:VAL-R32-01	W:VAL-R32-02	2026-11-23 07:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R16-02	r16	\N	3	1	W:VAL-R32-03	W:VAL-R32-04	2026-11-23 07:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R16-03	r16	\N	3	1	W:VAL-R32-05	W:VAL-R32-06	2026-11-23 07:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R16-04	r16	\N	3	1	W:VAL-R32-07	W:VAL-R32-08	2026-11-23 07:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R16-05	r16	\N	3	1	W:VAL-R32-09	W:VAL-R32-10	2026-11-23 08:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R16-06	r16	\N	3	1	W:VAL-R32-11	W:VAL-R32-12	2026-11-23 08:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R16-07	r16	\N	3	1	W:VAL-R32-13	W:VAL-R32-14	2026-11-23 08:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R16-08	r16	\N	3	1	W:VAL-R32-15	W:VAL-R32-16	2026-11-23 08:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R8-01	qf	\N	4	1	W:VAL-R16-01	W:VAL-R16-02	2026-11-23 10:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R8-02	qf	\N	4	1	W:VAL-R16-03	W:VAL-R16-04	2026-11-23 10:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R8-03	qf	\N	4	1	W:VAL-R16-05	W:VAL-R16-06	2026-11-23 10:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-R8-04	qf	\N	4	1	W:VAL-R16-07	W:VAL-R16-08	2026-11-23 10:30:00+00	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-SF1	sf	\N	5	3	W:VAL-R8-01	W:VAL-R8-02	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-SF2	sf	\N	5	3	W:VAL-R8-03	W:VAL-R8-04	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+VAL-FINAL	final	\N	6	3	W:VAL-SF1	W:VAL-SF2	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
+HP-W1-L1	group	G	1	1	clutch-crew	rvce	2026-11-23 16:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	HP	Summit
+HP-W1-L2	group	G	1	1	last-warning	smoke	2026-11-23 16:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	HP	Summit
+HP-W1-L3	group	A	1	1	barrel-house	thaiyirsaadham	2026-11-23 16:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	HP	Summit
+HP-W1-L4	group	A	1	1	liquid	nuclear	2026-11-23 16:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	HP	Summit
+HP-W1-L5	group	B	1	1	blitz-raiders	tf141	2026-11-23 16:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	5	HP	Summit
+HP-W1-L6	group	B	1	1	j-d-y-s	team-zero	2026-11-23 16:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	6	HP	Summit
+HP-W1-L7	group	C	1	1	edge	kid-slayers	2026-11-23 16:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	HP	Summit
+HP-W2-L1	group	G	2	1	last-warning	cod-vinashak	2026-11-23 16:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	HP	Summit
+HP-W2-L2	group	C	2	1	team-lost	team-crackillusion	2026-11-23 16:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	HP	Summit
+HP-W2-L3	group	D	2	1	darkhold	bawts	2026-11-23 16:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	HP	Summit
+HP-W2-L4	group	D	2	1	offset	sapne-suhane	2026-11-23 16:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	HP	Summit
+HP-W2-L5	group	E	2	1	freakuency	gobi-ke-parathe	2026-11-23 16:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	5	HP	Summit
+HP-W2-L6	group	E	2	1	beatbreakers	money-follows	2026-11-23 16:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	6	HP	Summit
+HP-W2-L7	group	F	2	1	abcdefghijklmnopqrstuvwxyz	dollar-500	2026-11-23 16:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	HP	Summit
+HP-W3-L1	group	F	3	1	the-comrades	free-kills	2026-11-23 16:40:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	HP	Summit
+HP-W3-L2	group	G	3	1	smoke	clutch-crew	2026-11-23 16:40:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	HP	Summit
+HP-W3-L3	group	G	3	1	cod-vinashak	rvce	2026-11-23 16:40:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	HP	Summit
+HP-W3-L4	group	A	3	1	liquid	barrel-house	2026-11-23 16:40:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	HP	Summit
+HP-W3-L5	group	A	3	1	nuclear	thaiyirsaadham	2026-11-23 16:40:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	5	HP	Summit
+HP-W3-L6	group	B	3	1	j-d-y-s	blitz-raiders	2026-11-23 16:40:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	6	HP	Summit
+HP-W3-L7	group	B	3	1	team-zero	tf141	2026-11-23 16:40:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	HP	Summit
+HP-W4-L1	group	C	4	1	edge	team-crackillusion	2026-11-23 17:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	HP	Summit
+HP-W4-L2	group	C	4	1	team-lost	kid-slayers	2026-11-23 17:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	HP	Summit
+HP-W4-L3	group	D	4	1	darkhold	sapne-suhane	2026-11-23 17:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	HP	Summit
+HP-W4-L4	group	D	4	1	offset	bawts	2026-11-23 17:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	HP	Summit
+HP-W4-L5	group	E	4	1	freakuency	money-follows	2026-11-23 17:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	5	HP	Summit
+HP-W4-L6	group	E	4	1	beatbreakers	gobi-ke-parathe	2026-11-23 17:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	6	HP	Summit
+HP-W4-L7	group	F	4	1	abcdefghijklmnopqrstuvwxyz	free-kills	2026-11-23 17:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	HP	Summit
+HP-W5-L1	group	F	5	1	the-comrades	dollar-500	2026-11-23 17:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	HP	Summit
+HP-W5-L2	group	G	5	1	last-warning	clutch-crew	2026-11-23 17:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	HP	Summit
+HP-W5-L3	group	G	5	1	smoke	rvce	2026-11-23 17:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	HP	Summit
+HP-W5-L4	group	A	5	1	liquid	thaiyirsaadham	2026-11-23 17:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	HP	Summit
+HP-W5-L5	group	A	5	1	nuclear	barrel-house	2026-11-23 17:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	5	HP	Summit
+HP-W5-L6	group	B	5	1	j-d-y-s	tf141	2026-11-23 17:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	6	HP	Summit
+HP-W5-L7	group	B	5	1	team-zero	blitz-raiders	2026-11-23 17:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	HP	Summit
+HP-W6-L1	group	G	6	1	smoke	cod-vinashak	2026-11-23 17:40:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	HP	Summit
+HP-W6-L2	group	C	6	1	team-crackillusion	kid-slayers	2026-11-23 17:40:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	HP	Summit
+HP-W6-L3	group	C	6	1	team-lost	edge	2026-11-23 17:40:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	HP	Summit
+HP-W6-L4	group	D	6	1	offset	darkhold	2026-11-23 17:40:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	HP	Summit
+HP-W6-L5	group	D	6	1	sapne-suhane	bawts	2026-11-23 17:40:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	5	HP	Summit
+HP-W6-L6	group	E	6	1	freakuency	beatbreakers	2026-11-23 17:40:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	6	HP	Summit
+HP-W6-L7	group	E	6	1	money-follows	gobi-ke-parathe	2026-11-23 17:40:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	HP	Summit
+HP-W7-L1	group	F	7	1	free-kills	dollar-500	2026-11-23 18:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	HP	Summit
+HP-W7-L2	group	F	7	1	the-comrades	abcdefghijklmnopqrstuvwxyz	2026-11-23 18:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	HP	Summit
+HP-W7-L3	group	G	7	1	last-warning	rvce	2026-11-23 18:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	HP	Summit
+HP-W7-L4	group	G	7	1	cod-vinashak	clutch-crew	2026-11-23 18:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	HP	Summit
+DOM-W1-L1	group	G	1	1	clutch-crew	rvce	2026-11-24 07:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	DOM	Raid
+DOM-W1-L2	group	G	1	1	last-warning	smoke	2026-11-24 07:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	DOM	Raid
+DOM-W1-L3	group	A	1	1	barrel-house	thaiyirsaadham	2026-11-24 07:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	DOM	Raid
+DOM-W1-L4	group	A	1	1	liquid	nuclear	2026-11-24 07:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	DOM	Raid
+DOM-W1-L5	group	B	1	1	blitz-raiders	tf141	2026-11-24 07:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	5	DOM	Raid
+DOM-W1-L6	group	B	1	1	j-d-y-s	team-zero	2026-11-24 07:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	6	DOM	Raid
+DOM-W1-L7	group	C	1	1	edge	kid-slayers	2026-11-24 07:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	DOM	Raid
+DOM-W2-L1	group	G	2	1	last-warning	cod-vinashak	2026-11-24 07:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	DOM	Raid
+DOM-W2-L2	group	C	2	1	team-lost	team-crackillusion	2026-11-24 07:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	DOM	Raid
+DOM-W2-L3	group	D	2	1	darkhold	bawts	2026-11-24 07:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	DOM	Raid
+DOM-W2-L4	group	D	2	1	offset	sapne-suhane	2026-11-24 07:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	DOM	Raid
+DOM-W2-L5	group	E	2	1	freakuency	gobi-ke-parathe	2026-11-24 07:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	5	DOM	Raid
+DOM-W2-L6	group	E	2	1	beatbreakers	money-follows	2026-11-24 07:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	6	DOM	Raid
+DOM-W2-L7	group	F	2	1	abcdefghijklmnopqrstuvwxyz	dollar-500	2026-11-24 07:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	DOM	Raid
+DOM-W3-L1	group	F	3	1	the-comrades	free-kills	2026-11-24 07:40:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	DOM	Raid
+DOM-W3-L2	group	G	3	1	smoke	clutch-crew	2026-11-24 07:40:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	DOM	Raid
+DOM-W3-L3	group	G	3	1	cod-vinashak	rvce	2026-11-24 07:40:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	DOM	Raid
+DOM-W3-L4	group	A	3	1	liquid	barrel-house	2026-11-24 07:40:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	DOM	Raid
+DOM-W3-L5	group	A	3	1	nuclear	thaiyirsaadham	2026-11-24 07:40:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	5	DOM	Raid
+DOM-W3-L6	group	B	3	1	j-d-y-s	blitz-raiders	2026-11-24 07:40:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	6	DOM	Raid
+DOM-W3-L7	group	B	3	1	team-zero	tf141	2026-11-24 07:40:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	DOM	Raid
+DOM-W4-L1	group	C	4	1	edge	team-crackillusion	2026-11-24 08:15:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	DOM	Raid
+DOM-W4-L2	group	C	4	1	team-lost	kid-slayers	2026-11-24 08:15:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	DOM	Raid
+DOM-W4-L3	group	D	4	1	darkhold	sapne-suhane	2026-11-24 08:15:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	DOM	Raid
+DOM-W4-L4	group	D	4	1	offset	bawts	2026-11-24 08:15:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	DOM	Raid
+DOM-W4-L5	group	E	4	1	freakuency	money-follows	2026-11-24 08:15:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	5	DOM	Raid
+DOM-W4-L6	group	E	4	1	beatbreakers	gobi-ke-parathe	2026-11-24 08:15:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	6	DOM	Raid
+DOM-W4-L7	group	F	4	1	abcdefghijklmnopqrstuvwxyz	free-kills	2026-11-24 08:15:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	DOM	Raid
+DOM-W5-L1	group	F	5	1	the-comrades	dollar-500	2026-11-24 08:35:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	DOM	Raid
+DOM-W5-L2	group	G	5	1	last-warning	clutch-crew	2026-11-24 08:35:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	DOM	Raid
+DOM-W5-L3	group	G	5	1	smoke	rvce	2026-11-24 08:35:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	DOM	Raid
+DOM-W5-L4	group	A	5	1	liquid	thaiyirsaadham	2026-11-24 08:35:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	DOM	Raid
+DOM-W5-L5	group	A	5	1	nuclear	barrel-house	2026-11-24 08:35:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	5	DOM	Raid
+DOM-W5-L6	group	B	5	1	j-d-y-s	tf141	2026-11-24 08:35:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	6	DOM	Raid
+DOM-W5-L7	group	B	5	1	team-zero	blitz-raiders	2026-11-24 08:35:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	DOM	Raid
+DOM-W6-L1	group	G	6	1	smoke	cod-vinashak	2026-11-24 09:10:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	DOM	Raid
+DOM-W6-L2	group	C	6	1	team-crackillusion	kid-slayers	2026-11-24 09:10:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	DOM	Raid
+DOM-W6-L3	group	C	6	1	team-lost	edge	2026-11-24 09:10:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	DOM	Raid
+DOM-W6-L4	group	D	6	1	offset	darkhold	2026-11-24 09:10:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	DOM	Raid
+DOM-W6-L5	group	D	6	1	sapne-suhane	bawts	2026-11-24 09:10:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	5	DOM	Raid
+DOM-W6-L6	group	E	6	1	freakuency	beatbreakers	2026-11-24 09:10:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	6	DOM	Raid
+DOM-W6-L7	group	E	6	1	money-follows	gobi-ke-parathe	2026-11-24 09:10:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	DOM	Raid
+DOM-W7-L1	group	F	7	1	free-kills	dollar-500	2026-11-24 09:30:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	DOM	Raid
+DOM-W7-L2	group	F	7	1	the-comrades	abcdefghijklmnopqrstuvwxyz	2026-11-24 09:30:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	DOM	Raid
+DOM-W7-L3	group	G	7	1	last-warning	rvce	2026-11-24 09:30:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	DOM	Raid
+DOM-W7-L4	group	G	7	1	cod-vinashak	clutch-crew	2026-11-24 09:30:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	DOM	Raid
+SND-W1-L1	group	G	1	1	clutch-crew	rvce	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	SND	Firing Range
+SND-W1-L2	group	G	1	1	last-warning	smoke	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	SND	Firing Range
+SND-W1-L3	group	A	1	1	barrel-house	thaiyirsaadham	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	SND	Firing Range
+SND-W1-L4	group	A	1	1	liquid	nuclear	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	SND	Firing Range
+SND-W1-L5	group	B	1	1	blitz-raiders	tf141	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	5	SND	Firing Range
+SND-W1-L6	group	B	1	1	j-d-y-s	team-zero	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	6	SND	Firing Range
+SND-W1-L7	group	C	1	1	edge	kid-slayers	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	SND	Firing Range
+SND-W2-L1	group	G	2	1	last-warning	cod-vinashak	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	SND	Firing Range
+SND-W2-L2	group	C	2	1	team-lost	team-crackillusion	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	SND	Firing Range
+SND-W2-L3	group	D	2	1	darkhold	bawts	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	SND	Firing Range
+SND-W2-L4	group	D	2	1	offset	sapne-suhane	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	SND	Firing Range
+SND-W2-L5	group	E	2	1	freakuency	gobi-ke-parathe	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	5	SND	Firing Range
+SND-W2-L6	group	E	2	1	beatbreakers	money-follows	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	6	SND	Firing Range
+SND-W2-L7	group	F	2	1	abcdefghijklmnopqrstuvwxyz	dollar-500	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	SND	Firing Range
+SND-W3-L1	group	F	3	1	the-comrades	free-kills	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	SND	Firing Range
+SND-W3-L2	group	G	3	1	smoke	clutch-crew	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	SND	Firing Range
+SND-W3-L3	group	G	3	1	cod-vinashak	rvce	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	SND	Firing Range
+SND-W3-L4	group	A	3	1	liquid	barrel-house	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	SND	Firing Range
+SND-W3-L5	group	A	3	1	nuclear	thaiyirsaadham	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	5	SND	Firing Range
+SND-W3-L6	group	B	3	1	j-d-y-s	blitz-raiders	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	6	SND	Firing Range
+SND-W3-L7	group	B	3	1	team-zero	tf141	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	SND	Firing Range
+SND-W4-L1	group	C	4	1	edge	team-crackillusion	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	SND	Firing Range
+SND-W4-L2	group	C	4	1	team-lost	kid-slayers	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	SND	Firing Range
+SND-W4-L3	group	D	4	1	darkhold	sapne-suhane	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	SND	Firing Range
+SND-W4-L4	group	D	4	1	offset	bawts	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	SND	Firing Range
+SND-W4-L5	group	E	4	1	freakuency	money-follows	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	5	SND	Firing Range
+SND-W4-L6	group	E	4	1	beatbreakers	gobi-ke-parathe	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	6	SND	Firing Range
+SND-W4-L7	group	F	4	1	abcdefghijklmnopqrstuvwxyz	free-kills	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	SND	Firing Range
+SND-W5-L1	group	F	5	1	the-comrades	dollar-500	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	SND	Firing Range
+SND-W5-L2	group	G	5	1	last-warning	clutch-crew	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	SND	Firing Range
+SND-W5-L3	group	G	5	1	smoke	rvce	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	SND	Firing Range
+SND-W5-L4	group	A	5	1	liquid	thaiyirsaadham	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	SND	Firing Range
+SND-W5-L5	group	A	5	1	nuclear	barrel-house	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	5	SND	Firing Range
+SND-W5-L6	group	B	5	1	j-d-y-s	tf141	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	6	SND	Firing Range
+SND-W5-L7	group	B	5	1	team-zero	blitz-raiders	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	SND	Firing Range
+SND-W6-L1	group	G	6	1	smoke	cod-vinashak	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	SND	Firing Range
+SND-W6-L2	group	C	6	1	team-crackillusion	kid-slayers	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	SND	Firing Range
+SND-W6-L3	group	C	6	1	team-lost	edge	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	SND	Firing Range
+SND-W6-L4	group	D	6	1	offset	darkhold	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	SND	Firing Range
+SND-W6-L5	group	D	6	1	sapne-suhane	bawts	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	5	SND	Firing Range
+SND-W6-L6	group	E	6	1	freakuency	beatbreakers	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	6	SND	Firing Range
+SND-W6-L7	group	E	6	1	money-follows	gobi-ke-parathe	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	SND	Firing Range
+SND-W7-L1	group	F	7	1	free-kills	dollar-500	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	SND	Firing Range
+SND-W7-L2	group	F	7	1	the-comrades	abcdefghijklmnopqrstuvwxyz	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	SND	Firing Range
+SND-W7-L3	group	G	7	1	last-warning	rvce	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	SND	Firing Range
+SND-W7-L4	group	G	7	1	cod-vinashak	clutch-crew	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	SND	Firing Range
+QF1	qf	\N	\N	3	S1	S8	2026-11-27 05:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	\N	\N	\N
+QF2	qf	\N	\N	3	S4	S5	2026-11-27 07:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	\N	\N	\N
+QF3	qf	\N	\N	3	S2	S7	2026-11-27 09:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	\N	\N	\N
+QF4	qf	\N	\N	3	S3	S6	2026-11-27 11:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	\N	\N	\N
+SF1	sf	\N	\N	3	W:QF1	W:QF2	2026-11-28 05:30:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	\N	\N	\N
+SF2	sf	\N	\N	3	W:QF3	W:QF4	2026-11-28 08:30:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	\N	\N	\N
+THIRD	third	\N	\N	3	L:SF1	L:SF2	2026-11-29 06:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	\N	\N	\N
+FINAL	final	\N	\N	5	W:SF1	W:SF2	2026-11-29 09:30:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	\N	\N	\N
 \.
 
 COPY public.teams (id, name, tag, group_name, logo_url, created_at, game_id, status, eligible, eligibility_note, sheet_key, college, locked_fields, missing_since, synced_at) FROM stdin;
-rift-reapers	Rift Reapers	RR	A	\N	2026-11-05 20:28:43.98121+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
-null-sector	Null Sector	NULL	A	\N	2026-11-05 20:28:43.98121+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
-vortex-unit	Vortex Unit	VTX	A	\N	2026-11-05 20:28:43.98121+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
-iron-wolves	Iron Wolves	IW	A	\N	2026-11-05 20:28:43.98121+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
-phantom-grid	Phantom Grid	PG	B	\N	2026-11-05 20:28:43.98121+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
-static-kings	Static Kings	SK	B	\N	2026-11-05 20:28:43.98121+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
-echo-breach	Echo Breach	EB	B	\N	2026-11-05 20:28:43.98121+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
-crimson-ops	Crimson Ops	CO	B	\N	2026-11-05 20:28:43.98121+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
-nova-syndicate	Nova Syndicate	NS	C	\N	2026-11-05 20:28:43.98121+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
-ghost-protocol	Ghost Protocol	GP	C	\N	2026-11-05 20:28:43.98121+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
-hex-raiders	Hex Raiders	HEX	C	\N	2026-11-05 20:28:43.98121+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
-zero-hour	Zero Hour	ZH	C	\N	2026-11-05 20:28:43.98121+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
-apex-fracture	Apex Fracture	AF	D	\N	2026-11-05 20:28:43.98121+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
-shadow-relay	Shadow Relay	SR	D	\N	2026-11-05 20:28:43.98121+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
-titan-pulse	Titan Pulse	TP	D	\N	2026-11-05 20:28:43.98121+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
-last-light	Last Light	LL	D	\N	2026-11-05 20:28:43.98121+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
 valorant-ash-squad	Ash Squad	AS	\N	\N	2026-11-05 20:28:43.98121+00	valorant	confirmed	t	\N	ash squad	\N	{}	\N	\N
 valorant-blitz-squad	Blitz Squad	BS	\N	\N	2026-11-05 20:28:43.98121+00	valorant	confirmed	t	\N	blitz squad	\N	{}	\N	\N
 valorant-cobalt-squad	Cobalt Squad	CS	\N	\N	2026-11-05 20:28:43.98121+00	valorant	confirmed	t	\N	cobalt squad	\N	{}	\N	\N
@@ -364,17 +463,47 @@ fifa-ion-squad-9	Ion Squad 9	IS9	\N	\N	2026-11-05 20:28:43.98121+00	fifa	confirm
 fifa-jolt-squad-10	Jolt Squad 10	JS1	\N	\N	2026-11-05 20:28:43.98121+00	fifa	confirmed	t	\N	jolt squad 10	\N	{}	\N	\N
 fifa-krait-squad-11	Krait Squad 11	KS1	\N	\N	2026-11-05 20:28:43.98121+00	fifa	confirmed	t	\N	krait squad 11	\N	{}	\N	\N
 fifa-lynx-squad-12	Lynx Squad 12	LS1	\N	\N	2026-11-05 20:28:43.98121+00	fifa	confirmed	t	\N	lynx squad 12	\N	{}	\N	\N
+liquid	LIQUID	LIQU	A	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+nuclear	Nuclear	NUCL	A	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+barrel-house	Barrel House	BH	A	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+thaiyirsaadham	ThaiyirSaadham	THAI	A	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+j-d-y-s	J²•D•Y•S	JDYS	B	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+team-zero	Team Zero	TZ	B	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+blitz-raiders	Blitz Raiders	BR	B	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+tf141	TF141	TF14	B	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+team-lost	Team Lost	TL	C	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+edge	EDGE	EDGE	C	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+team-crackillusion	Team Crackillusion	TC	C	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+kid-slayers	Kid Slayers	KS	C	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+offset	Offset	OFFS	D	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+darkhold	Darkhold	DARK	D	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+sapne-suhane	Sapne Suhane...	SS	D	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+bawts	Bawts	BAWT	D	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+freakuency	Freakuency	FREA	E	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+beatbreakers	beAtBreAkers@!	BEAT	E	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+money-follows	Money_follows	MF	E	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+gobi-ke-parathe	Gobi Ke Parathe	GKP	E	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+the-comrades	THE COMRADES	TC	F	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+abcdefghijklmnopqrstuvwxyz	ABCDEFGHIJKLMNOPQRSTUVWXYZ	ABCD	F	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+free-kills	Free Kills	FK	F	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+dollar-500	$500	500	F	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+last-warning	Last Warning	LW	G	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+smoke	Smoke	SMOK	G	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+cod-vinashak	cod vinashak	CV	G	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+clutch-crew	Clutch crew	CC	G	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+rvce	RVCE	RVCE	G	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
 \.
 
 COPY public.check_ins (match_id, team_id, checked_in_at, recorded_by, joined_at) FROM stdin;
 \.
 
 COPY public.config (key, value) FROM stdin;
-qualifiers_per_group	2
+qualifiers_per_group	1
+best_runners_up	1
 tiebreakers	h2h, playoff
 perspective	TPP
-event_dates	17–29 Nov 2026
-registration_deadline	Sat 14 Nov 2026, 11:59 PM
+event_dates	23–29 Nov 2026
+registration_deadline	
 \.
 
 COPY public.disputes (id, match_id, team_id, raised_by, reason, evidence_url, status, resolution, created_at, resolved_at) FROM stdin;
@@ -592,146 +721,103 @@ SND	Crossfire
 SND	Tunisia
 SND	Firing Range
 SND	Summit
-CTRL	Raid
-CTRL	Hacienda
-CTRL	Terminal
-CTRL	Standoff
-CTRL	Summit
+DOM	Raid
+DOM	Hacienda
+DOM	Terminal
+DOM	Standoff
+DOM	Summit
 \.
 
 COPY public.map_vetoes (match_id, mode, first_side, steps, decider, coin_toss, screenshot_url, recorded_by, recorded_at) FROM stdin;
 \.
 
 COPY public.maps (match_id, game, mode, map, score_a, score_b, status, screenshot_url, entered_by, approved_by, updated_at) FROM stdin;
-G01	1	HP	Summit	250	142	final	\N	\N	\N	2026-11-17 14:55:00+00
-G02	1	HP	Summit	212	250	final	\N	\N	\N	2026-11-17 14:55:00+00
-G03	1	HP	Raid	250	159	final	\N	\N	\N	2026-11-17 14:55:00+00
-G04	1	HP	Takeoff	250	213	final	\N	\N	\N	2026-11-17 14:55:00+00
-G05	1	HP	Standoff	218	250	final	\N	\N	\N	2026-11-17 14:55:00+00
-G06	1	HP	Takeoff	250	150	final	\N	\N	\N	2026-11-17 15:35:00+00
-G07	1	HP	Firing Range	250	193	final	\N	\N	\N	2026-11-17 15:35:00+00
-G08	1	HP	Standoff	250	237	final	\N	\N	\N	2026-11-17 15:35:00+00
-G09	1	SND	Firing Range	1	6	final	\N	\N	\N	2026-11-18 14:55:00+00
-G10	1	SND	Standoff	6	4	final	\N	\N	\N	2026-11-18 14:55:00+00
-G11	1	SND	Summit	6	3	final	\N	\N	\N	2026-11-18 14:55:00+00
-G12	1	SND	Summit	6	2	final	\N	\N	\N	2026-11-18 14:55:00+00
-G13	1	SND	Tunisia	6	3	final	\N	\N	\N	2026-11-18 14:55:00+00
-G14	1	SND	Tunisia	6	4	final	\N	\N	\N	2026-11-18 15:35:00+00
-G15	1	SND	Summit	6	4	final	\N	\N	\N	2026-11-18 15:35:00+00
-G16	1	SND	Firing Range	0	6	final	\N	\N	\N	2026-11-18 15:35:00+00
-G18	1	CTRL	Summit	2	3	final	\N	\N	\N	2026-11-19 14:55:00+00
-G21	1	CTRL	Terminal	3	2	final	\N	\N	\N	2026-11-19 14:55:00+00
-G24	1	CTRL	Summit	2	3	final	\N	\N	\N	2026-11-19 15:35:00+00
+HP-W1-L1	1	HP	Summit	250	163	final	\N	\N	\N	2026-11-23 16:25:00+00
+HP-W1-L2	1	HP	Summit	250	125	final	\N	\N	\N	2026-11-23 16:25:00+00
+HP-W1-L3	1	HP	Summit	212	250	final	\N	\N	\N	2026-11-23 16:25:00+00
+HP-W1-L4	1	HP	Summit	250	136	final	\N	\N	\N	2026-11-23 16:25:00+00
+HP-W1-L5	1	HP	Summit	250	238	final	\N	\N	\N	2026-11-23 16:25:00+00
+HP-W1-L6	1	HP	Summit	250	213	final	\N	\N	\N	2026-11-23 16:25:00+00
+HP-W1-L7	1	HP	Summit	250	210	final	\N	\N	\N	2026-11-23 16:25:00+00
+HP-W2-L1	1	HP	Summit	228	250	final	\N	\N	\N	2026-11-23 16:45:00+00
+HP-W2-L2	1	HP	Summit	250	150	final	\N	\N	\N	2026-11-23 16:45:00+00
+HP-W2-L3	1	HP	Summit	146	250	final	\N	\N	\N	2026-11-23 16:45:00+00
+HP-W2-L4	1	HP	Summit	177	250	final	\N	\N	\N	2026-11-23 16:45:00+00
+HP-W2-L5	1	HP	Summit	250	237	final	\N	\N	\N	2026-11-23 16:45:00+00
+HP-W2-L6	1	HP	Summit	223	250	final	\N	\N	\N	2026-11-23 16:45:00+00
+HP-W2-L7	1	HP	Summit	250	133	final	\N	\N	\N	2026-11-23 16:45:00+00
+HP-W3-L1	1	HP	Summit	250	214	final	\N	\N	\N	2026-11-23 17:05:00+00
+HP-W3-L2	1	HP	Summit	142	250	final	\N	\N	\N	2026-11-23 17:05:00+00
+HP-W3-L3	1	HP	Summit	236	250	final	\N	\N	\N	2026-11-23 17:05:00+00
+HP-W3-L4	1	HP	Summit	250	167	final	\N	\N	\N	2026-11-23 17:05:00+00
+HP-W3-L5	1	HP	Summit	250	169	final	\N	\N	\N	2026-11-23 17:05:00+00
+HP-W3-L6	1	HP	Summit	178	250	final	\N	\N	\N	2026-11-23 17:05:00+00
+HP-W3-L7	1	HP	Summit	250	215	final	\N	\N	\N	2026-11-23 17:05:00+00
+HP-W4-L1	1	HP	Summit	167	250	final	\N	\N	\N	2026-11-23 17:25:00+00
+HP-W4-L2	1	HP	Summit	214	250	final	\N	\N	\N	2026-11-23 17:25:00+00
+HP-W4-L3	1	HP	Summit	131	250	final	\N	\N	\N	2026-11-23 17:25:00+00
+HP-W4-L4	1	HP	Summit	225	250	final	\N	\N	\N	2026-11-23 17:25:00+00
+HP-W4-L5	1	HP	Summit	204	250	final	\N	\N	\N	2026-11-23 17:25:00+00
+HP-W4-L6	1	HP	Summit	250	144	final	\N	\N	\N	2026-11-23 17:25:00+00
+HP-W4-L7	1	HP	Summit	250	160	final	\N	\N	\N	2026-11-23 17:25:00+00
+HP-W5-L1	1	HP	Summit	197	250	final	\N	\N	\N	2026-11-23 17:45:00+00
+HP-W5-L2	1	HP	Summit	250	232	final	\N	\N	\N	2026-11-23 17:45:00+00
+HP-W5-L3	1	HP	Summit	223	250	final	\N	\N	\N	2026-11-23 17:45:00+00
+HP-W5-L4	1	HP	Summit	220	250	final	\N	\N	\N	2026-11-23 17:45:00+00
+HP-W5-L5	1	HP	Summit	137	250	final	\N	\N	\N	2026-11-23 17:45:00+00
+HP-W5-L6	1	HP	Summit	250	222	final	\N	\N	\N	2026-11-23 17:45:00+00
+HP-W5-L7	1	HP	Summit	250	134	final	\N	\N	\N	2026-11-23 17:45:00+00
+HP-W6-L1	1	HP	Summit	250	184	final	\N	\N	\N	2026-11-23 18:05:00+00
+HP-W6-L2	1	HP	Summit	250	216	final	\N	\N	\N	2026-11-23 18:05:00+00
+HP-W6-L3	1	HP	Summit	250	225	final	\N	\N	\N	2026-11-23 18:05:00+00
+HP-W6-L4	1	HP	Summit	250	121	final	\N	\N	\N	2026-11-23 18:05:00+00
+HP-W6-L5	1	HP	Summit	250	128	final	\N	\N	\N	2026-11-23 18:05:00+00
+HP-W6-L6	1	HP	Summit	250	222	final	\N	\N	\N	2026-11-23 18:05:00+00
+HP-W6-L7	1	HP	Summit	218	250	final	\N	\N	\N	2026-11-23 18:05:00+00
+HP-W7-L1	1	HP	Summit	250	126	final	\N	\N	\N	2026-11-23 18:25:00+00
+HP-W7-L2	1	HP	Summit	250	238	final	\N	\N	\N	2026-11-23 18:25:00+00
+HP-W7-L3	1	HP	Summit	186	250	final	\N	\N	\N	2026-11-23 18:25:00+00
+HP-W7-L4	1	HP	Summit	250	167	final	\N	\N	\N	2026-11-23 18:25:00+00
+DOM-W1-L1	1	DOM	Raid	200	171	final	\N	\N	\N	2026-11-24 07:25:00+00
+DOM-W1-L2	1	DOM	Raid	138	200	final	\N	\N	\N	2026-11-24 07:25:00+00
+DOM-W1-L3	1	DOM	Raid	200	142	final	\N	\N	\N	2026-11-24 07:25:00+00
+DOM-W1-L4	1	DOM	Raid	200	84	final	\N	\N	\N	2026-11-24 07:25:00+00
+DOM-W1-L5	1	DOM	Raid	140	200	final	\N	\N	\N	2026-11-24 07:25:00+00
+DOM-W1-L6	1	DOM	Raid	200	82	final	\N	\N	\N	2026-11-24 07:25:00+00
+DOM-W1-L7	1	DOM	Raid	121	200	final	\N	\N	\N	2026-11-24 07:25:00+00
+DOM-W2-L1	1	DOM	Raid	200	153	final	\N	\N	\N	2026-11-24 07:45:00+00
+DOM-W2-L2	1	DOM	Raid	122	200	final	\N	\N	\N	2026-11-24 07:45:00+00
+DOM-W2-L3	1	DOM	Raid	82	200	final	\N	\N	\N	2026-11-24 07:45:00+00
+DOM-W2-L4	1	DOM	Raid	153	200	final	\N	\N	\N	2026-11-24 07:45:00+00
+DOM-W2-L5	1	DOM	Raid	200	159	final	\N	\N	\N	2026-11-24 07:45:00+00
+DOM-W2-L6	1	DOM	Raid	200	127	final	\N	\N	\N	2026-11-24 07:45:00+00
+DOM-W2-L7	1	DOM	Raid	104	200	final	\N	\N	\N	2026-11-24 07:45:00+00
+DOM-W3-L1	1	DOM	Raid	200	92	final	\N	\N	\N	2026-11-24 08:05:00+00
+DOM-W3-L2	1	DOM	Raid	200	156	final	\N	\N	\N	2026-11-24 08:05:00+00
+DOM-W3-L3	1	DOM	Raid	109	200	final	\N	\N	\N	2026-11-24 08:05:00+00
+DOM-W3-L4	1	DOM	Raid	189	200	final	\N	\N	\N	2026-11-24 08:05:00+00
+DOM-W3-L5	1	DOM	Raid	200	144	final	\N	\N	\N	2026-11-24 08:05:00+00
+DOM-W3-L6	1	DOM	Raid	171	200	final	\N	\N	\N	2026-11-24 08:05:00+00
+DOM-W3-L7	1	DOM	Raid	154	200	final	\N	\N	\N	2026-11-24 08:05:00+00
+DOM-W4-L1	1	DOM	Raid	83	200	final	\N	\N	\N	2026-11-24 08:40:00+00
+DOM-W4-L2	1	DOM	Raid	115	200	final	\N	\N	\N	2026-11-24 08:40:00+00
+DOM-W4-L3	1	DOM	Raid	200	108	final	\N	\N	\N	2026-11-24 08:40:00+00
+DOM-W4-L4	1	DOM	Raid	128	200	final	\N	\N	\N	2026-11-24 08:40:00+00
+DOM-W4-L5	1	DOM	Raid	200	174	final	\N	\N	\N	2026-11-24 08:40:00+00
+DOM-W4-L6	1	DOM	Raid	200	120	final	\N	\N	\N	2026-11-24 08:40:00+00
+DOM-W4-L7	1	DOM	Raid	112	200	final	\N	\N	\N	2026-11-24 08:40:00+00
 \.
 
-COPY public.match_days (day, mode, note) FROM stdin;
-2026-11-17	HP	\N
-2026-11-18	SND	\N
-2026-11-19	CTRL	\N
-2026-11-20	HP	\N
-2026-11-21	SND	\N
+COPY public.match_days (day, mode, note, map) FROM stdin;
+2026-11-23	HP	\N	Summit
+2026-11-24	DOM	\N	Raid
+2026-11-25	SND	\N	Firing Range
 \.
 
 COPY public.match_rooms (match_id, room_id, room_password, invited_at) FROM stdin;
 \.
 
 COPY public.players (id, team_id, ign, game_uid, role, is_captain, user_id, created_at, discord, locked_fields, missing_since) FROM stdin;
-099a631f-5b4f-496f-8b20-3d3e81b52d75	rift-reapers	RR·Viper	6700000000	main	t	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-3d697a67-316b-4013-8cf1-c39b668e393b	rift-reapers	RR·Nyx	6700000037	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-0d63d147-ff19-4c64-bead-173f7444dd94	rift-reapers	RR·Blaze	6700000074	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-d17dacd3-890c-44bf-ad5d-54eaf9bd0360	rift-reapers	RR·Kairo	6700000111	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-c7b66888-161c-41ef-a7cd-9d009a30767a	rift-reapers	RR·Specter	6700000148	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-d0c00ca4-0a53-42b9-9775-a8aae12718bb	rift-reapers	RR·Rook	6700000185	sub	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-6507123c-4a66-482b-84b4-b5ed0e9d85ef	null-sector	NULL·Nyx	6700001000	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-2f8a7c28-da4c-42bd-bbde-bbd7c09fa9af	null-sector	NULL·Blaze	6700001037	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-d685af24-2343-4798-bc84-b93a8e4b7424	null-sector	NULL·Kairo	6700001074	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-d9d1c984-33f3-4446-8e0c-4e17d5f52a51	null-sector	NULL·Specter	6700001111	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-2ae0b9a6-b50b-46ef-a06a-b771e1f3c35f	null-sector	NULL·Rook	6700001148	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-624c3724-e63e-4d13-987a-1e30e03a718c	null-sector	NULL·Jinx	6700001185	sub	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-b621efc9-7251-44ab-8c4e-6e6709bc64c1	vortex-unit	VTX·Blaze	6700002000	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-e1496f37-8632-4335-ae6f-33d119301699	vortex-unit	VTX·Kairo	6700002037	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-139380b2-1b75-4f3e-9929-68c3768d6710	vortex-unit	VTX·Specter	6700002074	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-facefedb-ba93-45e0-bcff-5fcf81eee728	vortex-unit	VTX·Rook	6700002111	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-7ed8eb31-cc55-472d-8395-8d14e3f14652	vortex-unit	VTX·Jinx	6700002148	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-b1b2c4c0-306f-46a8-adba-68a8eda41725	vortex-unit	VTX·Atlas	6700002185	sub	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-26cabbeb-d00e-41f1-a305-fd60797653ad	iron-wolves	IW·Kairo	6700003000	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-5f96619e-0da5-443d-83f7-223482d00caf	iron-wolves	IW·Specter	6700003037	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-b75545a0-8e5e-437d-b47c-75d1f902e2c0	iron-wolves	IW·Rook	6700003074	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-8f9b8a56-f439-4134-a866-ec8c1b3f4569	iron-wolves	IW·Jinx	6700003111	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-ac61ce2a-153f-4e0a-9d62-e9b692a0a8ac	iron-wolves	IW·Atlas	6700003148	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-8c17ed62-7624-4228-8576-4fe06fa400c8	iron-wolves	IW·Cipher	6700003185	sub	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-e2fdfff1-b3f7-4bd1-aa68-17dbb2d9624a	phantom-grid	PG·Specter	6700004000	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-aef156c6-9e7d-40bc-b2f9-1b2b203b664c	phantom-grid	PG·Rook	6700004037	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-b456a60e-c939-48c2-91fb-f05de8661c06	phantom-grid	PG·Jinx	6700004074	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-c61892ec-8ed8-4a8f-8662-8408a0e0fe17	phantom-grid	PG·Atlas	6700004111	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-8c5063af-e471-45b7-9f8f-63134da95655	phantom-grid	PG·Cipher	6700004148	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-ad97c8b5-a776-4f54-9a4a-c15e9ad6cab6	phantom-grid	PG·Raze	6700004185	sub	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-0fac097c-a669-4a44-add5-f61bac2cb9e8	static-kings	SK·Rook	6700005000	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-7321f375-a7ca-4346-ba96-44a034ad6d95	static-kings	SK·Jinx	6700005037	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-541100c8-2881-4438-bb70-d4c73830270a	static-kings	SK·Atlas	6700005074	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-afb5da4b-52c7-4a36-9503-6ea38495475a	static-kings	SK·Cipher	6700005111	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-32a4df6f-5d4d-4e44-a4f7-d3754cccf7a0	static-kings	SK·Raze	6700005148	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-6d6f3f69-beb6-470f-9480-f18e842ce908	static-kings	SK·Onyx	6700005185	sub	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-78706b02-9225-4e87-9cb9-b9d3bc7328cc	echo-breach	EB·Jinx	6700006000	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-1c3b08a1-140c-46bc-a554-7e7c67663c25	echo-breach	EB·Atlas	6700006037	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-70dcc3a2-7a86-40d0-989d-a9153c572565	echo-breach	EB·Cipher	6700006074	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-7acdcb68-5e97-48df-8c06-cd5cc197a5ab	echo-breach	EB·Raze	6700006111	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-59127e30-006b-4ab9-9bea-7378d960f933	echo-breach	EB·Onyx	6700006148	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-f3e02ec4-b1ce-4b4a-87e1-a1a0cd8ba134	echo-breach	EB·Flux	6700006185	sub	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-1e92e923-9aa2-4d4d-8ec9-edf586874e19	crimson-ops	CO·Atlas	6700007000	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-f068fbf1-2817-4c2a-b474-2cee04e37d7b	crimson-ops	CO·Cipher	6700007037	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-3bf7c72b-958e-4098-b1e3-f3fbd2f02eae	crimson-ops	CO·Raze	6700007074	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-762e4832-8d20-4c88-85c0-95bf190c21bc	crimson-ops	CO·Onyx	6700007111	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-31775bf9-2150-4dfe-a0e5-34474601c1c4	crimson-ops	CO·Flux	6700007148	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-fc372750-e58e-4407-8925-4bb025036e4a	crimson-ops	CO·Viper	6700007185	sub	t	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-deb40d65-b8d4-41ad-82a8-c344db3b1631	nova-syndicate	NS·Cipher	6700008000	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-56cdad94-c176-4a24-b6b5-54b74a81f7de	nova-syndicate	NS·Raze	6700008037	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-c15ac0e3-8f2c-496c-a84e-f17928879a5a	nova-syndicate	NS·Onyx	6700008074	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-a7788b34-c36b-4342-99a6-05650ec156a9	nova-syndicate	NS·Flux	6700008111	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-0e0c3a34-81c5-49f3-a327-daa8ae26afa6	nova-syndicate	NS·Viper	6700008148	main	t	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-f8ba3d2c-e510-4c63-8a90-66a15a7b1265	nova-syndicate	NS·Nyx	6700008185	sub	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-3d55ab50-0948-4b9b-9a3f-b127a126ee54	ghost-protocol	GP·Raze	6700009000	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-74c6080f-4d88-4379-9f77-3a37d090a362	ghost-protocol	GP·Onyx	6700009037	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-e37539f7-c590-4302-b35a-7712272ad663	ghost-protocol	GP·Flux	6700009074	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-1d719b5e-a101-480b-98c8-03d6e2102d39	ghost-protocol	GP·Viper	6700009111	main	t	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-3250059d-7736-46e9-b101-39ac99fb10ea	ghost-protocol	GP·Nyx	6700009148	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-705d5cd9-af1a-481c-8e27-9d5e3b2a924a	ghost-protocol	GP·Blaze	6700009185	sub	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-f03d3cf8-2fb3-4333-8799-25139e6a7f06	hex-raiders	HEX·Onyx	6700010000	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-f8e8f1a2-f7ad-49b1-9097-27bebddea85f	hex-raiders	HEX·Flux	6700010037	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-c3680ba6-5491-4115-8f72-a82aded94346	hex-raiders	HEX·Viper	6700010074	main	t	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-7ead5428-f2e0-4d9d-926f-170d963eb3b4	hex-raiders	HEX·Nyx	6700010111	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-57839db6-c6c8-4be7-b0c9-74223356c9b3	hex-raiders	HEX·Blaze	6700010148	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-c5eb4ff4-3ae6-47db-bba0-0216e310d394	hex-raiders	HEX·Kairo	6700010185	sub	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-b6b31e2a-01a3-4a52-a8b5-7acda6538dff	zero-hour	ZH·Flux	6700011000	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-a97bec76-0bb9-4fd7-8642-0264f2db7bd2	zero-hour	ZH·Viper	6700011037	main	t	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-df7eac91-14ed-444d-a49d-4c0e1df90758	zero-hour	ZH·Nyx	6700011074	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-9f1b1ee6-f00f-4361-a6b2-d306267c1def	zero-hour	ZH·Blaze	6700011111	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-200e03ce-cff7-4a69-a5be-ec50452a656e	zero-hour	ZH·Kairo	6700011148	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-830a7d0b-3bd7-4f42-8fb8-6e185635f7fe	zero-hour	ZH·Specter	6700011185	sub	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-0df31dbe-a73c-4704-8d4d-a9e06c77b9fb	apex-fracture	AF·Viper	6700012000	main	t	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-7c6bd8a0-3f8b-42cf-bad7-277bde1c2c42	apex-fracture	AF·Nyx	6700012037	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-7503a615-c4ab-4a37-bb58-7b4f6346c44b	apex-fracture	AF·Blaze	6700012074	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-ae56196a-1fb2-440f-8b91-a78eb0c17b3d	apex-fracture	AF·Kairo	6700012111	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-67d693ae-5034-4755-b93b-9e5cdd0e09ba	apex-fracture	AF·Specter	6700012148	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-c35690d2-a2e2-4562-8279-a9a297c9de70	apex-fracture	AF·Rook	6700012185	sub	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-77068937-c5a1-4cf8-a6bc-474573f111ce	shadow-relay	SR·Nyx	6700013000	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-3c9ce978-458e-4183-91f2-bd53bf8443e4	shadow-relay	SR·Blaze	6700013037	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-cc181590-546b-4dc9-9666-f17e5198962a	shadow-relay	SR·Kairo	6700013074	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-526e4917-dae7-46cb-9497-09be942309da	shadow-relay	SR·Specter	6700013111	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-579f98bf-391f-46a9-a0c4-985189eb3104	shadow-relay	SR·Rook	6700013148	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-66482909-b29c-4543-af02-0019f82fbf88	shadow-relay	SR·Jinx	6700013185	sub	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-0eeb8b83-8a11-4bc6-8b18-4b3ff06213bd	titan-pulse	TP·Blaze	6700014000	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-99774c46-fca4-40ab-9bd6-2be48811b342	titan-pulse	TP·Kairo	6700014037	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-c72c4d9a-6f98-49e3-abf0-39f3d6dece34	titan-pulse	TP·Specter	6700014074	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-8e68d5c1-273d-46de-8a67-67f26f76e078	titan-pulse	TP·Rook	6700014111	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-e5137082-5ca3-4c09-bb0a-73a7bec879fe	titan-pulse	TP·Jinx	6700014148	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-184a8e4a-7c3d-4896-9f1a-a37dd6226162	titan-pulse	TP·Atlas	6700014185	sub	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-83df1f7a-a266-4aff-839d-2d9cbeda85eb	last-light	LL·Kairo	6700015000	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-4649f0b8-f84b-4bcf-a35c-03d29a74b2f9	last-light	LL·Specter	6700015037	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-f156f8c8-27ab-4aa1-8508-f94d02852ba1	last-light	LL·Rook	6700015074	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-c8336be6-3962-4fd2-a121-9bedd3334380	last-light	LL·Jinx	6700015111	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-c7f68319-5b6f-4615-a5d2-9ac992f93a23	last-light	LL·Atlas	6700015148	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-28fd8f78-955e-490d-8ad1-864d0e2f0f45	last-light	LL·Cipher	6700015185	sub	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
 f10136b7-8865-4863-9fc2-413d6e41b3f2	valorant-ash-squad	Ash2	Player2#IND	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
 3402b76c-d2af-40a5-9c43-5f6691008b21	valorant-ash-squad	Ash3	Player3#IND	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
 e168b4cb-2210-437b-aee2-38b9f4bf2599	valorant-ash-squad	Ash4	Player4#IND	main	f	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
@@ -1418,106 +1504,184 @@ b7c677bf-8322-48d7-abdd-53e59938ca7b	fifa-ion-squad-9	IonSquad9	fifa_684	main	t	
 66dda468-a02e-436b-adcb-f1cd06621f38	fifa-jolt-squad-10	JoltSquad10	fifa_685	main	t	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
 eb2e2d3c-69ef-43d4-9d81-7af6799c6c49	fifa-krait-squad-11	KraitSquad11	fifa_686	main	t	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
 9202c7c1-9b0d-44c9-9996-c4a77db7e127	fifa-lynx-squad-12	LynxSquad12	fifa_687	main	t	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
-c9a1282e-4fcb-42fb-947a-5b6a436b05e4	valorant-ash-squad	Ash1	Player1#IND	main	t	335c0f4b-9811-4897-a82a-e35fbc7d8ea5	2026-11-05 20:28:43.98121+00	\N	{}	\N
+c9a1282e-4fcb-42fb-947a-5b6a436b05e4	valorant-ash-squad	Ash1	Player1#IND	main	t	\N	2026-11-05 20:28:43.98121+00	\N	{}	\N
+a8b56379-1ffa-4a0c-a59e-3254edbf6607	liquid	LIQU·Viper	6700000000	main	t	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+8b2b2ae6-65b8-4294-a6c1-c3eac0a54d7a	liquid	LIQU·Nyx	6700000037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+38924a83-10cc-47ff-a001-f2bc2fbccd68	liquid	LIQU·Blaze	6700000074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+0dab754c-0201-4f2b-ab58-f9fdba91cb75	liquid	LIQU·Kairo	6700000111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+054c8399-6158-4874-96bd-d33b39ba2401	liquid	LIQU·Specter	6700000148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+0f3c34f9-1ca1-48d6-945a-369eff658e3d	liquid	LIQU·Rook	6700000185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+b159acfd-85ab-4af1-991f-b7ae6f3c8e1a	nuclear	NUCL·Nyx	6700001000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+a114c3ff-6108-4ceb-856e-90c84562be6c	nuclear	NUCL·Blaze	6700001037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+4e81c4d3-71f4-4bc9-a7e0-74c650b8898a	nuclear	NUCL·Kairo	6700001074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+34977b3a-3a01-46af-9aa2-0e01bf4012e7	nuclear	NUCL·Specter	6700001111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+a5a5829d-7612-4fef-a503-97ed8c2e6250	nuclear	NUCL·Rook	6700001148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+b4f78346-11da-4678-b0a4-de69b0c959fd	nuclear	NUCL·Jinx	6700001185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+a9214d1e-2c86-4636-b1ac-4688a2424afe	barrel-house	BH·Blaze	6700002000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+97fd706d-1550-416a-9ede-a06785ffe17b	barrel-house	BH·Kairo	6700002037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+5cfec0ca-0cc2-4e5c-9bd5-6aeb50709b5e	barrel-house	BH·Specter	6700002074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+ae374e0e-d572-41fa-af79-d4c613a70e67	barrel-house	BH·Rook	6700002111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+23275a30-14c8-438a-a46f-afa5417ac27c	barrel-house	BH·Jinx	6700002148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+15b8defd-9a2c-48ea-b0db-946d96a9862d	barrel-house	BH·Atlas	6700002185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+9e866c94-c9f8-4ea5-a726-563f3fe3e568	thaiyirsaadham	THAI·Kairo	6700003000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+23e05a5e-1de4-4b59-a16e-42f750f732e3	thaiyirsaadham	THAI·Specter	6700003037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+030d03d2-573c-45f3-8186-e532e21b9d8c	thaiyirsaadham	THAI·Rook	6700003074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+6b7e6f84-2607-4f61-8663-c3e2e5965688	thaiyirsaadham	THAI·Jinx	6700003111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+1b7cc846-9233-490d-bb8e-7be080e240d8	thaiyirsaadham	THAI·Atlas	6700003148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+27f4e58f-03a5-4a99-ae1d-afe62f18d5dc	thaiyirsaadham	THAI·Cipher	6700003185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+139a1227-aeb9-4b07-a26f-b8043528de66	j-d-y-s	JDYS·Specter	6700004000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+032f8968-446e-4592-86df-05eee191c7ea	j-d-y-s	JDYS·Rook	6700004037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+33fb4f0e-a6c9-46be-99a3-09b195cccab4	j-d-y-s	JDYS·Jinx	6700004074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+84daadbf-5246-4d97-91d1-234e3d99aa70	j-d-y-s	JDYS·Atlas	6700004111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+75327335-888c-43d9-832d-2762887074b5	j-d-y-s	JDYS·Cipher	6700004148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+507b2760-05ee-449b-983a-08d04ec76433	j-d-y-s	JDYS·Raze	6700004185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+9233ad3c-0ea6-441d-8854-2e9259a80d55	team-zero	TZ·Rook	6700005000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+c60ba573-3922-43c5-b5e8-b7f3b97b2705	team-zero	TZ·Jinx	6700005037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+72970b53-88f1-47e7-8dad-06c3a40bd541	team-zero	TZ·Atlas	6700005074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+d8e2e3b6-3903-4a6e-98c5-081eefe39d76	team-zero	TZ·Cipher	6700005111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+404c84c7-3f0c-485a-8ed4-c6efb6d4464f	team-zero	TZ·Raze	6700005148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+0ba05882-9efc-4621-8523-290c1612b165	team-zero	TZ·Onyx	6700005185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+51426f94-4f93-4a2c-b851-401369f8881b	blitz-raiders	BR·Jinx	6700006000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+26e3743b-08d2-4cc3-a3c5-20450e2a5f96	blitz-raiders	BR·Atlas	6700006037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+f2b3a423-5aeb-46de-99fe-858dd558cfc1	blitz-raiders	BR·Cipher	6700006074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+1b4e4782-7f07-469f-86dc-12b8772a110d	blitz-raiders	BR·Raze	6700006111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+8c1f0106-8d11-48e9-a0c3-0bc4965d1887	blitz-raiders	BR·Onyx	6700006148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+74abca04-5459-49ca-9e3b-6b3514afdf17	blitz-raiders	BR·Flux	6700006185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+c4289d02-a6c3-4863-9b35-f1a33afc138a	tf141	TF14·Atlas	6700007000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+0a571830-4134-4d1a-94e5-63a7bc0b6ddd	tf141	TF14·Cipher	6700007037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+8c393fca-97e6-4892-a7b4-fb35b4f5895a	tf141	TF14·Raze	6700007074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+20e96405-bb6e-4310-8ab2-f83247cff892	tf141	TF14·Onyx	6700007111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+3a39cfa5-c6b1-4ab1-80d6-ed75d0269e19	tf141	TF14·Flux	6700007148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+bbb8abe1-226f-4524-aa7d-91aa5fe3b90f	tf141	TF14·Viper	6700007185	sub	t	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+b51a174e-269f-4e1e-af03-7e30ae6bcd1a	team-lost	TL·Cipher	6700008000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+349de6cf-de87-4160-9f05-c33c258b6ea8	team-lost	TL·Raze	6700008037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+8c1f83a6-cfa4-4053-8ff4-67698dba5ca3	team-lost	TL·Onyx	6700008074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+ab1958ba-3eda-4306-9582-ea2aced480b4	team-lost	TL·Flux	6700008111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+9163a41a-4d93-447a-b2d6-54c2926b9e5d	team-lost	TL·Viper	6700008148	main	t	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+f7a2a5ff-b009-4c14-8d01-0a085389bf12	team-lost	TL·Nyx	6700008185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+a04d282c-f73a-4685-8f38-b18683f25ab6	edge	EDGE·Raze	6700009000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+e9f8d554-4aee-46bc-8d60-e9e3418b9138	edge	EDGE·Onyx	6700009037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+df8bca23-85a6-426d-90b4-d4e560d59ab4	edge	EDGE·Flux	6700009074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+230da8af-cc5f-4bc8-9b75-766c4f7065ac	edge	EDGE·Viper	6700009111	main	t	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+e24754c6-9740-4b60-bdce-fe6a7854f0f2	edge	EDGE·Nyx	6700009148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+dac16657-7e9b-4640-96ed-94331fb3f053	edge	EDGE·Blaze	6700009185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+c1f98c1e-f03f-4289-8e69-4edbd752727a	team-crackillusion	TC·Onyx	6700010000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+5a080485-8eca-47aa-8556-da3c8a029f54	team-crackillusion	TC·Flux	6700010037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+a42d15e0-e5fd-4bae-86b3-1d3c18ed2eae	team-crackillusion	TC·Viper	6700010074	main	t	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+17d0fa17-bada-4180-99f7-d19ea489ee73	team-crackillusion	TC·Nyx	6700010111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+3b615ecf-e350-4118-8daf-e0cd528b0b33	team-crackillusion	TC·Blaze	6700010148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+abb5fbab-54dd-4974-8ee5-4ccc1159f793	team-crackillusion	TC·Kairo	6700010185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+42c2ce87-c81b-463c-91a4-5e40eb4ad9da	kid-slayers	KS·Flux	6700011000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+80deccad-1ead-440f-8bdb-7aef24c7f59d	kid-slayers	KS·Viper	6700011037	main	t	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+a9d3e637-5e19-4083-b2ca-66ff079832ba	kid-slayers	KS·Nyx	6700011074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+0e478f90-3f45-43dd-9ff3-cf6d8ca1bf08	kid-slayers	KS·Blaze	6700011111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+26b75213-74af-4aae-9bfd-8b9299e0a984	kid-slayers	KS·Kairo	6700011148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+66ee7eac-7d51-40b6-97c7-17ddce4f764d	kid-slayers	KS·Specter	6700011185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+82b42a55-bfd4-49e7-9708-ac14b022385d	offset	OFFS·Viper	6700012000	main	t	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+c8acf3b8-44a2-496a-b489-1d282b9a5dd0	offset	OFFS·Nyx	6700012037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+29bbbb7b-302b-442b-bbb1-b5357986c371	offset	OFFS·Blaze	6700012074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+de532f55-909e-4626-87d5-1e8941b3e811	offset	OFFS·Kairo	6700012111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+a5948137-742a-46aa-a8d0-033a2e3ede33	offset	OFFS·Specter	6700012148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+65db3ad7-7d1a-42a8-a5de-0261ec715cfd	offset	OFFS·Rook	6700012185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+f3a79ea2-b209-4bc8-b652-11be50a1abe6	darkhold	DARK·Nyx	6700013000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+6d68849c-a98d-4e2e-ad59-25a2f5c69e45	darkhold	DARK·Blaze	6700013037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+e9e03d7d-833a-4b2f-91c1-a747c5d41de9	darkhold	DARK·Kairo	6700013074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+8e9a9af0-bd20-4478-a8ab-2d7dc5306834	darkhold	DARK·Specter	6700013111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+2478c0b4-07a4-470d-b142-5b0af3e9172c	darkhold	DARK·Rook	6700013148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+2f4ba994-9d64-4d6a-be71-d07704538fd9	darkhold	DARK·Jinx	6700013185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+2ba65770-dd3a-468b-b542-5b610ff92cd5	sapne-suhane	SS·Blaze	6700014000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+8c76d447-6ccb-4470-a972-c075e4e466e8	sapne-suhane	SS·Kairo	6700014037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+17c570ca-2ff5-41ef-b52b-6fd8da712eee	sapne-suhane	SS·Specter	6700014074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+da01c677-0c80-4887-a8c1-170bb7517cae	sapne-suhane	SS·Rook	6700014111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+a6e9ea3e-5ab1-4ec1-b838-80ab2405bf03	sapne-suhane	SS·Jinx	6700014148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+3355980d-ce9b-42f9-b3c3-ad635d97d137	sapne-suhane	SS·Atlas	6700014185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+36f2ed50-ba1f-49c3-8ecc-e92bfab9ae97	bawts	BAWT·Kairo	6700015000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+5ee89283-9ead-4f13-8499-c6f2fa95b660	bawts	BAWT·Specter	6700015037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+991a2f8b-8aae-4d18-a878-962566587c29	bawts	BAWT·Rook	6700015074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+43a2dfcd-e5a7-47ea-9c70-c97b7c877572	bawts	BAWT·Jinx	6700015111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+2b581798-7586-412f-9a2e-fbb23e9e5b1a	bawts	BAWT·Atlas	6700015148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+299aa2c0-db16-4231-956b-1be6c34da7bb	bawts	BAWT·Cipher	6700015185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+1f07f709-88ac-4479-8086-52afa02a305d	freakuency	FREA·Specter	6700016000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+69bf9307-e74d-4ab5-a9c3-064663b92120	freakuency	FREA·Rook	6700016037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+590ae6c1-6018-4ba3-88ce-de69f63f0630	freakuency	FREA·Jinx	6700016074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+2febfa32-73c2-4b53-9054-6ba6ae342d91	freakuency	FREA·Atlas	6700016111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+c0eab5e4-5505-4b09-953c-25d337910239	freakuency	FREA·Cipher	6700016148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+ee01d2ed-1fa9-444a-888e-f339c62fd0bf	freakuency	FREA·Raze	6700016185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+a6dfd64e-7da7-4084-a388-a8a4288f5e4b	beatbreakers	BEAT·Rook	6700017000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+69187410-2014-4e22-9ead-cacb5fb34488	beatbreakers	BEAT·Jinx	6700017037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+36088bee-eded-4acf-b802-ea4ebfd035eb	beatbreakers	BEAT·Atlas	6700017074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+c3fd4f91-6d32-439d-9ce7-ecfd256a2d05	beatbreakers	BEAT·Cipher	6700017111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+be1718ee-37cf-4411-9897-30f6e5264622	beatbreakers	BEAT·Raze	6700017148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+2aaea3c4-fba6-479c-a7fc-f107351cc438	beatbreakers	BEAT·Onyx	6700017185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+6c5141c3-bdd9-4b70-ac20-6436f2537783	money-follows	MF·Jinx	6700018000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+4259b5e1-f7fa-4843-a592-8cc534271368	money-follows	MF·Atlas	6700018037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+6ff0aedb-5242-4a8b-96ba-3393e179a1b8	money-follows	MF·Cipher	6700018074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+b9357594-2570-4c45-aa5e-8386d407a798	money-follows	MF·Raze	6700018111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+5764c154-a9f4-4836-ad2c-e07c78ff22c0	money-follows	MF·Onyx	6700018148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+6b743d63-5f7e-40dd-8a62-63bfb9078cc2	money-follows	MF·Flux	6700018185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+a4db02e6-a371-407a-8878-7c7a8877bb9a	gobi-ke-parathe	GKP·Atlas	6700019000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+2dfce318-70d5-4289-99c5-1f79001e0b73	gobi-ke-parathe	GKP·Cipher	6700019037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+ee436a91-1774-4765-af61-c2eef0c8cb7d	gobi-ke-parathe	GKP·Raze	6700019074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+16acc455-3fd6-43c9-b583-8b10a331ee7c	gobi-ke-parathe	GKP·Onyx	6700019111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+ee012f14-3e1c-456f-9d8c-b5e4a978897c	gobi-ke-parathe	GKP·Flux	6700019148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+757b0755-73e9-4380-a0cc-13a19662ed09	gobi-ke-parathe	GKP·Viper	6700019185	sub	t	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+aea7b004-936b-43a7-850b-5dd2de49af53	the-comrades	TC·Cipher	6700020000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+267f4beb-a47f-48eb-9c5d-eff890904f09	the-comrades	TC·Raze	6700020037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+d6b4ca36-e0ba-4aa4-970b-de7b82eb048c	the-comrades	TC·Onyx	6700020074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+40bc9786-c858-437a-98cf-6510aaec081f	the-comrades	TC·Flux	6700020111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+2cd914ac-1d1c-41c6-824e-27f77a8a0d69	the-comrades	TC·Viper	6700020148	main	t	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+485074e0-4cb7-4515-aaf3-977ce78fdfb3	the-comrades	TC·Nyx	6700020185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+bf59ecd8-c811-416e-b04b-43b639e32c50	abcdefghijklmnopqrstuvwxyz	ABCD·Raze	6700021000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+d3e16540-bc63-4ba3-add5-c73ca15160d9	abcdefghijklmnopqrstuvwxyz	ABCD·Onyx	6700021037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+5d9e7037-13cc-47fa-af0c-721f6085625d	abcdefghijklmnopqrstuvwxyz	ABCD·Flux	6700021074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+db83f198-7342-44e2-ad9c-ff16fd5aaf9b	abcdefghijklmnopqrstuvwxyz	ABCD·Viper	6700021111	main	t	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+4ade4316-6fd3-49f6-836d-bada3ff1ab9d	abcdefghijklmnopqrstuvwxyz	ABCD·Nyx	6700021148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+90b75bc0-1091-4467-bdd7-7dac624060e6	abcdefghijklmnopqrstuvwxyz	ABCD·Blaze	6700021185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+7a30b6cf-d542-4bcf-8d8d-b6394b905dc5	free-kills	FK·Onyx	6700022000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+fbfa3f49-1900-4a37-84eb-96dbbbbe548a	free-kills	FK·Flux	6700022037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+748e1141-8acc-4000-aa60-40b6de1cbdde	free-kills	FK·Viper	6700022074	main	t	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+8a949cd3-8a17-4e0a-82bd-77297b0c00f1	free-kills	FK·Nyx	6700022111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+acf9a657-a47c-400b-8783-66c7785d1e3e	free-kills	FK·Blaze	6700022148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+a49eb2ab-350e-49b9-9ba3-a690fdcb6884	free-kills	FK·Kairo	6700022185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+a4af1b88-cbba-498a-a235-cb7c2db578e5	dollar-500	500·Flux	6700023000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+d17a60bf-5b95-47a4-a457-a210dbc8c6f5	dollar-500	500·Viper	6700023037	main	t	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+2a86a18a-613a-4c63-83db-7a7536976786	dollar-500	500·Nyx	6700023074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+a542b683-5fb5-457c-b086-8f542f2e02d5	dollar-500	500·Blaze	6700023111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+cde53d83-13d9-42ad-afd1-9c55fe1f5c91	dollar-500	500·Kairo	6700023148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+e10cb985-f84d-4859-8bfb-79b3590accfd	dollar-500	500·Specter	6700023185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+aa9d6214-fa12-43f5-b5b6-4d81a35b2ff7	last-warning	LW·Viper	6700024000	main	t	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+d8a1c84a-670f-4672-88c6-bda6316d1792	last-warning	LW·Nyx	6700024037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+a7eb77ff-6299-445b-9094-97aa966fae4a	last-warning	LW·Blaze	6700024074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+6d645b60-eec7-4c2b-98e2-e80cd84ea23f	last-warning	LW·Kairo	6700024111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+bf93daab-c318-4f25-ba79-0ca806cf8854	last-warning	LW·Specter	6700024148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+12eeefe3-e49c-4325-9c3c-282100c5ecd2	last-warning	LW·Rook	6700024185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+06c50015-67d3-4e44-88eb-1719227af565	smoke	SMOK·Nyx	6700025000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+d574ab14-3576-4158-96a0-5b7256c2f174	smoke	SMOK·Blaze	6700025037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+f265da02-47e2-4db0-bcaa-54f99e4527b3	smoke	SMOK·Kairo	6700025074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+222c4d29-12de-41a5-9146-7954f65221fd	smoke	SMOK·Specter	6700025111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+a3042d6e-5be0-403e-9a87-595011db1d5f	smoke	SMOK·Rook	6700025148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+679967dd-807b-47dd-9188-ba7cc91c058c	smoke	SMOK·Jinx	6700025185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+fc6d31fe-31ca-4622-9e92-e90fe45bdfa9	cod-vinashak	CV·Blaze	6700026000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+23e90a0d-71d9-48fc-9611-e723376e11a6	cod-vinashak	CV·Kairo	6700026037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+11fdf7e1-e4ae-4edc-be13-48ec74d9bc1a	cod-vinashak	CV·Specter	6700026074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+3907ff77-2084-4096-b1ef-fbb2ea71977b	cod-vinashak	CV·Rook	6700026111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+3d458f4b-8e67-459f-b071-319b3ae0280d	cod-vinashak	CV·Jinx	6700026148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+c71d89d8-281d-4810-9f48-96ed85338b17	cod-vinashak	CV·Atlas	6700026185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+6a2ea411-cb32-4a23-89d8-069f72e52982	clutch-crew	CC·Kairo	6700027000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+fdd75024-4e29-41b6-a067-14e63ebf8f2c	clutch-crew	CC·Specter	6700027037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+8557444d-3624-49d6-8139-4fe35534e872	clutch-crew	CC·Rook	6700027074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+a0f49167-ede9-45b0-99a6-63adb571c336	clutch-crew	CC·Jinx	6700027111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+2e9e50fe-4caa-41d6-88c0-e9631886f386	clutch-crew	CC·Atlas	6700027148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+9ee05f24-e989-4459-9453-4f54a78be9ec	clutch-crew	CC·Cipher	6700027185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+9cae4f74-8524-480c-8454-7bd7a92d48da	rvce	RVCE·Specter	6700028000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+1c3d695c-f60e-4ead-b920-58087add10a6	rvce	RVCE·Rook	6700028037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+84c20bf5-0bb2-46d3-bb10-a61c7921ce4f	rvce	RVCE·Jinx	6700028074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+03d4ac9c-2c64-43a5-a8cf-360ef7c88877	rvce	RVCE·Atlas	6700028111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+0f604a48-8912-4578-b1ba-0bec81d37c9b	rvce	RVCE·Cipher	6700028148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+5c1c7256-76ed-4db4-8d9a-1fe177986992	rvce	RVCE·Raze	6700028185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
 \.
 
 COPY public.player_contacts (player_id, email, phone, age, college) FROM stdin;
-099a631f-5b4f-496f-8b20-3d3e81b52d75	rr.viper@example.com	9800000000	20	\N
-3d697a67-316b-4013-8cf1-c39b668e393b	rr.nyx@example.com	9800000001	20	\N
-0d63d147-ff19-4c64-bead-173f7444dd94	rr.blaze@example.com	9800000002	20	\N
-d17dacd3-890c-44bf-ad5d-54eaf9bd0360	rr.kairo@example.com	9800000003	20	\N
-c7b66888-161c-41ef-a7cd-9d009a30767a	rr.specter@example.com	9800000004	20	\N
-d0c00ca4-0a53-42b9-9775-a8aae12718bb	rr.rook@example.com	9800000005	20	\N
-6507123c-4a66-482b-84b4-b5ed0e9d85ef	null.nyx@example.com	9800000000	20	\N
-2f8a7c28-da4c-42bd-bbde-bbd7c09fa9af	null.blaze@example.com	9800000001	20	\N
-d685af24-2343-4798-bc84-b93a8e4b7424	null.kairo@example.com	9800000002	20	\N
-d9d1c984-33f3-4446-8e0c-4e17d5f52a51	null.specter@example.com	9800000003	20	\N
-2ae0b9a6-b50b-46ef-a06a-b771e1f3c35f	null.rook@example.com	9800000004	20	\N
-624c3724-e63e-4d13-987a-1e30e03a718c	null.jinx@example.com	9800000005	20	\N
-b621efc9-7251-44ab-8c4e-6e6709bc64c1	vtx.blaze@example.com	9800000000	20	\N
-e1496f37-8632-4335-ae6f-33d119301699	vtx.kairo@example.com	9800000001	20	\N
-139380b2-1b75-4f3e-9929-68c3768d6710	vtx.specter@example.com	9800000002	20	\N
-facefedb-ba93-45e0-bcff-5fcf81eee728	vtx.rook@example.com	9800000003	20	\N
-7ed8eb31-cc55-472d-8395-8d14e3f14652	vtx.jinx@example.com	9800000004	20	\N
-b1b2c4c0-306f-46a8-adba-68a8eda41725	vtx.atlas@example.com	9800000005	20	\N
-26cabbeb-d00e-41f1-a305-fd60797653ad	iw.kairo@example.com	9800000000	20	\N
-5f96619e-0da5-443d-83f7-223482d00caf	iw.specter@example.com	9800000001	20	\N
-b75545a0-8e5e-437d-b47c-75d1f902e2c0	iw.rook@example.com	9800000002	20	\N
-8f9b8a56-f439-4134-a866-ec8c1b3f4569	iw.jinx@example.com	9800000003	20	\N
-ac61ce2a-153f-4e0a-9d62-e9b692a0a8ac	iw.atlas@example.com	9800000004	20	\N
-8c17ed62-7624-4228-8576-4fe06fa400c8	iw.cipher@example.com	9800000005	20	\N
-e2fdfff1-b3f7-4bd1-aa68-17dbb2d9624a	pg.specter@example.com	9800000000	20	\N
-aef156c6-9e7d-40bc-b2f9-1b2b203b664c	pg.rook@example.com	9800000001	20	\N
-b456a60e-c939-48c2-91fb-f05de8661c06	pg.jinx@example.com	9800000002	20	\N
-c61892ec-8ed8-4a8f-8662-8408a0e0fe17	pg.atlas@example.com	9800000003	20	\N
-8c5063af-e471-45b7-9f8f-63134da95655	pg.cipher@example.com	9800000004	20	\N
-ad97c8b5-a776-4f54-9a4a-c15e9ad6cab6	pg.raze@example.com	9800000005	20	\N
-0fac097c-a669-4a44-add5-f61bac2cb9e8	sk.rook@example.com	9800000000	20	\N
-7321f375-a7ca-4346-ba96-44a034ad6d95	sk.jinx@example.com	9800000001	20	\N
-541100c8-2881-4438-bb70-d4c73830270a	sk.atlas@example.com	9800000002	20	\N
-afb5da4b-52c7-4a36-9503-6ea38495475a	sk.cipher@example.com	9800000003	20	\N
-32a4df6f-5d4d-4e44-a4f7-d3754cccf7a0	sk.raze@example.com	9800000004	20	\N
-6d6f3f69-beb6-470f-9480-f18e842ce908	sk.onyx@example.com	9800000005	20	\N
-78706b02-9225-4e87-9cb9-b9d3bc7328cc	eb.jinx@example.com	9800000000	20	\N
-1c3b08a1-140c-46bc-a554-7e7c67663c25	eb.atlas@example.com	9800000001	20	\N
-70dcc3a2-7a86-40d0-989d-a9153c572565	eb.cipher@example.com	9800000002	20	\N
-7acdcb68-5e97-48df-8c06-cd5cc197a5ab	eb.raze@example.com	9800000003	20	\N
-59127e30-006b-4ab9-9bea-7378d960f933	eb.onyx@example.com	9800000004	20	\N
-f3e02ec4-b1ce-4b4a-87e1-a1a0cd8ba134	eb.flux@example.com	9800000005	20	\N
-1e92e923-9aa2-4d4d-8ec9-edf586874e19	co.atlas@example.com	9800000000	20	\N
-f068fbf1-2817-4c2a-b474-2cee04e37d7b	co.cipher@example.com	9800000001	20	\N
-3bf7c72b-958e-4098-b1e3-f3fbd2f02eae	co.raze@example.com	9800000002	20	\N
-762e4832-8d20-4c88-85c0-95bf190c21bc	co.onyx@example.com	9800000003	20	\N
-31775bf9-2150-4dfe-a0e5-34474601c1c4	co.flux@example.com	9800000004	20	\N
-fc372750-e58e-4407-8925-4bb025036e4a	co.viper@example.com	9800000005	20	\N
-deb40d65-b8d4-41ad-82a8-c344db3b1631	ns.cipher@example.com	9800000000	20	\N
-56cdad94-c176-4a24-b6b5-54b74a81f7de	ns.raze@example.com	9800000001	20	\N
-c15ac0e3-8f2c-496c-a84e-f17928879a5a	ns.onyx@example.com	9800000002	20	\N
-a7788b34-c36b-4342-99a6-05650ec156a9	ns.flux@example.com	9800000003	20	\N
-0e0c3a34-81c5-49f3-a327-daa8ae26afa6	ns.viper@example.com	9800000004	20	\N
-f8ba3d2c-e510-4c63-8a90-66a15a7b1265	ns.nyx@example.com	9800000005	20	\N
-3d55ab50-0948-4b9b-9a3f-b127a126ee54	gp.raze@example.com	9800000000	20	\N
-74c6080f-4d88-4379-9f77-3a37d090a362	gp.onyx@example.com	9800000001	20	\N
-e37539f7-c590-4302-b35a-7712272ad663	gp.flux@example.com	9800000002	20	\N
-1d719b5e-a101-480b-98c8-03d6e2102d39	gp.viper@example.com	9800000003	20	\N
-3250059d-7736-46e9-b101-39ac99fb10ea	gp.nyx@example.com	9800000004	20	\N
-705d5cd9-af1a-481c-8e27-9d5e3b2a924a	gp.blaze@example.com	9800000005	20	\N
-f03d3cf8-2fb3-4333-8799-25139e6a7f06	hex.onyx@example.com	9800000000	20	\N
-f8e8f1a2-f7ad-49b1-9097-27bebddea85f	hex.flux@example.com	9800000001	20	\N
-c3680ba6-5491-4115-8f72-a82aded94346	hex.viper@example.com	9800000002	20	\N
-7ead5428-f2e0-4d9d-926f-170d963eb3b4	hex.nyx@example.com	9800000003	20	\N
-57839db6-c6c8-4be7-b0c9-74223356c9b3	hex.blaze@example.com	9800000004	20	\N
-c5eb4ff4-3ae6-47db-bba0-0216e310d394	hex.kairo@example.com	9800000005	20	\N
-b6b31e2a-01a3-4a52-a8b5-7acda6538dff	zh.flux@example.com	9800000000	20	\N
-a97bec76-0bb9-4fd7-8642-0264f2db7bd2	zh.viper@example.com	9800000001	20	\N
-df7eac91-14ed-444d-a49d-4c0e1df90758	zh.nyx@example.com	9800000002	20	\N
-9f1b1ee6-f00f-4361-a6b2-d306267c1def	zh.blaze@example.com	9800000003	20	\N
-200e03ce-cff7-4a69-a5be-ec50452a656e	zh.kairo@example.com	9800000004	20	\N
-830a7d0b-3bd7-4f42-8fb8-6e185635f7fe	zh.specter@example.com	9800000005	20	\N
-0df31dbe-a73c-4704-8d4d-a9e06c77b9fb	af.viper@example.com	9800000000	20	\N
-7c6bd8a0-3f8b-42cf-bad7-277bde1c2c42	af.nyx@example.com	9800000001	20	\N
-7503a615-c4ab-4a37-bb58-7b4f6346c44b	af.blaze@example.com	9800000002	20	\N
-ae56196a-1fb2-440f-8b91-a78eb0c17b3d	af.kairo@example.com	9800000003	20	\N
-67d693ae-5034-4755-b93b-9e5cdd0e09ba	af.specter@example.com	9800000004	20	\N
-c35690d2-a2e2-4562-8279-a9a297c9de70	af.rook@example.com	9800000005	20	\N
-77068937-c5a1-4cf8-a6bc-474573f111ce	sr.nyx@example.com	9800000000	20	\N
-3c9ce978-458e-4183-91f2-bd53bf8443e4	sr.blaze@example.com	9800000001	20	\N
-cc181590-546b-4dc9-9666-f17e5198962a	sr.kairo@example.com	9800000002	20	\N
-526e4917-dae7-46cb-9497-09be942309da	sr.specter@example.com	9800000003	20	\N
-579f98bf-391f-46a9-a0c4-985189eb3104	sr.rook@example.com	9800000004	20	\N
-66482909-b29c-4543-af02-0019f82fbf88	sr.jinx@example.com	9800000005	20	\N
-0eeb8b83-8a11-4bc6-8b18-4b3ff06213bd	tp.blaze@example.com	9800000000	20	\N
-99774c46-fca4-40ab-9bd6-2be48811b342	tp.kairo@example.com	9800000001	20	\N
-c72c4d9a-6f98-49e3-abf0-39f3d6dece34	tp.specter@example.com	9800000002	20	\N
-8e68d5c1-273d-46de-8a67-67f26f76e078	tp.rook@example.com	9800000003	20	\N
-e5137082-5ca3-4c09-bb0a-73a7bec879fe	tp.jinx@example.com	9800000004	20	\N
-184a8e4a-7c3d-4896-9f1a-a37dd6226162	tp.atlas@example.com	9800000005	20	\N
-83df1f7a-a266-4aff-839d-2d9cbeda85eb	ll.kairo@example.com	9800000000	20	\N
-4649f0b8-f84b-4bcf-a35c-03d29a74b2f9	ll.specter@example.com	9800000001	20	\N
-f156f8c8-27ab-4aa1-8508-f94d02852ba1	ll.rook@example.com	9800000002	20	\N
-c8336be6-3962-4fd2-a121-9bedd3334380	ll.jinx@example.com	9800000003	20	\N
-c7f68319-5b6f-4615-a5d2-9ac992f93a23	ll.atlas@example.com	9800000004	20	\N
-28fd8f78-955e-490d-8ad1-864d0e2f0f45	ll.cipher@example.com	9800000005	20	\N
 c9a1282e-4fcb-42fb-947a-5b6a436b05e4	lead.valorant-ash-squad@example.com	9700000001	\N	\N
 f10136b7-8865-4863-9fc2-413d6e41b3f2	p2@example.com	9700000002	\N	\N
 3402b76c-d2af-40a5-9c43-5f6691008b21	p3@example.com	9700000003	\N	\N
@@ -2205,6 +2369,180 @@ b7c677bf-8322-48d7-abdd-53e59938ca7b	lead.fifa-ion-squad-9@example.com	970000068
 66dda468-a02e-436b-adcb-f1cd06621f38	lead.fifa-jolt-squad-10@example.com	9700000685	\N	\N
 eb2e2d3c-69ef-43d4-9d81-7af6799c6c49	lead.fifa-krait-squad-11@example.com	9700000686	\N	\N
 9202c7c1-9b0d-44c9-9996-c4a77db7e127	lead.fifa-lynx-squad-12@example.com	9700000687	\N	\N
+a8b56379-1ffa-4a0c-a59e-3254edbf6607	liqu.viper@example.com	9800000000	20	\N
+8b2b2ae6-65b8-4294-a6c1-c3eac0a54d7a	liqu.nyx@example.com	9800000001	20	\N
+38924a83-10cc-47ff-a001-f2bc2fbccd68	liqu.blaze@example.com	9800000002	20	\N
+0dab754c-0201-4f2b-ab58-f9fdba91cb75	liqu.kairo@example.com	9800000003	20	\N
+054c8399-6158-4874-96bd-d33b39ba2401	liqu.specter@example.com	9800000004	20	\N
+0f3c34f9-1ca1-48d6-945a-369eff658e3d	liqu.rook@example.com	9800000005	20	\N
+b159acfd-85ab-4af1-991f-b7ae6f3c8e1a	nucl.nyx@example.com	9800000000	20	\N
+a114c3ff-6108-4ceb-856e-90c84562be6c	nucl.blaze@example.com	9800000001	20	\N
+4e81c4d3-71f4-4bc9-a7e0-74c650b8898a	nucl.kairo@example.com	9800000002	20	\N
+34977b3a-3a01-46af-9aa2-0e01bf4012e7	nucl.specter@example.com	9800000003	20	\N
+a5a5829d-7612-4fef-a503-97ed8c2e6250	nucl.rook@example.com	9800000004	20	\N
+b4f78346-11da-4678-b0a4-de69b0c959fd	nucl.jinx@example.com	9800000005	20	\N
+a9214d1e-2c86-4636-b1ac-4688a2424afe	bh.blaze@example.com	9800000000	20	\N
+97fd706d-1550-416a-9ede-a06785ffe17b	bh.kairo@example.com	9800000001	20	\N
+5cfec0ca-0cc2-4e5c-9bd5-6aeb50709b5e	bh.specter@example.com	9800000002	20	\N
+ae374e0e-d572-41fa-af79-d4c613a70e67	bh.rook@example.com	9800000003	20	\N
+23275a30-14c8-438a-a46f-afa5417ac27c	bh.jinx@example.com	9800000004	20	\N
+15b8defd-9a2c-48ea-b0db-946d96a9862d	bh.atlas@example.com	9800000005	20	\N
+9e866c94-c9f8-4ea5-a726-563f3fe3e568	thai.kairo@example.com	9800000000	20	\N
+23e05a5e-1de4-4b59-a16e-42f750f732e3	thai.specter@example.com	9800000001	20	\N
+030d03d2-573c-45f3-8186-e532e21b9d8c	thai.rook@example.com	9800000002	20	\N
+6b7e6f84-2607-4f61-8663-c3e2e5965688	thai.jinx@example.com	9800000003	20	\N
+1b7cc846-9233-490d-bb8e-7be080e240d8	thai.atlas@example.com	9800000004	20	\N
+27f4e58f-03a5-4a99-ae1d-afe62f18d5dc	thai.cipher@example.com	9800000005	20	\N
+139a1227-aeb9-4b07-a26f-b8043528de66	jdys.specter@example.com	9800000000	20	\N
+032f8968-446e-4592-86df-05eee191c7ea	jdys.rook@example.com	9800000001	20	\N
+33fb4f0e-a6c9-46be-99a3-09b195cccab4	jdys.jinx@example.com	9800000002	20	\N
+84daadbf-5246-4d97-91d1-234e3d99aa70	jdys.atlas@example.com	9800000003	20	\N
+75327335-888c-43d9-832d-2762887074b5	jdys.cipher@example.com	9800000004	20	\N
+507b2760-05ee-449b-983a-08d04ec76433	jdys.raze@example.com	9800000005	20	\N
+9233ad3c-0ea6-441d-8854-2e9259a80d55	tz.rook@example.com	9800000000	20	\N
+c60ba573-3922-43c5-b5e8-b7f3b97b2705	tz.jinx@example.com	9800000001	20	\N
+72970b53-88f1-47e7-8dad-06c3a40bd541	tz.atlas@example.com	9800000002	20	\N
+d8e2e3b6-3903-4a6e-98c5-081eefe39d76	tz.cipher@example.com	9800000003	20	\N
+404c84c7-3f0c-485a-8ed4-c6efb6d4464f	tz.raze@example.com	9800000004	20	\N
+0ba05882-9efc-4621-8523-290c1612b165	tz.onyx@example.com	9800000005	20	\N
+51426f94-4f93-4a2c-b851-401369f8881b	br.jinx@example.com	9800000000	20	\N
+26e3743b-08d2-4cc3-a3c5-20450e2a5f96	br.atlas@example.com	9800000001	20	\N
+f2b3a423-5aeb-46de-99fe-858dd558cfc1	br.cipher@example.com	9800000002	20	\N
+1b4e4782-7f07-469f-86dc-12b8772a110d	br.raze@example.com	9800000003	20	\N
+8c1f0106-8d11-48e9-a0c3-0bc4965d1887	br.onyx@example.com	9800000004	20	\N
+74abca04-5459-49ca-9e3b-6b3514afdf17	br.flux@example.com	9800000005	20	\N
+c4289d02-a6c3-4863-9b35-f1a33afc138a	tf14.atlas@example.com	9800000000	20	\N
+0a571830-4134-4d1a-94e5-63a7bc0b6ddd	tf14.cipher@example.com	9800000001	20	\N
+8c393fca-97e6-4892-a7b4-fb35b4f5895a	tf14.raze@example.com	9800000002	20	\N
+20e96405-bb6e-4310-8ab2-f83247cff892	tf14.onyx@example.com	9800000003	20	\N
+3a39cfa5-c6b1-4ab1-80d6-ed75d0269e19	tf14.flux@example.com	9800000004	20	\N
+bbb8abe1-226f-4524-aa7d-91aa5fe3b90f	tf14.viper@example.com	9800000005	20	\N
+b51a174e-269f-4e1e-af03-7e30ae6bcd1a	tl.cipher@example.com	9800000000	20	\N
+349de6cf-de87-4160-9f05-c33c258b6ea8	tl.raze@example.com	9800000001	20	\N
+8c1f83a6-cfa4-4053-8ff4-67698dba5ca3	tl.onyx@example.com	9800000002	20	\N
+ab1958ba-3eda-4306-9582-ea2aced480b4	tl.flux@example.com	9800000003	20	\N
+9163a41a-4d93-447a-b2d6-54c2926b9e5d	tl.viper@example.com	9800000004	20	\N
+f7a2a5ff-b009-4c14-8d01-0a085389bf12	tl.nyx@example.com	9800000005	20	\N
+a04d282c-f73a-4685-8f38-b18683f25ab6	edge.raze@example.com	9800000000	20	\N
+e9f8d554-4aee-46bc-8d60-e9e3418b9138	edge.onyx@example.com	9800000001	20	\N
+df8bca23-85a6-426d-90b4-d4e560d59ab4	edge.flux@example.com	9800000002	20	\N
+230da8af-cc5f-4bc8-9b75-766c4f7065ac	edge.viper@example.com	9800000003	20	\N
+e24754c6-9740-4b60-bdce-fe6a7854f0f2	edge.nyx@example.com	9800000004	20	\N
+dac16657-7e9b-4640-96ed-94331fb3f053	edge.blaze@example.com	9800000005	20	\N
+c1f98c1e-f03f-4289-8e69-4edbd752727a	tc.onyx@example.com	9800000000	20	\N
+5a080485-8eca-47aa-8556-da3c8a029f54	tc.flux@example.com	9800000001	20	\N
+a42d15e0-e5fd-4bae-86b3-1d3c18ed2eae	tc.viper@example.com	9800000002	20	\N
+17d0fa17-bada-4180-99f7-d19ea489ee73	tc.nyx@example.com	9800000003	20	\N
+3b615ecf-e350-4118-8daf-e0cd528b0b33	tc.blaze@example.com	9800000004	20	\N
+abb5fbab-54dd-4974-8ee5-4ccc1159f793	tc.kairo@example.com	9800000005	20	\N
+42c2ce87-c81b-463c-91a4-5e40eb4ad9da	ks.flux@example.com	9800000000	20	\N
+80deccad-1ead-440f-8bdb-7aef24c7f59d	ks.viper@example.com	9800000001	20	\N
+a9d3e637-5e19-4083-b2ca-66ff079832ba	ks.nyx@example.com	9800000002	20	\N
+0e478f90-3f45-43dd-9ff3-cf6d8ca1bf08	ks.blaze@example.com	9800000003	20	\N
+26b75213-74af-4aae-9bfd-8b9299e0a984	ks.kairo@example.com	9800000004	20	\N
+66ee7eac-7d51-40b6-97c7-17ddce4f764d	ks.specter@example.com	9800000005	20	\N
+82b42a55-bfd4-49e7-9708-ac14b022385d	offs.viper@example.com	9800000000	20	\N
+c8acf3b8-44a2-496a-b489-1d282b9a5dd0	offs.nyx@example.com	9800000001	20	\N
+29bbbb7b-302b-442b-bbb1-b5357986c371	offs.blaze@example.com	9800000002	20	\N
+de532f55-909e-4626-87d5-1e8941b3e811	offs.kairo@example.com	9800000003	20	\N
+a5948137-742a-46aa-a8d0-033a2e3ede33	offs.specter@example.com	9800000004	20	\N
+65db3ad7-7d1a-42a8-a5de-0261ec715cfd	offs.rook@example.com	9800000005	20	\N
+f3a79ea2-b209-4bc8-b652-11be50a1abe6	dark.nyx@example.com	9800000000	20	\N
+6d68849c-a98d-4e2e-ad59-25a2f5c69e45	dark.blaze@example.com	9800000001	20	\N
+e9e03d7d-833a-4b2f-91c1-a747c5d41de9	dark.kairo@example.com	9800000002	20	\N
+8e9a9af0-bd20-4478-a8ab-2d7dc5306834	dark.specter@example.com	9800000003	20	\N
+2478c0b4-07a4-470d-b142-5b0af3e9172c	dark.rook@example.com	9800000004	20	\N
+2f4ba994-9d64-4d6a-be71-d07704538fd9	dark.jinx@example.com	9800000005	20	\N
+2ba65770-dd3a-468b-b542-5b610ff92cd5	ss.blaze@example.com	9800000000	20	\N
+8c76d447-6ccb-4470-a972-c075e4e466e8	ss.kairo@example.com	9800000001	20	\N
+17c570ca-2ff5-41ef-b52b-6fd8da712eee	ss.specter@example.com	9800000002	20	\N
+da01c677-0c80-4887-a8c1-170bb7517cae	ss.rook@example.com	9800000003	20	\N
+a6e9ea3e-5ab1-4ec1-b838-80ab2405bf03	ss.jinx@example.com	9800000004	20	\N
+3355980d-ce9b-42f9-b3c3-ad635d97d137	ss.atlas@example.com	9800000005	20	\N
+36f2ed50-ba1f-49c3-8ecc-e92bfab9ae97	bawt.kairo@example.com	9800000000	20	\N
+5ee89283-9ead-4f13-8499-c6f2fa95b660	bawt.specter@example.com	9800000001	20	\N
+991a2f8b-8aae-4d18-a878-962566587c29	bawt.rook@example.com	9800000002	20	\N
+43a2dfcd-e5a7-47ea-9c70-c97b7c877572	bawt.jinx@example.com	9800000003	20	\N
+2b581798-7586-412f-9a2e-fbb23e9e5b1a	bawt.atlas@example.com	9800000004	20	\N
+299aa2c0-db16-4231-956b-1be6c34da7bb	bawt.cipher@example.com	9800000005	20	\N
+1f07f709-88ac-4479-8086-52afa02a305d	frea.specter@example.com	9800000000	20	\N
+69bf9307-e74d-4ab5-a9c3-064663b92120	frea.rook@example.com	9800000001	20	\N
+590ae6c1-6018-4ba3-88ce-de69f63f0630	frea.jinx@example.com	9800000002	20	\N
+2febfa32-73c2-4b53-9054-6ba6ae342d91	frea.atlas@example.com	9800000003	20	\N
+c0eab5e4-5505-4b09-953c-25d337910239	frea.cipher@example.com	9800000004	20	\N
+ee01d2ed-1fa9-444a-888e-f339c62fd0bf	frea.raze@example.com	9800000005	20	\N
+a6dfd64e-7da7-4084-a388-a8a4288f5e4b	beat.rook@example.com	9800000000	20	\N
+69187410-2014-4e22-9ead-cacb5fb34488	beat.jinx@example.com	9800000001	20	\N
+36088bee-eded-4acf-b802-ea4ebfd035eb	beat.atlas@example.com	9800000002	20	\N
+c3fd4f91-6d32-439d-9ce7-ecfd256a2d05	beat.cipher@example.com	9800000003	20	\N
+be1718ee-37cf-4411-9897-30f6e5264622	beat.raze@example.com	9800000004	20	\N
+2aaea3c4-fba6-479c-a7fc-f107351cc438	beat.onyx@example.com	9800000005	20	\N
+6c5141c3-bdd9-4b70-ac20-6436f2537783	mf.jinx@example.com	9800000000	20	\N
+4259b5e1-f7fa-4843-a592-8cc534271368	mf.atlas@example.com	9800000001	20	\N
+6ff0aedb-5242-4a8b-96ba-3393e179a1b8	mf.cipher@example.com	9800000002	20	\N
+b9357594-2570-4c45-aa5e-8386d407a798	mf.raze@example.com	9800000003	20	\N
+5764c154-a9f4-4836-ad2c-e07c78ff22c0	mf.onyx@example.com	9800000004	20	\N
+6b743d63-5f7e-40dd-8a62-63bfb9078cc2	mf.flux@example.com	9800000005	20	\N
+a4db02e6-a371-407a-8878-7c7a8877bb9a	gkp.atlas@example.com	9800000000	20	\N
+2dfce318-70d5-4289-99c5-1f79001e0b73	gkp.cipher@example.com	9800000001	20	\N
+ee436a91-1774-4765-af61-c2eef0c8cb7d	gkp.raze@example.com	9800000002	20	\N
+16acc455-3fd6-43c9-b583-8b10a331ee7c	gkp.onyx@example.com	9800000003	20	\N
+ee012f14-3e1c-456f-9d8c-b5e4a978897c	gkp.flux@example.com	9800000004	20	\N
+757b0755-73e9-4380-a0cc-13a19662ed09	gkp.viper@example.com	9800000005	20	\N
+aea7b004-936b-43a7-850b-5dd2de49af53	tc.cipher@example.com	9800000000	20	\N
+267f4beb-a47f-48eb-9c5d-eff890904f09	tc.raze@example.com	9800000001	20	\N
+d6b4ca36-e0ba-4aa4-970b-de7b82eb048c	tc.onyx@example.com	9800000002	20	\N
+40bc9786-c858-437a-98cf-6510aaec081f	tc.flux@example.com	9800000003	20	\N
+2cd914ac-1d1c-41c6-824e-27f77a8a0d69	tc.viper@example.com	9800000004	20	\N
+485074e0-4cb7-4515-aaf3-977ce78fdfb3	tc.nyx@example.com	9800000005	20	\N
+bf59ecd8-c811-416e-b04b-43b639e32c50	abcd.raze@example.com	9800000000	20	\N
+d3e16540-bc63-4ba3-add5-c73ca15160d9	abcd.onyx@example.com	9800000001	20	\N
+5d9e7037-13cc-47fa-af0c-721f6085625d	abcd.flux@example.com	9800000002	20	\N
+db83f198-7342-44e2-ad9c-ff16fd5aaf9b	abcd.viper@example.com	9800000003	20	\N
+4ade4316-6fd3-49f6-836d-bada3ff1ab9d	abcd.nyx@example.com	9800000004	20	\N
+90b75bc0-1091-4467-bdd7-7dac624060e6	abcd.blaze@example.com	9800000005	20	\N
+7a30b6cf-d542-4bcf-8d8d-b6394b905dc5	fk.onyx@example.com	9800000000	20	\N
+fbfa3f49-1900-4a37-84eb-96dbbbbe548a	fk.flux@example.com	9800000001	20	\N
+748e1141-8acc-4000-aa60-40b6de1cbdde	fk.viper@example.com	9800000002	20	\N
+8a949cd3-8a17-4e0a-82bd-77297b0c00f1	fk.nyx@example.com	9800000003	20	\N
+acf9a657-a47c-400b-8783-66c7785d1e3e	fk.blaze@example.com	9800000004	20	\N
+a49eb2ab-350e-49b9-9ba3-a690fdcb6884	fk.kairo@example.com	9800000005	20	\N
+a4af1b88-cbba-498a-a235-cb7c2db578e5	500.flux@example.com	9800000000	20	\N
+d17a60bf-5b95-47a4-a457-a210dbc8c6f5	500.viper@example.com	9800000001	20	\N
+2a86a18a-613a-4c63-83db-7a7536976786	500.nyx@example.com	9800000002	20	\N
+a542b683-5fb5-457c-b086-8f542f2e02d5	500.blaze@example.com	9800000003	20	\N
+cde53d83-13d9-42ad-afd1-9c55fe1f5c91	500.kairo@example.com	9800000004	20	\N
+e10cb985-f84d-4859-8bfb-79b3590accfd	500.specter@example.com	9800000005	20	\N
+aa9d6214-fa12-43f5-b5b6-4d81a35b2ff7	lw.viper@example.com	9800000000	20	\N
+d8a1c84a-670f-4672-88c6-bda6316d1792	lw.nyx@example.com	9800000001	20	\N
+a7eb77ff-6299-445b-9094-97aa966fae4a	lw.blaze@example.com	9800000002	20	\N
+6d645b60-eec7-4c2b-98e2-e80cd84ea23f	lw.kairo@example.com	9800000003	20	\N
+bf93daab-c318-4f25-ba79-0ca806cf8854	lw.specter@example.com	9800000004	20	\N
+12eeefe3-e49c-4325-9c3c-282100c5ecd2	lw.rook@example.com	9800000005	20	\N
+06c50015-67d3-4e44-88eb-1719227af565	smok.nyx@example.com	9800000000	20	\N
+d574ab14-3576-4158-96a0-5b7256c2f174	smok.blaze@example.com	9800000001	20	\N
+f265da02-47e2-4db0-bcaa-54f99e4527b3	smok.kairo@example.com	9800000002	20	\N
+222c4d29-12de-41a5-9146-7954f65221fd	smok.specter@example.com	9800000003	20	\N
+a3042d6e-5be0-403e-9a87-595011db1d5f	smok.rook@example.com	9800000004	20	\N
+679967dd-807b-47dd-9188-ba7cc91c058c	smok.jinx@example.com	9800000005	20	\N
+fc6d31fe-31ca-4622-9e92-e90fe45bdfa9	cv.blaze@example.com	9800000000	20	\N
+23e90a0d-71d9-48fc-9611-e723376e11a6	cv.kairo@example.com	9800000001	20	\N
+11fdf7e1-e4ae-4edc-be13-48ec74d9bc1a	cv.specter@example.com	9800000002	20	\N
+3907ff77-2084-4096-b1ef-fbb2ea71977b	cv.rook@example.com	9800000003	20	\N
+3d458f4b-8e67-459f-b071-319b3ae0280d	cv.jinx@example.com	9800000004	20	\N
+c71d89d8-281d-4810-9f48-96ed85338b17	cv.atlas@example.com	9800000005	20	\N
+6a2ea411-cb32-4a23-89d8-069f72e52982	cc.kairo@example.com	9800000000	20	\N
+fdd75024-4e29-41b6-a067-14e63ebf8f2c	cc.specter@example.com	9800000001	20	\N
+8557444d-3624-49d6-8139-4fe35534e872	cc.rook@example.com	9800000002	20	\N
+a0f49167-ede9-45b0-99a6-63adb571c336	cc.jinx@example.com	9800000003	20	\N
+2e9e50fe-4caa-41d6-88c0-e9631886f386	cc.atlas@example.com	9800000004	20	\N
+9ee05f24-e989-4459-9453-4f54a78be9ec	cc.cipher@example.com	9800000005	20	\N
+9cae4f74-8524-480c-8454-7bd7a92d48da	rvce.specter@example.com	9800000000	20	\N
+1c3d695c-f60e-4ead-b920-58087add10a6	rvce.rook@example.com	9800000001	20	\N
+84c20bf5-0bb2-46d3-bb10-a61c7921ce4f	rvce.jinx@example.com	9800000002	20	\N
+03d4ac9c-2c64-43a5-a8cf-360ef7c88877	rvce.atlas@example.com	9800000003	20	\N
+0f604a48-8912-4578-b1ba-0bec81d37c9b	rvce.cipher@example.com	9800000004	20	\N
+5c1c7256-76ed-4db4-8d9a-1fe177986992	rvce.raze@example.com	9800000005	20	\N
 \.
 
 COPY public.staff (email, role, created_at, games, name, phone, discord, listed) FROM stdin;
@@ -2226,7 +2564,7 @@ COPY public.sync_runs (id, game_id, started_at, finished_at, ok, dry_run, summar
 COPY public.veto_choices (match_id, team_id, choice, submitted_by, submitted_at) FROM stdin;
 \.
 
-SELECT pg_catalog.setval('public.announcements_id_seq', 2, true);
+SELECT pg_catalog.setval('public.announcements_id_seq', 6, true);
 
 SELECT pg_catalog.setval('public.sync_issues_id_seq', 1, false);
 

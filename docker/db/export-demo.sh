@@ -11,8 +11,9 @@ if docker exec "$container" psql -U postgres -tAc "select 1 from player_contacts
   exit 1
 fi
 {
-  echo "-- Demo tournament: invented teams and players (every address is @example.com),"
-  echo "-- Free Fire and BGMI qualifiers part-played, the Valorant bracket drawn and"
+  echo "-- Demo tournament: invented players (every address is @example.com), CODM on the"
+  echo "-- 29 official team names with Hardpoint day played, Free Fire and BGMI"
+  echo "-- qualifiers part-played, the Valorant bracket drawn and"
   echo "-- a few staff accounts. Regenerate with docker/db/export-demo.sh."
   echo
   echo "SET session_replication_role = replica;"
