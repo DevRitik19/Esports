@@ -52,7 +52,7 @@ export async function CodmOverview() {
             <span className="mt-1 block text-[clamp(2.25rem,8vw,4.5rem)] text-muted">{EVENT.edition}</span>
           </h1>
           <p className="mt-6 max-w-xl text-lg text-muted">
-            &ldquo;{EVENT.tagline}&rdquo; Online groups every evening, then an offline bracket at the {EVENT.venue}.
+            &ldquo;{EVENT.tagline}&rdquo; Three online mode days, 23–25 Nov, then the top 8 play the offline bracket at the {EVENT.venue}, 27–29 Nov.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Link href="/codm/schedule" className="rounded-sm bg-signal px-5 py-2.5 text-sm font-semibold text-bg hover:bg-text">
@@ -130,7 +130,7 @@ export async function CodmOverview() {
       {/* Groups snapshot */}
       {t.groups.length > 0 && (
         <section className="mt-16">
-          <SectionHeading note={`Top ${t.config.qualifiersPerGroup} per group advance`} title="Group standings">
+          <SectionHeading note="Group winners and the best runner-up advance" title="Group standings">
             <Link href="/codm/standings" className="link text-sm">Full tables</Link>
           </SectionHeading>
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -162,7 +162,10 @@ export async function CodmOverview() {
           <div className="flex flex-col gap-3">
             {PRIZES.map((p, i) => (
               <div key={p.place} className="panel flex items-center justify-between p-4">
-                <span className={`font-cond text-lg font-bold ${i === 0 ? "text-signal" : ""}`}>{p.place} place</span>
+                <span>
+                  <span className={`block font-cond text-lg font-bold ${i === 0 ? "text-signal" : ""}`}>{p.place} place</span>
+                  <span className="text-xs text-muted">{p.note}</span>
+                </span>
                 <span className="tnum font-cond text-xl font-semibold">{inr(p.amount)}</span>
               </div>
             ))}
