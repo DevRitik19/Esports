@@ -7,7 +7,8 @@ import { gamesFromForm, staffTags } from "@/lib/staff";
 import { TOURNAMENT_TAG } from "@/lib/data";
 import { knockoutSkeleton } from "@/lib/fixtures";
 import { KNOCKOUT_TIMES, MODE_NAME } from "@/content/event";
-import { matchOfficialTeams, MODE_DAYS, officialFixtures, OFFICIAL_GROUPS, picksFromFixtures, waveStarts } from "@/content/codm-schedule";
+import { MODE_DAYS, OFFICIAL_GROUPS, waveStarts } from "@/content/codm-schedule";
+import { applyCodm, applyLobbyGroups, isApplied, OFFICIAL_GAMES } from "@/lib/official-apply";
 import { mapsNeeded, resolveVeto, VETO_SEQUENCE } from "@/lib/rules";
 import { csvToRows, parseMode, parseTournament, toCsv } from "@/lib/parse";
 import { createClient } from "@/lib/supabase/server";
@@ -291,42 +292,28 @@ export const importCsv = staff(async (form, { db }) => {
  * published 138, and sets the qualifying rules and the three mode days.
  */
 export const applyOfficialDraw = staff(async (form, { db }) => {
-  const teams = check<{ id: string; name: string }[]>(await db.from("teams").select("id, name").eq("game_id", "codm"));
-  if (!teams.length) throw new Error("Sync the CODM registrations first.");
-  const applied = check<{ id: string; side_a: string; side_b: string }[]>(await db.from("matches").select("id, side_a, side_b").eq("game_id", "codm").like("id", "HP-W%"));
-  const earlier = picksFromFixtures(applied.map((m) => ({ id: m.id, a: { teamId: m.side_a }, b: { teamId: m.side_b } })));
   const chosen = Object.fromEntries(Object.values(OFFICIAL_GROUPS).flat().map((n, i) => [n, str(form, `pick${i}`)]).filter(([, v]) => v));
-  const { ids, missing } = matchOfficialTeams(teams, { ...earlier, ...chosen });
-  if (missing.length) throw new Error(`Pick the registered team for: ${missing.join(", ")}.`);
-
-  const group = check<{ id: string }[]>(await db.from("matches").select("id").eq("game_id", "codm").in("stage", ["group", "tiebreak"]));
-  if (group.length) {
-    const played = check<{ match_id: string }[]>(await db.from("maps").select("match_id").in("match_id", group.map((m) => m.id)).limit(1));
-    if (played.length) throw new Error("Group results are already in. Fix single matches on their own pages instead.");
-    check(await db.from("matches").delete().in("id", group.map((m) => m.id)));
-  }
-
-  const official = new Map([...ids].map(([name, id]) => [id, name]));
-  const groupOf = new Map(Object.entries(OFFICIAL_GROUPS).flatMap(([g, names]) => names.map((n) => [n, g])));
-  check(await db.from("teams").update({ group_name: null }).eq("game_id", "codm"));
-  for (const g of Object.keys(OFFICIAL_GROUPS)) {
-    check(await db.from("teams").update({ group_name: g }).in("id", [...official].filter(([, n]) => groupOf.get(n) === g).map(([id]) => id)));
-  }
-
-  const { fixtures } = officialFixtures((n) => ids.get(n));
-  check(await db.from("matches").insert(fixtures.map((f) => ({
-    id: f.id, game_id: "codm", stage: "group", group_name: f.group, round: f.wave, lobby: f.lobby, mode: f.mode, map: f.map,
-    best_of: 1, side_a: f.a, side_b: f.b, scheduled_at: f.scheduledAt ?? null,
-  }))));
-  check(await db.from("config").upsert([
-    { key: "qualifiers_per_group", value: "1" },
-    { key: "best_runners_up", value: "1" },
-    { key: "tiebreakers", value: "h2h, playoff" },
-  ]));
-  check(await db.from("match_days").upsert(MODE_DAYS.map((d) => ({ day: d.date, mode: d.mode, map: d.map }))));
-  const unlisted = teams.length - official.size;
-  return `${fixtures.length} group matches created for 29 teams in 7 groups.${unlisted ? ` ${unlisted} other registered team(s) have no group.` : ""}`;
+  return applyCodm(db, chosen);
 }, { game: "codm" });
+
+/**
+ * Admins: CODM, Free Fire and BGMI's published groups and fixtures in one
+ * go. A game already set up is left alone, since applying again would wipe
+ * its room details and check-ins.
+ */
+export const applyAllOfficial = staff(async (_form, { db }) => {
+  const lines: string[] = [];
+  for (const game of OFFICIAL_GAMES) {
+    const name = GAMES[game].short;
+    try {
+      if (await isApplied(db, game)) lines.push(`${name}: already set up.`);
+      else lines.push(`${name}: ${game === "codm" ? await applyCodm(db) : await applyLobbyGroups(db, game)}`);
+    } catch (e) {
+      lines.push(`${name}: not done. ${(e as Error).message}`);
+    }
+  }
+  return lines.join(" ");
+}, { admin: true });
 
 /** Sets (or moves) a mode day's first wave; every wave on that day follows. */
 export const setModeDayStart = staff(async (form, { db }) => {

@@ -19,7 +19,17 @@ export async function proxy(request: NextRequest) {
       },
     },
   });
-  await supabase.auth.getUser();
+  const { data } = await supabase.auth.getUser();
+
+  // The header's staff hint (see lib/staff-cookie): set once for people who
+  // signed in before it existed, so admins see "Admin" without logging in again.
+  if (data.user && !request.cookies.has("yg-staff") && !request.cookies.has("yg-staff-checked")) {
+    const [admin, staff] = await Promise.all([supabase.rpc("is_admin"), supabase.rpc("is_staff")]);
+    const role = admin.data ? "admin" : staff.data ? "referee" : undefined;
+    const month = { path: "/", sameSite: "lax" as const, maxAge: 60 * 60 * 24 * 30 };
+    if (role) response.cookies.set("yg-staff", role, month);
+    else response.cookies.set("yg-staff-checked", "1", month);
+  }
   return response;
 }
 

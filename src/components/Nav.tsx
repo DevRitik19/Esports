@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GAME_LIST } from "@/games/registry";
 
 const LINKS = GAME_LIST.map((g) => ({ href: `/${g.id}`, label: g.short, accent: g.accent }));
@@ -18,6 +18,14 @@ export function NavShell({ pathname }: { pathname: string }) {
   const [tapped, setTapped] = useState<{ from: string; to: string }>();
   const shown = tapped && tapped.from === pathname ? tapped.to : pathname;
   const active = (href: string) => shown === href || shown.startsWith(`${href}/`);
+  // Staff get the control room instead of "My matches" (a hint cookie set at login).
+  const [role, setRole] = useState<"admin" | "referee">();
+  useEffect(() => {
+    const v = /(?:^|; )yg-staff=(admin|referee)/.exec(document.cookie)?.[1] as "admin" | "referee" | undefined;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- cookies are only readable after hydration
+    setRole(v);
+  }, [pathname]);
+  const account = role ? { href: "/admin", label: role === "admin" ? "Admin" : "Referee", mobile: role === "admin" ? "Admin" : "Referee desk" } : { href: "/me", label: "My matches", mobile: "My matches and login" };
   const tap = (href: string) => {
     setTapped({ from: pathname, to: href });
     setOpen(false);
@@ -47,11 +55,11 @@ export function NavShell({ pathname }: { pathname: string }) {
             </Link>
           ))}
           <Link
-            href="/me"
+            href={account.href}
             aria-current={pathname.startsWith("/me") || pathname.startsWith("/admin") || pathname.startsWith("/ref") ? "page" : undefined}
             className="caps ml-3 border border-line-strong bg-bg px-3.5 py-2 text-[0.72rem] font-bold hover:border-signal hover:text-signal"
           >
-            My matches
+            {account.label}
           </Link>
         </nav>
 
@@ -82,8 +90,8 @@ export function NavShell({ pathname }: { pathname: string }) {
               {l.label}
             </Link>
           ))}
-          <Link href="/me" onClick={() => setOpen(false)} className="btn mt-2 mb-2 w-full">
-            My matches and login
+          <Link href={account.href} onClick={() => setOpen(false)} className="btn mt-2 mb-2 w-full">
+            {account.mobile}
           </Link>
         </nav>
       )}

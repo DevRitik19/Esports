@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { loadResultStates } from "@/app/admin/[game]/lobby/data";
-import { GAME_LIST } from "@/games/registry";
+import { ActionForm } from "@/components/ActionForm";
+import { GAME_LIST, GAMES } from "@/games/registry";
+import { isApplied, OFFICIAL_GAMES } from "@/lib/official-apply";
+import { createClient } from "@/lib/supabase/server";
+import { applyAllOfficial } from "./actions";
 import { getTodos } from "@/lib/admin";
 import { canStaff, requestNow, requireStaff } from "@/lib/auth";
 import { getTournament } from "@/lib/data";
@@ -66,6 +70,8 @@ async function OverviewBody() {
         {viewer.staffRole === "admin" ? "You run every game." : `You run ${games.map((g) => g.short).join(" and ")}.`}
       </p>
 
+      {viewer.staffRole === "admin" && <OfficialSchedules />}
+
       <ul className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {nights.map((n) => {
           const todo = todos.get(n.def.id) ?? { pending: 0, openDisputes: 0 };
@@ -106,5 +112,32 @@ async function OverviewBody() {
         )}
       </section>
     </>
+  );
+}
+
+/** Admins: whether CODM, Free Fire and BGMI's published fixtures are in, and one button for the rest. */
+async function OfficialSchedules() {
+  const db = await createClient();
+  const done = await Promise.all(OFFICIAL_GAMES.map(async (g) => [g, await isApplied(db, g)] as const));
+  const todo = done.filter(([, ok]) => !ok);
+  return (
+    <section className={`panel mt-6 p-5 ${todo.length ? "border-warn/50" : ""}`}>
+      <h2 className="font-cond text-lg font-bold">Published schedules</h2>
+      <ul className="mt-3 flex flex-wrap gap-2 text-sm">
+        {done.map(([g, ok]) => (
+          <li key={g} className={`tag ${ok ? "text-win" : "text-warn"}`}>{GAMES[g].short}: {ok ? "fixtures in" : "not set up"}</li>
+        ))}
+      </ul>
+      {todo.length > 0 ? (
+        <ActionForm action={applyAllOfficial} submit={`Set up ${todo.map(([g]) => GAMES[g].short).join(", ")}`} className="mt-4 flex flex-col gap-2">
+          <p className="text-sm text-muted">
+            Puts every registered team in its published group and creates each match at its published time, so referees can run tonight.
+            Games already set up are left alone.
+          </p>
+        </ActionForm>
+      ) : (
+        <p className="mt-2 text-sm text-muted">Every published group and fixture is in. Change a game&apos;s on its Setup tab.</p>
+      )}
+    </section>
   );
 }
