@@ -7,6 +7,7 @@ import { valorantBestOf, VALORANT_SCHEDULE, VALORANT_TEAMS } from "@/content/val
 import { scheduleKnockout, singleElimination } from "@/lib/knockout";
 import { matchTime, planStageMatches, schedulePools } from "@/lib/lobby/deal";
 import { matchNames } from "@/lib/match-names";
+import { normName, tagFor, teamIdFor } from "@/lib/sync/parse";
 import type { LobbyEntrant } from "@/lib/lobby/types";
 import type { PostgrestClient } from "@supabase/postgrest-js";
 
@@ -119,7 +120,19 @@ export async function applyValorant(db: Db, chosen: Record<string, string> = {})
   const teams = await registered(db, "valorant");
   if (!teams.length) throw new Error("Sync the Valorant registrations first.");
   const { ids, missing } = matchNames(VALORANT_TEAMS, teams, chosen);
-  if (missing.length) throw new Error(`Pick the registered team for: ${missing.join(", ")}.`);
+  // The published bracket is the official list: a team in it that isn't on
+  // the registration sheet is added under its published name. Its sheet key
+  // lets the sync adopt it if it registers later.
+  if (missing.length) {
+    const taken = new Set(teams.map((t) => t.id));
+    const added = missing.map((name) => {
+      const id = teamIdFor("valorant", name, taken);
+      taken.add(id);
+      ids.set(name, id);
+      return { id, game_id: "valorant", name, tag: tagFor(name), status: "confirmed", eligible: true, sheet_key: normName(name) };
+    });
+    check(await db.from("teams").insert(added));
+  }
 
   const old = check<{ id: string }[]>(await db.from("matches").select("id").eq("game_id", "valorant"));
   if (old.length) {
@@ -133,7 +146,8 @@ export async function applyValorant(db: Db, chosen: Record<string, string> = {})
     id: r.id, game_id: "valorant", stage: r.stage, round: r.round, best_of: r.bestOf,
     side_a: r.sideA, side_b: r.sideB, scheduled_at: times.get(r.id) ?? null,
   }))));
-  return `${rows.length} matches: 16 in the Round of 32, then the Round of 16 and 8 at the published times; Semifinals and Final offline.`;
+  const note = missing.length ? ` Added ${missing.length} team(s) not on the registration sheet: ${missing.join(", ")}.` : "";
+  return `${rows.length} matches: 16 in the Round of 32, then the Round of 16 and 8 at the published times; Semifinals and Final offline.${note}`;
 }
 
 /** Has this game's published schedule already been put in? (Re-applying would wipe rooms and check-ins.) */
