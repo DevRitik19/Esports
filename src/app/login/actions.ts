@@ -1,6 +1,7 @@
 "use server";
 
 import type { EmailOtpType } from "@supabase/supabase-js";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { rememberStaffRole } from "@/lib/staff-cookie";
 import { createClient, createServiceClient } from "@/lib/supabase/server";
@@ -21,14 +22,25 @@ export async function sendLoginCode(_: LoginState, form: FormData): Promise<Logi
   if (error) return { error: "Login is unavailable right now. Try again in a minute." };
   if (!registered) return { email };
 
-  const site = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
   const db = await createClient();
   const { error: otpError } = await db.auth.signInWithOtp({
     email,
-    options: { emailRedirectTo: `${site}/auth/confirm`, shouldCreateUser: true },
+    options: { emailRedirectTo: `${await siteOrigin()}/auth/confirm`, shouldCreateUser: true },
   });
   if (otpError?.status === 429) return { email, error: "A code was sent less than a minute ago. Wait a bit before asking for another." };
+  if (otpError) {
+    console.error("login code not sent:", otpError.message);
+    return { error: "The login email couldn't be sent. Try again in a minute; if it keeps failing, tell the organisers." };
+  }
   return { email };
+}
+
+/** Where the email link should come back to: the address this request came in on. */
+async function siteOrigin(): Promise<string> {
+  const h = await headers();
+  const host = h.get("x-forwarded-host") ?? h.get("host");
+  if (host) return `${h.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https")}://${host}`;
+  return process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 }
 
 export async function verifyLoginCode(prev: LoginState, form: FormData): Promise<LoginState> {

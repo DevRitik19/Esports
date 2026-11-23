@@ -35,7 +35,7 @@ async function Confirm({ searchParams }: Pick<PageProps<"/auth/confirm">, "searc
 
   return (
     <form action={confirmLink} className="panel flex flex-col gap-4 p-6">
-      <p className="font-cond text-xl font-bold">Log in to CODM Carnage 2.0</p>
+      <p className="font-cond text-xl font-bold">Log in to Yugaantar Esports</p>
       {tokenHash || code ? (
         <>
           <input type="hidden" name="token_hash" value={tokenHash} />
