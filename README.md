@@ -5,7 +5,7 @@ The esports site for **Yugaantar 2026 · Gameverse** at Scaler School of Technol
 | Game | Entry | Format |
 |---|---|---|
 | Call of Duty: Mobile | squads of 5+1 | 29 teams in 7 groups over three online mode days, then the top 8 offline (CODM Carnage 2.0: Rift Ops) |
-| Valorant | teams of 5 | single elimination: BO1 online, Semifinals and Final offline |
+| Valorant | teams of 5 | 32-team single elimination: Round of 32, 16 and 8 online (BO1, 23–25 Nov), Semifinals and Final offline |
 | BGMI | squads of 4+1 | 64 teams in 4 fixed groups of 16, top 32 to the Semifinals, top 16 to the campus Final |
 | Free Fire MAX | squads of 4+1 | 127 teams in 11 fixed groups, 48 straight to the LAN Semifinals, top 12 to the Grand Final |
 | Smash Karts | solo | free-for-all lobbies of 20, reshuffled every match, 20 → 1 points |
@@ -124,7 +124,7 @@ On Setup, a lobby game's control room:
 - edits points tables, tiebreakers and advancement rules;
 - lists every lobby with its result state.
 
-For Valorant and FIFA it draws the bracket, seeded or random. Valorant's online rounds are scheduled from its doc: 4 lobbies, 60-minute slots from 1 PM.
+For Valorant and FIFA it draws the bracket, seeded or random. Valorant's published bracket (32 teams, R32 on 23–24 Nov, R16 on 24–25 Nov, R8 on 25 Nov) is set up from Overview with the other games' fixtures.
 
 ![Admin: Free Fire control room](docs/screenshots/admin-lobbies.png)
 
