@@ -4,7 +4,7 @@ import { StatusChip } from "@/components/StatusChip";
 import { KnockoutSetup } from "@/app/admin/knockout/KnockoutSetup";
 import { LobbyFilter } from "@/components/LobbyFilter";
 import { LOBBIES } from "@/content/codm-schedule";
-import { getAdminOverview } from "@/lib/admin";
+import { getPendingByMatch, getTodos } from "@/lib/admin";
 import { GAMES, type GameId } from "@/games/registry";
 import { canStaff, requireStaff } from "@/lib/auth";
 import { loadTournament } from "@/lib/data";
@@ -23,21 +23,22 @@ export function H2HAdmin({ game }: { game: GameId }) {
 async function Overview({ game }: { game: GameId }) {
   const viewer = await requireStaff();
   if (!canStaff(viewer, game)) return <p className="panel p-5 text-sm text-muted">You aren&apos;t on the staff for {GAMES[game].name}.</p>;
-  const [t, o] = await Promise.all([loadTournament(game), getAdminOverview()]);
-  const name = (id?: string, label?: string) => (id ? t.teams.find((x) => x.id === id)?.name ?? id : label ?? "TBD");
-  const open = o.disputes.filter((d) => d.status === "open").length;
-  const pending = Object.values(o.pendingByMatch).reduce((a, b) => a + b, 0);
+  // This game's counts only; the match list itself comes from the uncached read staff forms need.
+  const [t, pendingByMatch, todos] = await Promise.all([loadTournament(game), getPendingByMatch(game), getTodos([game])]);
+  const teamName = new Map(t.teams.map((x) => [x.id, x.name]));
+  const name = (id?: string, label?: string) => (id ? teamName.get(id) ?? id : label ?? "TBD");
+  const open = todos.get(game)?.openDisputes ?? 0;
+  const pending = Object.values(pendingByMatch).reduce((a, b) => a + b, 0);
   const live = t.matches.filter((m) => m.status === "live").length;
   const byes = t.matches.filter((m) => m.a.bye || m.b.bye).length;
   const matches = [...t.matches].filter((m) => !m.a.bye && !m.b.bye).sort((x, y) => (x.scheduledAt ?? "9999").localeCompare(y.scheduledAt ?? "9999") || x.id.localeCompare(y.id));
 
   return (
     <>
-      <h1 className="font-display text-3xl font-bold">Matches</h1>
       {game !== "codm" && !t.matches.length && (
         <KnockoutSetup game={game as "valorant" | "fifa"} entrants={t.teams.filter((x) => x.eligible !== false && x.status !== "withdrawn" && x.status !== "disqualified").length} />
       )}
-      <p className="mt-1 text-sm text-muted">Enter map scores per match and publish them when they&apos;re right.</p>
+      <p className="text-sm text-muted">Open a match to check teams in, share the room, enter scores and publish them.</p>
 
       <div className="mt-6 grid grid-cols-3 gap-3">
         {[
@@ -54,7 +55,7 @@ async function Overview({ game }: { game: GameId }) {
 
       {byes > 0 && <p className="mt-6 text-sm text-muted">{byes} first-round byes are walked over automatically and not listed.</p>}
       {matches.length === 0 ? (
-        <p className="panel mt-6 p-5 text-sm text-muted">{game === "codm" ? <>No matches yet. Import teams and generate fixtures on the <Link href="/admin/setup" className="link">Setup</Link> page.</> : "No matches yet. Draw the bracket above once registration closes."}</p>
+        <p className="panel mt-6 p-5 text-sm text-muted">{game === "codm" ? <>No matches yet. Apply the official groups and fixtures on <Link href="/admin/codm/setup" className="link">Setup</Link>.</> : "No matches yet. Draw the bracket above once registration closes."}</p>
       ) : (
         <>
         {game === "codm" && <div className="mt-6"><LobbyFilter scope="codm-admin" lobbies={LOBBIES} /></div>}
@@ -86,7 +87,7 @@ async function Overview({ game }: { game: GameId }) {
                   <td className="px-4 py-2.5">
                     <span className="flex items-center gap-2">
                       <StatusChip status={m.status} />
-                      {o.pendingByMatch[m.id] && <span className="text-xs font-semibold text-warn">{o.pendingByMatch[m.id]} pending</span>}
+                      {pendingByMatch[m.id] && <span className="text-xs font-semibold text-warn">{pendingByMatch[m.id]} pending</span>}
                     </span>
                   </td>
                   <td className="px-4 py-2.5 text-right">

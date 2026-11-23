@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { ActionForm, inputClass } from "@/components/ActionForm";
 import { StaffContactFields } from "@/components/StaffContactFields";
 import { GAME_LIST, isGameId } from "@/games/registry";
-import { getAdminOverview } from "@/lib/admin";
+import { getStaffList } from "@/lib/admin";
 import { requireAdmin } from "@/lib/auth";
 import { covers, refTag, staffTags, type StaffRow } from "@/lib/staff";
 import { removeStaff, saveStaff } from "../actions";
@@ -72,7 +72,7 @@ function RoleFields({ role = "referee", games = [] as string[] | null, idPrefix 
 
 async function Staff() {
   const viewer = await requireAdmin();
-  const { staff } = await getAdminOverview();
+  const staff = await getStaffList();
   const rows = (staff as StaffRow[]).map((s) => ({ ...s, games: s.games?.filter(isGameId) ?? null }));
   const me = viewer.email.toLowerCase();
 
