@@ -40,7 +40,7 @@ function CodeForm({ email, onBack }: { email: string; onBack: () => void }) {
       <div role="status">
         <p className="font-cond text-xl font-bold">Check your inbox</p>
         <p className="mt-2 text-sm text-muted">
-          If <span className="text-text">{email}</span> leads a team or is a solo entry, a login code is on its way. Check Spam and Promotions too.
+          If <span className="text-text">{email}</span> leads a team, is a solo entry or is on staff, a login code is on its way. Check Spam and Promotions too.
         </p>
       </div>
       <label className="flex flex-col gap-2">
@@ -52,7 +52,7 @@ function CodeForm({ email, onBack }: { email: string; onBack: () => void }) {
           autoComplete="one-time-code"
           pattern="[0-9 ]{6,12}"
           maxLength={12}
-          placeholder="123456"
+          placeholder="12345678"
           className={`${input} tnum font-cond text-xl`}
         />
       </label>

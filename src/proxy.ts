@@ -4,6 +4,13 @@ import { NextResponse, type NextRequest } from "next/server";
 // Keeps the Supabase session cookie fresh on the signed-in areas.
 // Public pages are cached and never read the session, so they're excluded.
 export async function proxy(request: NextRequest) {
+  // An email link that fell back to the Site URL lands on the home page; send it on to the confirm page.
+  const { pathname, searchParams, search } = request.nextUrl;
+  if (pathname === "/") {
+    if (!searchParams.has("code") && !searchParams.has("token_hash")) return NextResponse.next();
+    return NextResponse.redirect(new URL(`/auth/confirm${search}`, request.url));
+  }
+
   let response = NextResponse.next({ request });
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -34,5 +41,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/me/:path*", "/admin/:path*", "/ref/:path*", "/login"],
+  matcher: ["/", "/me/:path*", "/admin/:path*", "/ref/:path*", "/login"],
 };
