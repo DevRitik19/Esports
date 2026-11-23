@@ -2,7 +2,7 @@
 
 import { refresh, updateTag } from "next/cache";
 import { canStaff, requireAdmin, requireStaff } from "@/lib/auth";
-import { GAMES, isGameId } from "@/games/registry";
+import { GAMES, isGameId, type GameId } from "@/games/registry";
 import { gamesFromForm, staffTags } from "@/lib/staff";
 import { TOURNAMENT_TAG } from "@/lib/data";
 import { knockoutSkeleton } from "@/lib/fixtures";
@@ -363,8 +363,11 @@ export const generateBracket = staff(async (form, { db }) => {
 export const addAnnouncement = staff(async (form, { db }) => {
   const title = str(form, "title");
   if (!title) throw new Error("Title is required.");
-  check(await db.from("announcements").insert({ title, body: str(form, "body"), date: str(form, "date") || undefined }));
-  return "Announcement published.";
+  // Empty = every game (the hub and all game pages); otherwise one game's pages.
+  const game = str(form, "game");
+  if (game && !isGameId(game)) throw new Error("Pick a game, or everyone.");
+  check(await db.from("announcements").insert({ title, body: str(form, "body"), date: str(form, "date") || undefined, game_id: game || null }));
+  return game ? `Announcement published to ${GAMES[game as GameId].name}.` : "Announcement published to every game.";
 }, { admin: true });
 
 export const deleteAnnouncement = staff(async (form, { db }) => {
@@ -373,7 +376,7 @@ export const deleteAnnouncement = staff(async (form, { db }) => {
 }, { admin: true });
 
 export const saveConfig = staff(async (form, { db }) => {
-  const keys = ["qualifiers_per_group", "tiebreakers", "coin_toss", "perspective", "event_dates", "registration_deadline", "registration_url"];
+  const keys = ["qualifiers_per_group", "best_runners_up", "tiebreakers", "coin_toss", "perspective", "event_dates", "registration_deadline", "registration_url"];
   check(await db.from("config").upsert(keys.map((key) => ({ key, value: str(form, key) }))));
   return "Settings saved.";
 }, { game: "codm" });

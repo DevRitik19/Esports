@@ -87,7 +87,10 @@ CODM keeps its own dashboard: veto, substitutions and Veto Power.
 
 ### Referee screens
 
-**Tonight (`/ref`)** lists the next match day's lobbies and matches, but only for the games the referee runs.
+**The control room (`/admin`)** is one place for admins and referees, with one menu down the side (a scrolling row on phones):
+- **Overview:** a card per game with what needs attention (results to publish, open disputes) and the next match day's lobbies and matches, each opening its staff page.
+- **One entry per game.** Admins see all six; a referee sees only the games on their tags, and any other game's pages refuse them (so does the database).
+- **Across games:** Disputes (every game's, open first), Registrations, and for admins Announcements and Staff. *Your details* holds a staff member's contact info.
 
 **Staff (`/admin/staff`)** gives accounts roles by email: `admin`, or game tags such as `codm-ref`, `valo-ref`, `bgmi-ref`, `ff-ref`, `karts-ref` and `fifa-ref` (or all games). Admins run everything. A referee runs their own games end to end (stages, draws, brackets, publishing results, that game's registration sync) and can't touch any other game; the database enforces this too, down to who can read player contact details.
 
@@ -111,7 +114,12 @@ The same page sets the room details, marks the lobby live or cancelled, shows wh
 
 ### Admin
 
-**Games (`/admin`)** leads to each game's control room. For lobby games the control room:
+Each game's page has the same header and tabs:
+- **Lobby games (Free Fire, BGMI, Smash Karts):** *Lobbies* is match night (every lobby's result state, then the standings); *Setup* holds the official groups, entrants, draw and schedule, and stage settings.
+- **CODM:** *Matches* (filter by day and lobby), *Setup* (official groups and fixtures, mode day times, bracket) and *Settings* (qualifying, map pool).
+- **Valorant and FIFA:** *Matches*, with the bracket draw until it's made.
+
+On Setup, a lobby game's control room:
 - creates the stages from the game's doc;
 - fills entrants from eligible teams, or from the previous stage's qualifiers;
 - draws lobbies and schedules them, with the doc's times filled in;
@@ -166,7 +174,7 @@ Unstop ──► registrations sheet (one tab per game)
    - **Free Fire, BGMI:** open the game's control room → *Create stages* → on the Qualifiers stage, *Apply groups and schedule*. That puts every registered team in its published group (pick any name that doesn't match) and creates every match at the published time.
    - **Smash Karts:** *Create stages* → *Fill from eligible teams* → *Draw lobbies*.
    - **Valorant, FIFA:** *Draw bracket*.
-   - **CODM:** Setup → *Apply groups and fixtures* (the official 29 teams and 138 matches; pick any name that doesn't match a registration) → set the S&D day's first wave once it's decided → *Generate bracket* after the group stage.
+   - **CODM:** CODM → Setup → *Apply groups and fixtures* (the official 29 teams and 138 matches; pick any name that doesn't match a registration) → set the S&D day's first wave once it's decided → *Generate bracket* after the group stage.
 4. Add referees under Staff and tag each with their games (e.g. `valo-ref`).
 
 ### A lobby night (Free Fire, BGMI, Smash Karts)
