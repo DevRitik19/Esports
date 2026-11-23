@@ -2,6 +2,7 @@
 
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
+import { rememberStaffRole } from "@/lib/staff-cookie";
 import { createClient, createServiceClient } from "@/lib/supabase/server";
 
 export interface LoginState {
@@ -39,6 +40,7 @@ export async function verifyLoginCode(prev: LoginState, form: FormData): Promise
   const { error } = await db.auth.verifyOtp({ email, token, type: "email" });
   if (error) return { email, error: "That code is wrong or has expired. Check the latest email, or ask for a new code." };
   await db.rpc("claim_player");
+  await rememberStaffRole(db);
   redirect("/me");
 }
 
@@ -56,5 +58,6 @@ export async function confirmLink(form: FormData): Promise<void> {
       : { error: new Error("missing token") };
   if (error) redirect("/auth/confirm?failed=1");
   await db.rpc("claim_player");
+  await rememberStaffRole(db);
   redirect("/me");
 }
