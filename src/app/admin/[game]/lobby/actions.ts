@@ -3,6 +3,7 @@
 import { refresh, updateTag } from "next/cache";
 import { unstable_rethrow } from "next/navigation";
 import { checkDestinations, normaliseSettings, parseAdvanceRules, parseNumberList, parseTiebreakers } from "@/components/lobby/settings";
+import { matchOfficialGroups, OFFICIAL_LOBBY_GROUPS, officialGroupOf, officialNames } from "@/content/lobby-groups";
 import { GAMES, isGameId, type GameId } from "@/games/registry";
 import { canStaff, requireStaff } from "@/lib/auth";
 import { gameTag, TOURNAMENT_TAG } from "@/lib/data";
@@ -192,6 +193,54 @@ export const planLobbies = lobby(async (form, { db, game }) => {
 
   const lobbies = new Set(plan.map((m) => m.lobby)).size;
   return `Drew ${plan.length} matches across ${lobbies} lobb${lobbies === 1 ? "y" : "ies"}.`;
+});
+
+/**
+ * The organisers' published groups for the first stage: matches the
+ * registered teams to them, makes those the stage's entrants in their groups,
+ * and creates every match at the published times.
+ */
+export const applyOfficialGroups = lobby(async (form, { db, game }) => {
+  const official = OFFICIAL_LOBBY_GROUPS[game];
+  const template = GAMES[game].stages?.find((s) => s.id === official?.stage);
+  if (!official || !template?.schedule) throw new Error("This game has no published groups.");
+  const stage = await stageRow(db, game, `${game}-${template.id}`);
+  const settings = normaliseSettings(stage.settings);
+
+  const existing = check<{ id: string; results: string }[]>(await db.from("lobby_matches").select("id, results").eq("stage_id", stage.id));
+  if (existing.some((m) => m.results !== "none")) throw new Error("Results are already entered for this stage, so its groups can't change.");
+
+  const teams = check<{ id: string; name: string }[]>(await db.from("teams").select("id, name").eq("game_id", game));
+  const before = check<{ team_id: string; pool: string | null }[]>(await db.from("lobby_entrants").select("team_id, pool").eq("stage_id", stage.id));
+  const names = officialNames(game);
+  const chosen = Object.fromEntries(names.map((n, i) => [n, str(form, `pick${i}`)]).filter(([, v]) => v));
+  const { ids, missing } = matchOfficialGroups(game, teams, before.map((e) => ({ teamId: e.team_id, pool: e.pool ?? undefined })), chosen);
+  if (missing.length) throw new Error(`Pick the registered team for: ${missing.join(", ")}.`);
+
+  const groupOf = officialGroupOf(game);
+  const entrants: LobbyEntrant[] = [...ids].map(([name, teamId]) => ({ teamId, pool: groupOf.get(name)! }));
+  if (existing.length) check(await db.from("lobby_matches").delete().eq("stage_id", stage.id));
+  check(await db.from("lobby_entrants").delete().eq("stage_id", stage.id));
+  check(await db.from("lobby_entrants").insert(entrants.map((e) => ({ stage_id: stage.id, team_id: e.teamId, pool: e.pool }))));
+
+  const plan = planStageMatches({ gameId: game, stage: { id: shortStageId(game, stage.id), settings }, entrants });
+  const { firstDay, start, gap, perDay } = template.schedule;
+  const starts = schedulePools(Object.keys(official.groups).sort(), { firstDay, poolsPerDay: perDay, start });
+  check(
+    await db.from("lobby_matches").insert(
+      plan.map((m) => ({
+        id: m.id,
+        stage_id: stage.id,
+        round: m.round,
+        lobby: m.lobby,
+        map: m.map ?? null,
+        scheduled_at: matchTime(starts.get(m.lobby)!, m.round, gap),
+        team_ids: m.teamIds,
+      })),
+    ),
+  );
+  const groups = Object.keys(official.groups).length;
+  return `${entrants.length} teams in ${groups} groups, ${plan.length} matches at the published times.`;
 });
 
 export const saveStageSettings = lobby(async (form, { db, game }) => {

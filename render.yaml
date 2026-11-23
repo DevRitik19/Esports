@@ -1,0 +1,31 @@
+# Render blueprint: the whole site (every game) as one Node web service.
+# Render → New → Blueprint → pick this repo, then fill in the two keys it asks for.
+# The database and logins live in Supabase; see "Production setup" in README.md.
+services:
+  - type: web
+    name: yugaantar-esports
+    runtime: node
+    # Closest Render region to players in India.
+    region: singapore
+    # The free plan sleeps after 15 idle minutes (about a minute to wake), too slow
+    # for match nights. Starter stays awake; switch back to free after the event.
+    plan: starter
+    branch: main
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        value: https://tjiraklawqdjxhosriji.supabase.co
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      # Used for login links; change it if you add a custom domain.
+      - key: NEXT_PUBLIC_SITE_URL
+        value: https://yugaantar-esports.onrender.com
+      # Bearer token for /api/sync, used by supabase/snippets/sync-cron.sql.
+      - key: SYNC_SECRET
+        generateValue: true

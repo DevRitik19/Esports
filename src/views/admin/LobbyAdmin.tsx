@@ -5,7 +5,8 @@ import { formatAdvanceRule, TIEBREAKERS } from "@/components/lobby/settings";
 import { ResultChip, type ResultState } from "@/components/lobby/ResultChip";
 import { StageTabs } from "@/components/lobby/StageTabs";
 import { StandingsTable } from "@/components/lobby/StandingsTable";
-import { createStages, fillEntrants, removeEntrant, saveStageSettings } from "@/app/admin/[game]/lobby/actions";
+import { applyOfficialGroups, createStages, fillEntrants, removeEntrant, saveStageSettings } from "@/app/admin/[game]/lobby/actions";
+import { matchOfficialGroups, OFFICIAL_LOBBY_GROUPS, officialGroupOf, officialNames } from "@/content/lobby-groups";
 import { loadResultStates } from "@/app/admin/[game]/lobby/data";
 import { ScheduleForm } from "@/app/admin/[game]/lobby/ScheduleForm";
 import { GAMES, type GameId } from "@/games/registry";
@@ -86,6 +87,57 @@ function Panel({ title, note, children }: { title: string; note?: React.ReactNod
   );
 }
 
+/** The organisers' published groups: who matched, pickers for the rest, one button to apply them with the schedule. */
+function OfficialGroups({ game, stageId, entrants, teams, locked, drawn }: {
+  game: GameId;
+  stageId: string;
+  entrants: { teamId: string; pool?: string }[];
+  teams: Map<string, Team>;
+  locked: boolean;
+  drawn: number;
+}) {
+  const official = OFFICIAL_LOBBY_GROUPS[game]!;
+  const names = officialNames(game);
+  const all = [...teams.values()];
+  const { ids, missing } = matchOfficialGroups(game, all, entrants);
+  const used = new Set(ids.values());
+  const free = all.filter((t) => !used.has(t.id)).sort((a, b) => a.name.localeCompare(b.name));
+  const groupOf = officialGroupOf(game);
+  const applied = entrants.length === names.length && entrants.every((e) => e.pool);
+
+  return (
+    <Panel title="Official groups" note={official.note}>
+      <p className="text-sm">
+        {ids.size} of {names.length} teams found in the registrations.
+        {applied && drawn > 0 && <span className="text-win"> Applied: {drawn} matches scheduled.</span>}
+      </p>
+      {locked ? (
+        <p className="mt-3 text-sm text-muted">Results are in, so the groups are locked.</p>
+      ) : (
+        <ActionForm action={applyOfficialGroups} submit={applied ? "Apply again" : "Apply groups and schedule"} tone={applied ? "quiet" : "primary"} className="mt-4 flex flex-col gap-3">
+          <input type="hidden" name="game" value={game} />
+          <input type="hidden" name="stage" value={stageId} />
+          {missing.length > 0 && (
+            <fieldset className="flex flex-col gap-2">
+              <legend className="mb-1 text-xs text-warn">These names didn&apos;t match one registered team. Pick each one:</legend>
+              {missing.map((name) => (
+                <label key={name} className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] items-center gap-3 text-sm">
+                  <span className="truncate"><span className="mr-2 font-cond text-xs text-faint">{groupOf.get(name)}</span>{name}</span>
+                  <select name={`pick${names.indexOf(name)}`} defaultValue="" className={inputClass}>
+                    <option value="">Choose a team</option>
+                    {free.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
+                  </select>
+                </label>
+              ))}
+            </fieldset>
+          )}
+          {applied && <p className="text-xs text-faint">Applying again replaces this stage&apos;s entrants and matches, room details included.</p>}
+        </ActionForm>
+      )}
+    </Panel>
+  );
+}
+
 function StageAdmin({
   game,
   g,
@@ -114,8 +166,12 @@ function StageAdmin({
   const rounds = new Map<number, LobbyMatch[]>();
   for (const m of matches) rounds.set(m.round, [...(rounds.get(m.round) ?? []), m]);
 
+  const official = OFFICIAL_LOBBY_GROUPS[game];
+  const isOfficialStage = !!official && stage.id === `${game}-${official.stage}`;
+
   return (
     <div className="flex flex-col gap-5">
+      {isOfficialStage && <OfficialGroups game={game} stageId={stage.id} entrants={entrants} teams={teams} locked={hasResults} drawn={matches.length} />}
       <Panel title={`Entrants · ${entrants.length}`}>
         {matches.length === 0 && (
           sources.length === 0 ? (

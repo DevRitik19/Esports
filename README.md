@@ -6,8 +6,8 @@ The esports site for **Yugaantar 2026 · Gameverse** at Scaler School of Technol
 |---|---|---|
 | Call of Duty: Mobile | squads of 5+1 | 29 teams in 7 groups over three online mode days, then the top 8 offline (CODM Carnage 2.0: Rift Ops) |
 | Valorant | teams of 5 | single elimination: BO1 online, Semifinals and Final offline |
-| BGMI | squads of 4+1 | battle royale lobbies of up to 20, reshuffled every match, cumulative points |
-| Free Fire MAX | squads of 4+1 | battle royale groups of up to 12, top 2 through, 3rd places to a Wildcard LCQ |
+| BGMI | squads of 4+1 | 64 teams in 4 fixed groups of 16, top 32 to the Semifinals, top 16 to the campus Final |
+| Free Fire MAX | squads of 4+1 | 127 teams in 11 fixed groups, 48 straight to the LAN Semifinals, top 12 to the Grand Final |
 | Smash Karts | solo | free-for-all lobbies of 20, reshuffled every match, 20 → 1 points |
 | FIFA | solo | knockout on campus |
 
@@ -51,7 +51,7 @@ The rule documents for each game are in [`docs/`](docs). The site shows a short 
 
 **Game pages (`/<game>`).** Each game has five tabs: Overview, Schedule, Standings, Teams and Rules. The Standings tab adapts to the format:
 - **Lobby games:** one leaderboard per lobby, or one overall table when lobbies reshuffle.
-  - Qualifying rows are marked with where they're going, e.g. *→ Semifinals* or *→ Wildcard LCQ*, as projected until the stage is complete.
+  - Qualifying rows are marked with where they're going, e.g. *→ Semifinals* or *→ Grand Final*, as projected until the stage is complete.
   - Long tables (Smash Karts has ~360 players) show the top 40 and a *Find your team* box.
 - **Valorant and FIFA:** the bracket, round by round. Byes are listed on one line.
 - **CODM:** group tables, the best runner-up race, seeding and the offline bracket. Its Schedule tab is a wave board like the published fixtures image: 7 waves × 7 lobbies, each match-up's Hardpoint, Domination and S&D results side by side, and a *Find your team* picker.
@@ -163,7 +163,8 @@ Unstop ──► registrations sheet (one tab per game)
 1. Share the registrations sheet with the service account, or keep it public, and check **Registrations** shows every game syncing.
 2. Fix what the issues list flags on Unstop: duplicate emails, missing IGNs or game IDs, rosters that are too small.
 3. After registration closes:
-   - **Lobby games:** open the game's control room → *Create stages* → *Fill from eligible teams* → *Draw lobbies*.
+   - **Free Fire, BGMI:** open the game's control room → *Create stages* → on the Qualifiers stage, *Apply groups and schedule*. That puts every registered team in its published group (pick any name that doesn't match) and creates every match at the published time.
+   - **Smash Karts:** *Create stages* → *Fill from eligible teams* → *Draw lobbies*.
    - **Valorant, FIFA:** *Draw bracket*.
    - **CODM:** Setup → *Apply groups and fixtures* (the official 29 teams and 138 matches; pick any name that doesn't match a registration) → set the S&D day's first wave once it's decided → *Generate bracket* after the group stage.
 4. Add referees under Staff and tag each with their games (e.g. `valo-ref`).
@@ -173,7 +174,7 @@ Unstop ──► registrations sheet (one tab per game)
 1. Leaders check in from `/me`, once for the whole evening.
 2. The referee opens the lobby from `/ref`, enters the room ID and password, and marks the lobby live. Leaders see the room details from the game's reveal time (15 minutes before for most games).
 3. After the match the referee taps in the finishing order and kills, pastes the screenshot link and publishes. An admin publishes instead if referees aren't allowed to.
-4. When every lobby of a stage is published, the next stage's *Fill from …* takes the qualifiers, and the LCQ fills the same way.
+4. When every lobby of a stage is published, the next stage's *Fill from …* takes the qualifiers.
 
 ### A head-to-head match (CODM, Valorant, FIFA)
 
@@ -185,11 +186,11 @@ Each game's facts live in [`src/games/registry.ts`](src/games/registry.ts): rost
 
 | | Lobby | Points | Tiebreakers | Advancement |
 |---|---|---|---|---|
-| **Free Fire MAX** | 12, fixed groups | Booyah 12, 9, 8, 7, 6, 5, 4, 3, 2, 1 + 1 per kill | Booyahs, kills, latest match | Qualifiers: top 2 per group → Semifinals, 3rd → Wildcard LCQ (top 6 through); Semifinals: top 6 per lobby → Grand Final |
-| **BGMI** | 20, reshuffled | 10, 6, 5, 4, 3, 2, 1, 1, 1, 1 + 1 per kill | chicken dinners, placement points, finishes, latest match | top 32 → Semifinals → top 16 → Final |
+| **Free Fire MAX** | 12, fixed groups | Booyah 12, 9, 8, 7, 6, 5, 4, 3, 2, 1 + 1 per kill | Booyahs, kills, latest match | Qualifiers (A–D Mon, E–H Tue, I–K Wed): top 5 per group in A–D, top 4 in E–K → 48 LAN Semifinalists; Semifinals: 4 groups of 12, top 3 per group → 12-team, 6-match Grand Final |
+| **BGMI** | 16, fixed groups | 10, 6, 5, 4, 3, 2, 1, 1, 1, 1 + 1 per kill | chicken dinners, placement points, kill points, latest match | Qualifiers (A–B Mon, C–D Tue): top 32 overall → Semifinals (Wed 25) → top 16 → Final (Sat 28 Nov, campus, 4 matches) |
 | **Smash Karts** | 20 + host kart, reshuffled | 20 → 1 by rank | kills, best rank | top 120 → top 40 → top 20 |
 
-The Free Fire docs disagree on some points. The defaults follow the latest one, the 17–23 Nov operations plan; the 84/104-team rulebooks use 8-7-6… instead. See *Open questions* in `context.md`.
+Free Fire follows the 23–25 Nov Pre-Round Schedule and its group allocations; the older 84/104-team rulebooks (8-7-6… points, a Wildcard LCQ) are superseded. BGMI follows the 23 Nov progression and group allocations. All of these are in `docs/`, and the published groups are `src/content/lobby-groups.ts`.
 
 **CODM** follows the Master Tournament Doc (Final) in `docs/`:
 - 29 teams in 7 groups (six of 4, Group G of 5). Every pair plays once per mode, one mode a day: Hardpoint on Summit (Mon 23 Nov), Domination on Raid (Tue 24), S&D on Firing Range (Wed 25, time TBD). 46 BO1 matches a day across 7 waves × 7 lobbies; a team's wave and lobby stay the same all three days. The schedule is `src/content/codm-schedule.ts`.
@@ -250,7 +251,7 @@ npm run lint
 ```
 
 The tests cover:
-- **Lobby engine:** points, every tiebreaker, advancement rules (including the Free Fire LCQ) and pool-scoped ties.
+- **Lobby engine:** points, every tiebreaker, advancement rules (including per-group cutoffs like Free Fire's 5 from A–D, 4 from E–K), pool-scoped ties, and the published Free Fire and BGMI groups and times.
 - **Lobby dealing:** reshuffles that avoid repeat opponents, scheduling, and checks on entered results.
 - **Brackets:** any size up to 128, with byes spread out and walked over.
 - **Sync parsing:** run against the real header rows of the Unstop sheet, with invented people.
@@ -266,11 +267,11 @@ The tests cover:
    - Leaders log in about once for the whole event, so a few hundred emails cover it.
 5. **Auth → Email Templates:** paste `supabase/templates/login.html` into *Magic Link* and *Confirm signup*. Use the subject "Your Yugaantar Esports login code".
 6. **Auth → Rate Limits:** raise the email limit, and raise sign-ins per IP to about 150 per 5 minutes (a venue shares one Wi-Fi IP).
-7. **Vercel:** import the repo and set the environment variables from `.env.example`:
-   - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SITE_URL`;
-   - `SYNC_SECRET`;
-   - `GOOGLE_SERVICE_ACCOUNT_JSON`, if the sheet is private;
-   - `REGISTRATION_SHEET_ID`, if it isn't the default sheet.
+7. **Render (the website):** in the Render dashboard choose *New → Blueprint* and pick this repo. [`render.yaml`](render.yaml) sets up one Node web service in Singapore on the Starter plan (the free plan sleeps when idle).
+   - Paste `NEXT_PUBLIC_SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_ROLE_KEY` from Supabase → Project Settings → API keys. The Supabase URL is already filled in, and `SYNC_SECRET` is generated.
+   - If the service gets a different address, or you add a custom domain, update `NEXT_PUBLIC_SITE_URL` and redeploy.
+   - Add `GOOGLE_SERVICE_ACCOUNT_JSON` if the Unstop sheet is private, and `REGISTRATION_SHEET_ID` if it isn't the default sheet.
+   - Every push to `main` deploys.
 8. **Sync every 5 minutes:** run [`supabase/snippets/sync-cron.sql`](supabase/snippets/sync-cron.sql) once in the SQL editor, with your site URL and secret.
 9. **Free plan:** projects pause after 7 days without traffic, which the sync job prevents.
 
