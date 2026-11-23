@@ -12,8 +12,9 @@ const plainKey = (name: string) => nameKey(name).replace(/[^a-z0-9$]+/g, "");
 /**
  * Matches each published name to one registered team: the same name ignoring
  * case and punctuation, else the one team whose name starts with it (docs
- * shorten names like "Sapne Suhane..."), else the one team whose name contains
- * it once symbols are stripped. `chosen` holds a referee's picks for names
+ * shorten names like "Sapne Suhane..."), else the one team whose name it
+ * starts with, else the one team whose name contains it once symbols are
+ * stripped. `chosen` holds a referee's picks for names
  * that didn't match on their own; a team is never matched twice.
  */
 export function matchNames(
@@ -33,20 +34,22 @@ export function matchNames(
   const tries: ((key: string, plain: string, t: { name: string }) => boolean)[] = [
     (key, _, t) => nameKey(t.name) === key,
     (key, _, t) => key.length >= 4 && nameKey(t.name).startsWith(key),
+    // Registered without the doc's extra, e.g. "Nongshim RedForce" for "Nongshim RedForce (NSR)".
+    (key, _, t) => nameKey(t.name).length >= 6 && key.startsWith(nameKey(t.name)),
     (_, plain, t) => plain.length >= 5 && plainKey(t.name).includes(plain),
   ];
-  for (const name of names) {
-    if (ids.has(name)) continue;
-    const key = nameKey(name);
-    const plain = plainKey(name);
-    for (const test of tries) {
-      const hits = teams.filter((t) => !taken.has(t.id) && test(key, plain, t));
-      if (hits.length === 1) {
-        ids.set(name, hits[0].id);
-        taken.add(hits[0].id);
-        break;
-      }
-      if (hits.length > 1) break;
+  // Each rule runs over every name before the next, looser one, so a loose
+  // rule never takes a team another name matches exactly. A name that fits
+  // several teams under a rule is left for a pick.
+  const ambiguous = new Set<string>();
+  for (const test of tries) {
+    for (const name of names) {
+      if (ids.has(name) || ambiguous.has(name)) continue;
+      const hits = teams.filter((t) => !taken.has(t.id) && test(nameKey(name), plainKey(name), t));
+      if (hits.length > 1) ambiguous.add(name);
+      if (hits.length !== 1) continue;
+      ids.set(name, hits[0].id);
+      taken.add(hits[0].id);
     }
   }
   return { ids, missing: names.filter((n) => !ids.has(n)) };
