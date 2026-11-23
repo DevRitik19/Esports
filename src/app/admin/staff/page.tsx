@@ -5,7 +5,7 @@ import { StaffContactFields } from "@/components/StaffContactFields";
 import { GAME_LIST, isGameId } from "@/games/registry";
 import { getStaffList } from "@/lib/admin";
 import { requireAdmin } from "@/lib/auth";
-import { covers, refTag, staffTags, type StaffRow } from "@/lib/staff";
+import { covers, staffTags, type StaffRow } from "@/lib/staff";
 import { removeStaff, saveStaff } from "../actions";
 
 export const metadata: Metadata = { title: "Staff" };
@@ -20,7 +20,7 @@ export default function StaffPage() {
 
 /** Tag colour: the game's accent, or the signal colour for admins. */
 function tagColor(tag: string): string {
-  const g = GAME_LIST.find((x) => tag === refTag(x));
+  const g = GAME_LIST.find((x) => tag.startsWith(`${x.handle}-`));
   return g?.accent ?? "var(--color-signal)";
 }
 
@@ -33,31 +33,32 @@ function Tag({ tag }: { tag: string }) {
   );
 }
 
-/** Role and game pickers; the game list hides when Admin is picked. */
-function RoleFields({ role = "referee", games = [] as string[] | null, idPrefix }: { role?: string; games?: string[] | null; idPrefix: string }) {
+/**
+ * Admin, then games. A referee runs the games picked; an admin runs every
+ * game anyway, so for them the games say which game pages list them as the
+ * point of contact.
+ */
+function AccessFields({ role = "referee", games = [] as string[] | null, idPrefix }: { role?: string; games?: string[] | null; idPrefix: string }) {
   const all = games === null;
   return (
     <>
-      <fieldset className="flex flex-wrap gap-2">
-        <legend className="mb-2 text-xs text-muted">Role</legend>
-        {[
-          { v: "referee", label: "Referee", hint: "Enters results for their games" },
-          { v: "admin", label: "Admin", hint: "Runs every game and the staff list" },
-        ].map((r) => (
-          <label key={r.v} className="choice">
-            <input type="radio" name="role" value={r.v} defaultChecked={role === r.v} className="sr-only" />
-            <span className="font-semibold">{r.label}</span>
-            <span className="text-xs text-muted">{r.hint}</span>
-          </label>
-        ))}
-      </fieldset>
-      <fieldset className="group-has-[[value=admin]:checked]:hidden">
-        <legend className="mb-2 text-xs text-muted">Games they referee</legend>
+      <label className="flex cursor-pointer items-start gap-3 border border-line p-3 has-[:checked]:border-signal">
+        <input type="checkbox" name="admin" defaultChecked={role === "admin"} className="mt-1 size-4 accent-signal" />
+        <span>
+          <span className="block font-semibold">Admin</span>
+          <span className="block text-xs text-muted">Runs every game, the staff list and announcements. Leave off for a referee.</span>
+        </span>
+      </label>
+      <fieldset>
+        <legend className="mb-2 text-xs text-muted">
+          <span className="group-has-[[name=admin]:checked]:hidden">Games they run (and are the contact for)</span>
+          <span className="hidden group-has-[[name=admin]:checked]:inline">Point of contact for (listed on these game pages)</span>
+        </legend>
         <div className="flex flex-wrap gap-2">
           {GAME_LIST.map((g) => (
             <label key={g.id} htmlFor={`${idPrefix}-${g.id}`} className="chip" style={{ "--chip": g.accent } as React.CSSProperties}>
               <input id={`${idPrefix}-${g.id}`} type="checkbox" name="game" value={g.id} defaultChecked={!all && !!games?.includes(g.id)} className="sr-only" />
-              {refTag(g)}
+              {g.short}
             </label>
           ))}
           <label htmlFor={`${idPrefix}-all`} className="chip" style={{ "--chip": "var(--color-signal)" } as React.CSSProperties}>
@@ -65,6 +66,7 @@ function RoleFields({ role = "referee", games = [] as string[] | null, idPrefix 
             All games
           </label>
         </div>
+        <p className="mt-2 hidden text-xs text-faint group-has-[[name=admin]:checked]:block">Pick none to keep an admin off the game pages.</p>
       </fieldset>
     </>
   );
@@ -80,8 +82,9 @@ async function Staff() {
     <>
       <h1 className="font-display text-4xl">Staff</h1>
       <p className="mt-2 max-w-2xl text-sm text-muted">
-        Give someone a role by their email; they log in with it like a team leader. A referee only sees and edits the games on their
-        tags, so a <span className="font-semibold text-text">valo-ref</span> can&apos;t touch CODM. Admins run every game.
+        Add someone by email; they log in with it like a team leader. A referee only runs their games, so a{" "}
+        <span className="font-semibold text-text">valo-ref</span> can&apos;t touch CODM. Admins run every game and choose which game pages list
+        them as the point of contact.
       </p>
 
       <section aria-labelledby="coverage" className="mt-8">
@@ -125,11 +128,11 @@ async function Staff() {
                   </span>
                 </div>
                 <details className="group/edit mt-2">
-                  <summary className="cursor-pointer text-xs text-muted hover:text-text">Edit role and contact</summary>
+                  <summary className="cursor-pointer text-xs text-muted hover:text-text">Edit</summary>
                   <div className="mt-3 flex flex-col gap-4 border-l-2 border-line pl-4">
-                    <ActionForm action={saveStaff} submit="Save role" className="group flex flex-col gap-4">
+                    <ActionForm action={saveStaff} submit="Save" className="group flex flex-col gap-4">
                       <input type="hidden" name="email" value={s.email} />
-                      <RoleFields role={s.role} games={s.games} idPrefix={s.email} />
+                      <AccessFields role={s.role} games={s.games} idPrefix={s.email} />
                       <StaffContactFields name={s.name} phone={s.phone} discord={s.discord} listed={s.listed} />
                     </ActionForm>
                     {s.email !== me && (
@@ -151,10 +154,15 @@ async function Staff() {
               Email
               <input name="email" type="email" required placeholder="name@college.edu" className={inputClass} />
             </label>
-            <RoleFields idPrefix="new" />
-            <StaffContactFields />
+            <AccessFields idPrefix="new" />
+            <details className="group/contact">
+              <summary className="cursor-pointer text-xs text-muted hover:text-text">Contact details (optional)</summary>
+              <div className="mt-3">
+                <StaffContactFields stacked />
+              </div>
+            </details>
           </ActionForm>
-          <p className="mt-4 text-xs text-faint">Already on staff? Adding them again replaces their role.</p>
+          <p className="mt-4 text-xs text-faint">Already on staff? Adding them again replaces their access.</p>
         </section>
       </div>
     </>
