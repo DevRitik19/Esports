@@ -8,12 +8,13 @@ import { scheduleKnockout, singleElimination } from "@/lib/knockout";
 import { matchTime, planStageMatches, schedulePools } from "@/lib/lobby/deal";
 import { matchNames } from "@/lib/match-names";
 import type { LobbyEntrant } from "@/lib/lobby/types";
-import type { createClient } from "@/lib/supabase/server";
+import type { PostgrestClient } from "@supabase/postgrest-js";
 
 // Putting the organisers' published groups and fixtures into the database.
 // Not a server action module: callers check who is asking first.
 
-type Db = Awaited<ReturnType<typeof createClient>>;
+/** The signed-in client (staff) or the service client (the sync endpoint); only tables are used. */
+type Db = Pick<PostgrestClient, "from">;
 
 const check = <T,>(r: { error: { message: string } | null; data?: T | null }): T => {
   if (r.error) throw new Error(r.error.message);
