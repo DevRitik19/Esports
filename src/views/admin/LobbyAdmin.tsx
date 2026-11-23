@@ -17,19 +17,24 @@ import { currentStage, loadLobbyGame, type LobbyGame } from "@/lib/lobby/data";
 import type { LobbyMatch, LobbyStage } from "@/lib/lobby/types";
 import type { Team } from "@/lib/types";
 
-/** Lobby games: stages, entrants, the draw and schedule, every lobby's result state. */
-export function LobbyAdmin({ game }: { game: GameId }) {
+/**
+ * Lobby games. "lobbies" is match night: every lobby's result state and the
+ * standings. "setup" is the groups, entrants, draw and stage settings.
+ */
+export function LobbyAdmin({ game, view = "lobbies" }: { game: GameId; view?: LobbyView }) {
   return (
     <Suspense fallback={<div className="panel h-96 animate-pulse" />}>
-      <ControlRoom game={game} />
+      <ControlRoom game={game} view={view} />
     </Suspense>
   );
 }
 
+type LobbyView = "lobbies" | "setup";
+
 const timeIST = (iso: string) =>
   new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date(iso));
 
-async function ControlRoom({ game }: { game: GameId }) {
+async function ControlRoom({ game, view }: { game: GameId; view: LobbyView }) {
   const viewer = await requireStaff();
   const def = GAMES[game];
   if (!canStaff(viewer, game)) return <p className="panel p-5 text-sm text-muted">You aren&apos;t on the staff for {def.name}.</p>;
@@ -40,25 +45,23 @@ async function ControlRoom({ game }: { game: GameId }) {
 
   return (
     <div style={{ "--game": def.accent } as React.CSSProperties}>
-      <div className="flex flex-wrap items-baseline justify-between gap-3">
-        <h1 className="font-display text-3xl font-bold">{def.name} lobbies</h1>
-        <Link href="/ref" className="link text-sm">Tonight&apos;s lobbies</Link>
-      </div>
-      <p className="mt-1 mb-6 text-sm text-muted">
-        You run {def.short} here: set up stages, draw lobbies and publish results.
-      </p>
-
       {g.stages.length === 0 ? (
-        <section className="panel p-5">
-          <p className="text-sm text-muted">
-            No stages yet. {def.name} runs {(def.stages ?? []).map((s) => s.name).join(", then ")}.
+        view === "setup" ? (
+          <section className="panel p-5">
+            <p className="text-sm text-muted">
+              No stages yet. {def.name} runs {(def.stages ?? []).map((s) => s.name).join(", then ")}.
+            </p>
+            <div className="mt-4">
+              <ActionForm action={createStages} submit="Create stages">
+                <input type="hidden" name="game" value={game} />
+              </ActionForm>
+            </div>
+          </section>
+        ) : (
+          <p className="panel p-5 text-sm text-muted">
+            No stages yet. Create them on <Link href={`/admin/${game}/setup`} className="link">Setup</Link>.
           </p>
-          <div className="mt-4">
-            <ActionForm action={createStages} submit="Create stages">
-              <input type="hidden" name="game" value={game} />
-            </ActionForm>
-          </div>
-        </section>
+        )
       ) : (
         <StageTabs
           initial={current?.id}
@@ -68,7 +71,7 @@ async function ControlRoom({ game }: { game: GameId }) {
               id: s.id,
               label: s.name,
               meta: `${s.status} · ${(g.entrants[s.id] ?? []).length} in · ${p.done}/${p.total}`,
-              content: <StageAdmin game={game} g={g} stage={s} teams={teams} states={states} />,
+              content: <StageAdmin game={game} g={g} stage={s} teams={teams} states={states} view={view} />,
             };
           })}
         />
@@ -144,12 +147,14 @@ function StageAdmin({
   stage,
   teams,
   states,
+  view,
 }: {
   game: GameId;
   g: LobbyGame;
   stage: LobbyStage;
   teams: Map<string, Team>;
   states: Map<string, ResultState>;
+  view: LobbyView;
 }) {
   const unit = GAMES[game].solo ? "player" : "team";
   const entrants = g.entrants[stage.id] ?? [];
@@ -171,6 +176,7 @@ function StageAdmin({
 
   return (
     <div className="flex flex-col gap-5">
+      {view === "setup" && (<>
       {isOfficialStage && <OfficialGroups game={game} stageId={stage.id} entrants={entrants} teams={teams} locked={hasResults} drawn={matches.length} />}
       <Panel title={`Entrants · ${entrants.length}`}>
         {matches.length === 0 && (
@@ -240,17 +246,19 @@ function StageAdmin({
       <Panel title="Stage settings">
         <SettingsForm game={game} stage={stage} />
       </Panel>
+      </>)}
 
-      <Panel title="Matches" note={matches.length ? undefined : "Draw the lobbies above to create them."}>
+      {view === "lobbies" && (<>
+      <Panel title="Matches" note={matches.length ? undefined : <>No lobbies yet. Draw them on <Link href={`/admin/${game}/setup`} className="link">Setup</Link>.</>}>
         {[...rounds.entries()].sort((a, b) => a[0] - b[0]).map(([round, ms]) => (
           <div key={round} className="mb-5 last:mb-0">
             <h3 className="mb-2 font-cond text-base font-semibold text-muted">Match {round}</h3>
             <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-              <table className="w-full min-w-[560px] text-sm">
+              <table className="w-full text-sm sm:min-w-[560px]">
                 <tbody>
                   {ms.map((m) => (
                     <tr key={m.id} className="border-t border-line">
-                      <td className="py-2 pr-3 font-cond text-xs text-faint">{m.id}</td>
+                      <td className="hidden py-2 pr-3 font-cond text-xs text-faint sm:table-cell">{m.id}</td>
                       <td className="py-2 pr-3">Lobby {m.lobby}</td>
                       <td className="py-2 pr-3 text-muted">{m.map ?? "–"}</td>
                       <td className="py-2 pr-3 text-muted">{m.scheduledAt ? fmtDateTime(m.scheduledAt) : "TBA"}</td>
@@ -291,6 +299,7 @@ function StageAdmin({
           )}
         </Panel>
       )}
+      </>)}
     </div>
   );
 }
@@ -342,7 +351,7 @@ function SettingsForm({ game, stage }: { game: GameId; stage: LobbyStage }) {
       <label className="flex flex-col gap-1 text-xs text-muted sm:col-span-2">
         Who goes through, one rule per line
         <textarea name="advance" rows={3} defaultValue={s.advance.map(formatAdvanceRule).join("\n")} className={`${inputClass} font-cond`} />
-        <span className="text-faint">top 2 per pool -&gt; Semifinals · rank 3 per pool -&gt; Wildcard LCQ · best 1 at rank 4 -&gt; Semifinals · top 6 overall -&gt; Grand Final</span>
+        <span className="text-faint">top 2 per pool -&gt; Semifinals · top 5 per pool in A-D -&gt; Semifinals · best 1 at rank 4 -&gt; Semifinals · top 6 overall -&gt; Grand Final</span>
       </label>
     </ActionForm>
   );

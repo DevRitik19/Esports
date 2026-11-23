@@ -42,10 +42,7 @@ function StaffLinks({ viewer }: { viewer: Viewer }) {
   if (!viewer.staffRole) return null;
   return (
     <>
-      <Link href="/ref" className="rounded-sm border border-line-strong px-3 py-1.5 text-xs font-semibold hover:border-signal">Referee</Link>
-      {viewer.staffRole === "admin" && (
-        <Link href="/admin" className="rounded-sm border border-line-strong px-3 py-1.5 text-xs font-semibold hover:border-signal">Admin</Link>
-      )}
+      <Link href="/admin" className="btn btn-ghost">Control room</Link>
     </>
   );
 }
@@ -59,10 +56,7 @@ function Unlinked({ viewer }: { viewer: Viewer }) {
           <>
             <p className="font-cond text-xl font-bold">You&apos;re tournament staff ({viewer.staffRole}).</p>
             <div className="flex flex-wrap gap-2">
-              <Link href="/ref" className="rounded-sm bg-signal px-4 py-2 text-sm font-semibold text-bg">Open the referee desk</Link>
-              {viewer.staffRole === "admin" && (
-                <Link href="/admin" className="rounded-sm border border-line-strong px-4 py-2 text-sm font-semibold">Open the admin panel</Link>
-              )}
+              <Link href="/admin" className="btn">Open the control room</Link>
             </div>
           </>
         ) : (

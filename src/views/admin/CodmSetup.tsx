@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Suspense } from "react";
 import { ActionForm, inputClass } from "@/components/ActionForm";
 import { dayPlan, matchOfficialTeams, MODE_DAYS, OFFICIAL_GROUPS, picksFromFixtures, WAVES } from "@/content/codm-schedule";
@@ -6,11 +5,10 @@ import { MODE_NAME } from "@/content/event";
 import { canStaff, requireStaff } from "@/lib/auth";
 import { loadTournament } from "@/lib/data";
 import { fmtDay, fmtTime } from "@/lib/format";
-import { applyOfficialDraw, generateBracket, importCsv, setModeDayStart } from "../actions";
+import { applyOfficialDraw, generateBracket, importCsv, setModeDayStart } from "@/app/admin/actions";
 
-export const metadata: Metadata = { title: "Setup" };
-
-export default function SetupPage() {
+/** CODM: the official groups and fixtures, mode day times, the bracket and CSV fixes. */
+export function CodmSetup() {
   return (
     <Suspense fallback={<div className="panel h-96 animate-pulse" />}>
       <Setup />
@@ -44,8 +42,7 @@ async function Setup() {
 
   return (
     <>
-      <h1 className="font-display text-3xl font-bold">Setup</h1>
-      <p className="mt-1 max-w-2xl text-sm text-muted">
+      <p className="max-w-2xl text-sm text-muted">
         Teams come from the registration sync. Apply the official groups and fixtures, set the S&amp;D start once it&apos;s decided, then generate the
         bracket.
       </p>
