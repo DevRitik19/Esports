@@ -12,7 +12,7 @@ import { loadTournament, matchDayFor } from "@/lib/data";
 import { createPublicClient } from "@/lib/supabase/server";
 import { dayKey, fmtTime } from "@/lib/format";
 import { lateKind, lateTier, mapsNeeded, roomOverdue, seriesModes, vetoPlayed, vetoTurns, LOBBY_JOIN_MIN, VETO_POOL_SIZE } from "@/lib/rules";
-import { STAGE_LABEL } from "@/lib/tournament";
+import { roundLabel } from "@/lib/tournament";
 import type { Mode } from "@/lib/types";
 import { approveMaps, resolveDispute, saveMaps, saveMatch, saveRoom, saveVeto, toggleCheckIn, toggleInvite, toggleJoined } from "../../actions";
 
@@ -89,7 +89,7 @@ async function Editor({ params }: Pick<PageProps<"/admin/matches/[id]">, "params
         </h1>
         <StatusChip status={m.status} />
         <span className="text-sm text-muted">
-          {m.stage === "group" ? `Group ${m.group}` : STAGE_LABEL[m.stage]} · BO{m.bestOf} · public score {m.mapWinsA}–{m.mapWinsB}
+          {m.stage === "group" ? `Group ${m.group}` : roundLabel(m)} · BO{m.bestOf} · public score {m.mapWinsA}–{m.mapWinsB}
           {m.stage === "group" && (
             <> · <span className="text-steel">{MODE_NAME[modeFor(1)]} on {mapFor(1) || "map not set"}</span>{m.round ? ` · Wave ${m.round}` : ""}{m.lobby ? ` · Lobby ${m.lobby}` : ""}</>
           )}
