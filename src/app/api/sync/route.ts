@@ -3,6 +3,8 @@ import { revalidateTag } from "next/cache";
 import { NextResponse, type NextRequest } from "next/server";
 import { isGameId } from "@/games/registry";
 import { gameTag, TOURNAMENT_TAG } from "@/lib/data";
+import { applyOfficial, isApplied, OFFICIAL_GAMES } from "@/lib/official-apply";
+import { createServiceClient } from "@/lib/supabase/server";
 import { syncAll, syncGame, type SyncSummary } from "@/lib/sync/apply";
 
 // Pulls registrations from the Unstop sheet. Called by pg_cron every few
@@ -10,6 +12,8 @@ import { syncAll, syncGame, type SyncSummary } from "@/lib/sync/apply";
 //   /api/sync            every game
 //   /api/sync?game=bgmi  one game
 //   &dry=1               preview only
+//   &setup=1             then set up any published schedule not in yet
+//                        (CODM, Valorant, Free Fire, BGMI); set-up games are left alone
 
 export const maxDuration = 60;
 
@@ -30,9 +34,23 @@ async function handle(request: NextRequest) {
   const opts = { dryRun: params.get("dry") === "1", triggeredBy: "api" };
 
   const results = game ? [await syncGame(game, opts)] : await syncAll(opts);
+
+  // The organisers' published fixtures, for games that don't have them yet.
+  const setup: Record<string, string> = {};
+  if (!opts.dryRun && params.get("setup") === "1") {
+    const db = createServiceClient();
+    for (const g of OFFICIAL_GAMES) {
+      try {
+        setup[g] = (await isApplied(db, g)) ? "already set up" : `set up: ${await applyOfficial(db, g)}`;
+      } catch (e) {
+        setup[g] = `not set up: ${(e as Error).message}`;
+      }
+    }
+  }
   if (!opts.dryRun) {
     revalidateTag(TOURNAMENT_TAG, "max");
     for (const r of results) if (r.ok) revalidateTag(gameTag(r.gameId), "max");
+    for (const g of Object.keys(setup)) revalidateTag(gameTag(g), "max");
   }
   // Counts only: the response may end up in pg_net's log table, so no names or emails.
   const body = results.map((r: SyncSummary) => ({
@@ -43,7 +61,7 @@ async function handle(request: NextRequest) {
     ...r.counts,
     issues: r.issues.length,
   }));
-  return NextResponse.json({ ok: results.every((r) => r.ok), results: body }, { status: results.some((r) => r.ok) ? 200 : 500 });
+  return NextResponse.json({ ok: results.every((r) => r.ok), results: body, ...(Object.keys(setup).length ? { setup } : {}) }, { status: results.some((r) => r.ok) ? 200 : 500 });
 }
 
 export const GET = handle;
