@@ -409,10 +409,11 @@ export const saveMapPool = staff(async (form, { db }) => {
 export const saveStaff = staff(async (form, { db, email: me }) => {
   const email = str(form, "email").toLowerCase();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Enter an email address.");
-  const role = str(form, "role") === "admin" ? "admin" : "referee";
+  const role = form.get("admin") === "on" ? "admin" : "referee";
   if (email === me.toLowerCase() && role !== "admin") throw new Error("You can't remove your own admin role.");
-  const games = role === "admin" ? null : gamesFromForm(form.getAll("game").map(String));
-  if (games && games.length === 0) throw new Error("Pick at least one game, or All games.");
+  // A referee's games are what they run; an admin's are the game pages that list them as contact.
+  const games = gamesFromForm(form.getAll("game").map(String));
+  if (role === "referee" && games?.length === 0) throw new Error("Pick the games they run, or All games.");
   // Contact fields only change when the form has them, so a role change keeps them.
   const profile = form.has("name")
     ? { name: str(form, "name") || null, phone: str(form, "phone") || null, discord: str(form, "discord") || null, listed: form.get("listed") === "on" }

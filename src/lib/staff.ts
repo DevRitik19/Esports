@@ -3,7 +3,10 @@ import { GAME_IDS, GAME_LIST, isGameId, type GameDef } from "@/games/registry";
 export interface StaffRow {
   email: string;
   role: "referee" | "admin";
-  /** Games a referee covers; null means every game. */
+  /**
+   * A referee's games (null = every game). Admins run every game regardless;
+   * for them this is the game pages that list them as contact (null = all).
+   */
   games: string[] | null;
   name?: string | null;
   phone?: string | null;
@@ -13,9 +16,9 @@ export interface StaffRow {
 
 export const refTag = (g: GameDef) => `${g.handle}-ref`;
 
-/** Tags shown next to a staff member, e.g. ["valo-ref", "codm-ref"]. */
+/** Tags shown next to a staff member, e.g. ["valo-ref", "codm-ref"] or ["admin", "bgmi-poc"]. */
 export function staffTags(s: Pick<StaffRow, "role" | "games">): string[] {
-  if (s.role === "admin") return ["admin"];
+  if (s.role === "admin") return ["admin", ...(s.games ? GAME_LIST.filter((g) => s.games!.includes(g.id)).map((g) => `${g.handle}-poc`) : [])];
   if (!s.games) return ["all-games-ref"];
   return GAME_LIST.filter((g) => s.games!.includes(g.id)).map(refTag);
 }
