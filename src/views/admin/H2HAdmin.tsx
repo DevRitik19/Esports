@@ -9,7 +9,7 @@ import { GAMES, type GameId } from "@/games/registry";
 import { canStaff, requireStaff } from "@/lib/auth";
 import { loadTournament } from "@/lib/data";
 import { fmtDateTime } from "@/lib/format";
-import { STAGE_LABEL } from "@/lib/tournament";
+import { roundLabel } from "@/lib/tournament";
 
 /** Head-to-head games: every match with its status and pending results. */
 export function H2HAdmin({ game }: { game: GameId }) {
@@ -76,7 +76,7 @@ async function Overview({ game }: { game: GameId }) {
                   <td className="px-4 py-2.5">
                     <span className="font-cond text-xs">{m.id}</span>
                     <span className="ml-2 text-xs text-faint">
-                      {m.stage === "group" ? `Grp ${m.group ?? ""}${m.lobby ? `, Wave ${m.round}, Lobby ${m.lobby}` : ""}` : STAGE_LABEL[m.stage]} · BO{m.bestOf}
+                      {m.stage === "group" ? `Grp ${m.group ?? ""}${m.lobby ? `, Wave ${m.round}, Lobby ${m.lobby}` : ""}` : roundLabel(m)} · BO{m.bestOf}
                     </span>
                   </td>
                   <td className="px-4 py-2.5">

@@ -7,7 +7,7 @@ import { placementPoints } from "./lobby/standings";
 import type { LobbyMatch, LobbyResult, LobbyStage, LobbyStandingRow } from "./lobby/types";
 import { groupCheckInOpen, selfCheckInOpen, sideOf } from "./rules";
 import { createServiceClient } from "./supabase/server";
-import { STAGE_LABEL } from "./tournament";
+import { roundLabel } from "./tournament";
 import type { Match, Mode, Team, Tournament } from "./types";
 
 const MIN = 60_000;
@@ -222,7 +222,7 @@ export function scoreFor(m: Match, teamId: string): [number, number] | undefined
   return a ? [m.mapWinsA, m.mapWinsB] : [m.mapWinsB, m.mapWinsA];
 }
 
-export const roundLabel = (m: Match) => STAGE_LABEL[m.stage] ?? m.stage;
+export { roundLabel };
 
 // ---------------------------------------------------------------------------
 // Lobby games

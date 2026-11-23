@@ -8,7 +8,7 @@ import { TOURNAMENT_TAG } from "@/lib/data";
 import { knockoutSkeleton } from "@/lib/fixtures";
 import { KNOCKOUT_TIMES, MODE_NAME } from "@/content/event";
 import { MODE_DAYS, OFFICIAL_GROUPS, waveStarts } from "@/content/codm-schedule";
-import { applyCodm, applyLobbyGroups, isApplied, OFFICIAL_GAMES } from "@/lib/official-apply";
+import { applyCodm, applyOfficial, isApplied, OFFICIAL_GAMES } from "@/lib/official-apply";
 import { mapsNeeded, resolveVeto, VETO_SEQUENCE } from "@/lib/rules";
 import { csvToRows, parseMode, parseTournament, toCsv } from "@/lib/parse";
 import { createClient } from "@/lib/supabase/server";
@@ -297,8 +297,8 @@ export const applyOfficialDraw = staff(async (form, { db }) => {
 }, { game: "codm" });
 
 /**
- * Admins: CODM, Free Fire and BGMI's published groups and fixtures in one
- * go. A game already set up is left alone, since applying again would wipe
+ * Admins: CODM, Valorant, Free Fire and BGMI's published groups, bracket
+ * and fixtures in one go. A game already set up is left alone, since applying again would wipe
  * its room details and check-ins.
  */
 export const applyAllOfficial = staff(async (_form, { db }) => {
@@ -307,7 +307,7 @@ export const applyAllOfficial = staff(async (_form, { db }) => {
     const name = GAMES[game].short;
     try {
       if (await isApplied(db, game)) lines.push(`${name}: already set up.`);
-      else lines.push(`${name}: ${game === "codm" ? await applyCodm(db) : await applyLobbyGroups(db, game)}`);
+      else lines.push(`${name}: ${await applyOfficial(db, game)}`);
     } catch (e) {
       lines.push(`${name}: not done. ${(e as Error).message}`);
     }

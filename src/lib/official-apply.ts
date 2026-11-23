@@ -3,7 +3,10 @@ import { normaliseSettings } from "@/components/lobby/settings";
 import { MODE_DAYS, matchOfficialTeams, officialFixtures, OFFICIAL_GROUPS, picksFromFixtures } from "@/content/codm-schedule";
 import { matchOfficialGroups, OFFICIAL_LOBBY_GROUPS, officialGroupOf } from "@/content/lobby-groups";
 import { GAMES, type GameId } from "@/games/registry";
+import { valorantBestOf, VALORANT_SCHEDULE, VALORANT_TEAMS } from "@/content/valorant-bracket";
+import { scheduleKnockout, singleElimination } from "@/lib/knockout";
 import { matchTime, planStageMatches, schedulePools } from "@/lib/lobby/deal";
+import { matchNames } from "@/lib/match-names";
 import type { LobbyEntrant } from "@/lib/lobby/types";
 import type { createClient } from "@/lib/supabase/server";
 
@@ -106,11 +109,45 @@ export async function applyLobbyGroups(db: Db, game: GameId, chosen: Record<stri
   return `${entrants.length} teams in ${Object.keys(official.groups).length} groups, ${plan.length} matches at the published times.`;
 }
 
+/**
+ * Valorant: the published 32-team bracket. Round of 32 pairs as published,
+ * later rounds fed by the winners, every online match at its published time.
+ * Replaces an earlier bracket only if no result has been entered.
+ */
+export async function applyValorant(db: Db, chosen: Record<string, string> = {}): Promise<string> {
+  const teams = await registered(db, "valorant");
+  if (!teams.length) throw new Error("Sync the Valorant registrations first.");
+  const { ids, missing } = matchNames(VALORANT_TEAMS, teams, chosen);
+  if (missing.length) throw new Error(`Pick the registered team for: ${missing.join(", ")}.`);
+
+  const old = check<{ id: string }[]>(await db.from("matches").select("id").eq("game_id", "valorant"));
+  if (old.length) {
+    const played = check<{ match_id: string }[]>(await db.from("maps").select("match_id").in("match_id", old.map((m) => m.id)).limit(1));
+    if (played.length) throw new Error("Valorant results are already in, so its bracket can't be replaced.");
+    check(await db.from("matches").delete().eq("game_id", "valorant"));
+  }
+  const rows = singleElimination({ prefix: "VAL", entrants: VALORANT_TEAMS.map((n) => ids.get(n)!), bestOf: valorantBestOf, thirdPlace: false });
+  const times = scheduleKnockout(rows, VALORANT_SCHEDULE);
+  check(await db.from("matches").insert(rows.map((r) => ({
+    id: r.id, game_id: "valorant", stage: r.stage, round: r.round, best_of: r.bestOf,
+    side_a: r.sideA, side_b: r.sideB, scheduled_at: times.get(r.id) ?? null,
+  }))));
+  return `${rows.length} matches: 16 in the Round of 32, then the Round of 16 and 8 at the published times; Semifinals and Final offline.`;
+}
+
 /** Has this game's published schedule already been put in? (Re-applying would wipe rooms and check-ins.) */
 export async function isApplied(db: Db, game: GameId): Promise<boolean> {
   if (game === "codm") {
     const r = await db.from("matches").select("id", { count: "exact", head: true }).eq("game_id", "codm").eq("stage", "group");
     return (r.count ?? 0) > 0;
+  }
+  if (game === "valorant") {
+    // The published bracket has a Round of 32 and nothing bigger.
+    const [r32, bigger] = await Promise.all([
+      db.from("matches").select("id", { count: "exact", head: true }).eq("id", "VAL-R32-16"),
+      db.from("matches").select("id", { count: "exact", head: true }).eq("game_id", "valorant").in("stage", ["r64", "r128"]),
+    ]);
+    return (r32.count ?? 0) > 0 && (bigger.count ?? 0) === 0;
   }
   const og = OFFICIAL_LOBBY_GROUPS[game];
   if (!og) return false;
@@ -119,4 +156,11 @@ export async function isApplied(db: Db, game: GameId): Promise<boolean> {
 }
 
 /** Games with a published online schedule. */
-export const OFFICIAL_GAMES: GameId[] = ["codm", "freefire", "bgmi"];
+export const OFFICIAL_GAMES: GameId[] = ["codm", "valorant", "freefire", "bgmi"];
+
+/** Sets up one game's published schedule. */
+export function applyOfficial(db: Db, game: GameId): Promise<string> {
+  if (game === "codm") return applyCodm(db);
+  if (game === "valorant") return applyValorant(db);
+  return applyLobbyGroups(db, game);
+}
