@@ -8,9 +8,12 @@ import { AdminGameTabs } from "./GameTabs";
 /** Every game's control room has the same header and tabs, whatever its format. */
 function adminTabs(game: GameId): { href: string; label: string }[] {
   const base = `/admin/${game}`;
-  if (game === "codm") return [{ href: base, label: "Matches" }, { href: `${base}/setup`, label: "Setup" }, { href: `${base}/settings`, label: "Settings" }];
-  if (GAMES[game].shape === "lobby") return [{ href: base, label: "Lobbies" }, { href: `${base}/setup`, label: "Setup" }];
-  return [{ href: base, label: "Matches" }];
+  const teams = { href: `${base}/teams`, label: "Teams" };
+  const results = { href: `${base}/results`, label: "Quick results" };
+  const page = { href: `${base}/page-content`, label: "Game page" };
+  if (game === "codm") return [{ href: base, label: "Matches" }, results, teams, page, { href: `${base}/setup`, label: "Setup" }, { href: `${base}/settings`, label: "Settings" }];
+  if (GAMES[game].shape === "lobby") return [{ href: base, label: "Lobbies" }, teams, page, { href: `${base}/setup`, label: "Setup" }];
+  return [{ href: base, label: "Matches" }, results, teams, page];
 }
 
 export default function GameAdminLayout({ children, params }: LayoutProps<"/admin/[game]">) {
