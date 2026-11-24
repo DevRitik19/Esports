@@ -9,9 +9,10 @@ import { AdminGameTabs } from "./GameTabs";
 function adminTabs(game: GameId): { href: string; label: string }[] {
   const base = `/admin/${game}`;
   const teams = { href: `${base}/teams`, label: "Teams" };
-  if (game === "codm") return [{ href: base, label: "Matches" }, teams, { href: `${base}/setup`, label: "Setup" }, { href: `${base}/settings`, label: "Settings" }];
+  const results = { href: `${base}/results`, label: "Quick results" };
+  if (game === "codm") return [{ href: base, label: "Matches" }, results, teams, { href: `${base}/setup`, label: "Setup" }, { href: `${base}/settings`, label: "Settings" }];
   if (GAMES[game].shape === "lobby") return [{ href: base, label: "Lobbies" }, teams, { href: `${base}/setup`, label: "Setup" }];
-  return [{ href: base, label: "Matches" }, teams];
+  return [{ href: base, label: "Matches" }, results, teams];
 }
 
 export default function GameAdminLayout({ children, params }: LayoutProps<"/admin/[game]">) {
