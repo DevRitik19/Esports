@@ -35,6 +35,7 @@ async function AdminNav() {
       title: "Across games",
       items: [
         { href: "/admin/disputes", label: "Disputes" },
+        ...(isAdmin ? [{ href: "/admin/standings", label: "Standings & penalties" }] : []),
         { href: "/admin/sync", label: "Registrations" },
         ...(isAdmin ? [{ href: "/admin/announcements", label: "Announcements" }, { href: "/admin/staff", label: "Staff" }] : []),
         { href: "/admin/profile", label: "Your details" },

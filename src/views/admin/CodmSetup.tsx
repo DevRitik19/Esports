@@ -52,7 +52,7 @@ async function Setup() {
           <h2 className="font-cond text-lg font-bold">1 · Official groups and fixtures</h2>
           <p className="mt-1 text-xs text-muted">
             The 29 teams of the Master Tournament Doc in 7 groups, and all 138 group matches from the 7-lobby schedule: the same wave and lobby on all
-            three days, with Hardpoint on Summit, Domination on Raid and S&amp;D on Firing Range.
+            three days, with Hardpoint on Summit, Domination on Raid and S&amp;D on Tunisia.
           </p>
           <p className="mt-3 text-sm">
             {ids.size} of {official.length} teams found in the registrations.
