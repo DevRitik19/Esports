@@ -8,7 +8,7 @@ import type { MatchInput, Mode, RawTournament, Stage, Team } from "../types";
  * the shape the engine expects. Config, map pool and match days are CODM's.
  */
 export async function loadRawTournament(db: PostgrestClient, game: GameId = "codm"): Promise<{ raw: RawTournament; warnings: string[] }> {
-  const [teams, players, matches, maps, config, announcements, pool, days] = await Promise.all([
+  const [teams, players, matches, maps, config, announcements, pool, days, adjustments] = await Promise.all([
     db.from("teams").select("id, name, tag, group_name, logo_url, status, eligible").eq("game_id", game).order("name"),
     db.from("players").select("id, team_id, ign, game_uid, role, is_captain, teams!inner(game_id)").eq("teams.game_id", game).order("role").order("ign"),
     db.from("matches").select("*").eq("game_id", game).order("scheduled_at", { nullsFirst: false }).order("id"),
@@ -17,8 +17,9 @@ export async function loadRawTournament(db: PostgrestClient, game: GameId = "cod
     db.from("announcements").select("date, title, body").or(`game_id.is.null,game_id.eq.${game}`).order("date", { ascending: false }),
     db.from("map_pool").select("mode, map").order("map"),
     db.from("match_days").select("day, mode, map, note").order("day"),
+    db.from("team_point_adjustments").select("team_id, points_delta").eq("game_id", game),
   ]);
-  const failed = [teams, players, matches, maps, config, announcements, pool, days].find((r) => r.error);
+  const failed = [teams, players, matches, maps, config, announcements, pool, days, adjustments].find((r) => r.error);
   if (failed?.error) throw new Error(`Database read failed: ${failed.error.message}`);
 
   const warnings: string[] = [];
@@ -78,6 +79,7 @@ export async function loadRawTournament(db: PostgrestClient, game: GameId = "cod
       },
       teams: teamList,
       matches: matchList,
+      pointAdjustments: (adjustments.data ?? []).map((a) => ({ teamId: a.team_id, pointsDelta: a.points_delta })),
       announcements: (announcements.data ?? []).map((a) => ({ date: a.date, title: a.title, body: a.body })),
       mapPool: (pool.data ?? []).map((p) => ({ mode: p.mode as Mode, map: p.map })),
       matchDays: (days.data ?? []).map((d) => ({ day: d.day, mode: d.mode as Mode, map: d.map ?? undefined, note: d.note ?? undefined })),

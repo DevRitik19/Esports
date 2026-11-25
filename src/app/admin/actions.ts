@@ -340,7 +340,7 @@ export const generateBracket = staff(async (form, { db }) => {
   const skeleton = knockoutSkeleton(qualifiers, form.get("third") === "on").filter((m) => !existing.has(m.id));
   if (!skeleton.length) return "Bracket already exists.";
   check(await db.from("matches").insert(skeleton.map((m) => ({ id: m.id, game_id: "codm", stage: m.stage, best_of: m.bestOf, side_a: m.a, side_b: m.b, scheduled_at: KNOCKOUT_TIMES[m.id] ?? null }))));
-  return `${skeleton.length} knockout match(es) created for ${qualifiers} qualifiers, at the offline schedule times.`;
+  return `${skeleton.length} knockout match(es) created for ${qualifiers} qualifiers, at the published knockout times.`;
 }, { game: "codm" });
 
 // ---------------------------------------------------------------------------
@@ -429,4 +429,25 @@ export const removeStaff = staff(async (form, { db, email }) => {
   if (target === email.toLowerCase()) throw new Error("You can't remove yourself.");
   check(await db.from("staff").delete().eq("email", target));
   return `${target} removed.`;
+}, { admin: true });
+
+
+// Audited manual points changes for approved disciplinary decisions/corrections.
+export const addStandingAdjustment = staff(async (form, { db, email }) => {
+  const game = str(form, "game_id");
+  const teamId = str(form, "team_id");
+  const delta = Number(str(form, "points_delta"));
+  const reason = str(form, "reason");
+  if (!isGameId(game)) throw new Error("Pick a valid game.");
+  if (!teamId || !reason) throw new Error("Team and reason are required.");
+  if (!Number.isInteger(delta) || delta === 0 || Math.abs(delta) > 100) throw new Error("Enter a whole-number adjustment between -100 and 100, excluding zero.");
+  const team = check<{ id: string } | null>(await db.from("teams").select("id").eq("id", teamId).eq("game_id", game).maybeSingle());
+  if (!team) throw new Error("That team does not belong to the selected game.");
+  check(await db.from("team_point_adjustments").insert({ game_id: game, team_id: teamId, points_delta: delta, reason, created_by: email }));
+  return "Adjustment recorded; standings and qualification recalculated.";
+}, { admin: true });
+
+export const deleteStandingAdjustment = staff(async (form, { db }) => {
+  check(await db.from("team_point_adjustments").delete().eq("id", str(form, "id")));
+  return "Adjustment removed; standings recalculated.";
 }, { admin: true });
