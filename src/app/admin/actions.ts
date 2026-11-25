@@ -340,7 +340,7 @@ export const generateBracket = staff(async (form, { db }) => {
   const skeleton = knockoutSkeleton(qualifiers, form.get("third") === "on").filter((m) => !existing.has(m.id));
   if (!skeleton.length) return "Bracket already exists.";
   check(await db.from("matches").insert(skeleton.map((m) => ({ id: m.id, game_id: "codm", stage: m.stage, best_of: m.bestOf, side_a: m.a, side_b: m.b, scheduled_at: KNOCKOUT_TIMES[m.id] ?? null }))));
-  return `${skeleton.length} knockout match(es) created for ${qualifiers} qualifiers, at the offline schedule times.`;
+  return `${skeleton.length} knockout match(es) created for ${qualifiers} qualifiers, at the published knockout times.`;
 }, { game: "codm" });
 
 // ---------------------------------------------------------------------------
