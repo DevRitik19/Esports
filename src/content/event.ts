@@ -26,7 +26,7 @@ export const MODE_NAME = { HP: "Hardpoint", SND: "Search & Destroy", DOM: "Domin
 export const KEY_DATES = [
   { when: "Mon 23 Nov, 9:00 PM", what: "Group Stage Day 1: Hardpoint on Summit, waves 9:30–11:50 PM", where: "Online" },
   { when: "Tue 24 Nov, 9:00 PM", what: "Group Stage Day 2: Domination on Raid, waves 9:30–11:50 PM", where: "Online" },
-  { when: "Wed 25 Nov, time TBD", what: "Group Stage Day 3: Search & Destroy on Firing Range, then tiebreakers and final standings", where: "Online" },
+  { when: "Wed 25 Nov, time TBD", what: "Group Stage Day 3: Search & Destroy on Tunisia, then tiebreakers and final standings", where: "Online" },
   { when: "Wed 25 Nov, after standings", what: "Seeds and Quarterfinal bracket published; knockout map pool and perspective announced", where: "Discord" },
   { when: "Fri 27 Nov", what: "Quarterfinals, 4 × BO3", where: "Online" },
   { when: "Sat 28 Nov", what: "Semifinals, 2 × BO3", where: "Online" },

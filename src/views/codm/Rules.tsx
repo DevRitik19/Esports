@@ -324,7 +324,7 @@ export async function CodmRules() {
         <section>
           <H2 id="maps">Map pool</H2>
           <p className="-mt-2 mb-5 text-sm text-muted">
-            Group stage: Summit (Hardpoint), Raid (Domination), Firing Range (S&amp;D). The knockout pool is announced at least 48 hours before the Quarterfinals.
+            Group stage: Summit (Hardpoint), Raid (Domination), Tunisia (S&amp;D). The knockout pool is announced at least 48 hours before the Quarterfinals.
           </p>
           {t.mapPool.length > 0 && (
             <div className="grid gap-4 md:grid-cols-3">
