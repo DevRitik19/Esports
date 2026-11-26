@@ -103,13 +103,13 @@ VAL-SF1	sf	\N	5	3	W:VAL-R8-01	W:VAL-R8-02	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312
 VAL-SF2	sf	\N	5	3	W:VAL-R8-03	W:VAL-R8-04	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
 VAL-FINAL	final	\N	6	3	W:VAL-SF1	W:VAL-SF2	\N	\N	\N	\N	\N	2026-11-05 20:30:25.312536+00	valorant	\N	\N	\N
 HP-W1-L1	group	G	1	1	clutch-crew	rvce	2026-11-23 16:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	HP	Summit
-HP-W1-L2	group	G	1	1	last-warning	smoke	2026-11-23 16:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	HP	Summit
+HP-W1-L2	group	G	1	1	j2dys	smoke	2026-11-23 16:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	HP	Summit
 HP-W1-L3	group	A	1	1	barrel-house	thaiyirsaadham	2026-11-23 16:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	HP	Summit
 HP-W1-L4	group	A	1	1	liquid	nuclear	2026-11-23 16:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	HP	Summit
 HP-W1-L5	group	B	1	1	blitz-raiders	tf141	2026-11-23 16:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	5	HP	Summit
 HP-W1-L6	group	B	1	1	j-d-y-s	team-zero	2026-11-23 16:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	6	HP	Summit
 HP-W1-L7	group	C	1	1	edge	kid-slayers	2026-11-23 16:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	HP	Summit
-HP-W2-L1	group	G	2	1	last-warning	cod-vinashak	2026-11-23 16:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	HP	Summit
+HP-W2-L1	group	G	2	1	j2dys	cod-vinashak	2026-11-23 16:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	HP	Summit
 HP-W2-L2	group	C	2	1	team-lost	team-crackillusion	2026-11-23 16:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	HP	Summit
 HP-W2-L3	group	D	2	1	darkhold	bawts	2026-11-23 16:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	HP	Summit
 HP-W2-L4	group	D	2	1	offset	sapne-suhane	2026-11-23 16:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	HP	Summit
@@ -131,7 +131,7 @@ HP-W4-L5	group	E	4	1	freakuency	money-follows	2026-11-23 17:00:00+00	\N	\N	\N	\N
 HP-W4-L6	group	E	4	1	beatbreakers	gobi-ke-parathe	2026-11-23 17:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	6	HP	Summit
 HP-W4-L7	group	F	4	1	abcdefghijklmnopqrstuvwxyz	free-kills	2026-11-23 17:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	HP	Summit
 HP-W5-L1	group	F	5	1	the-comrades	dollar-500	2026-11-23 17:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	HP	Summit
-HP-W5-L2	group	G	5	1	last-warning	clutch-crew	2026-11-23 17:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	HP	Summit
+HP-W5-L2	group	G	5	1	j2dys	clutch-crew	2026-11-23 17:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	HP	Summit
 HP-W5-L3	group	G	5	1	smoke	rvce	2026-11-23 17:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	HP	Summit
 HP-W5-L4	group	A	5	1	liquid	thaiyirsaadham	2026-11-23 17:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	HP	Summit
 HP-W5-L5	group	A	5	1	nuclear	barrel-house	2026-11-23 17:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	5	HP	Summit
@@ -146,16 +146,16 @@ HP-W6-L6	group	E	6	1	freakuency	beatbreakers	2026-11-23 17:40:00+00	\N	\N	\N	\N	
 HP-W6-L7	group	E	6	1	money-follows	gobi-ke-parathe	2026-11-23 17:40:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	HP	Summit
 HP-W7-L1	group	F	7	1	free-kills	dollar-500	2026-11-23 18:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	HP	Summit
 HP-W7-L2	group	F	7	1	the-comrades	abcdefghijklmnopqrstuvwxyz	2026-11-23 18:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	HP	Summit
-HP-W7-L3	group	G	7	1	last-warning	rvce	2026-11-23 18:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	HP	Summit
+HP-W7-L3	group	G	7	1	j2dys	rvce	2026-11-23 18:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	HP	Summit
 HP-W7-L4	group	G	7	1	cod-vinashak	clutch-crew	2026-11-23 18:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	HP	Summit
 DOM-W1-L1	group	G	1	1	clutch-crew	rvce	2026-11-24 07:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	DOM	Raid
-DOM-W1-L2	group	G	1	1	last-warning	smoke	2026-11-24 07:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	DOM	Raid
+DOM-W1-L2	group	G	1	1	j2dys	smoke	2026-11-24 07:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	DOM	Raid
 DOM-W1-L3	group	A	1	1	barrel-house	thaiyirsaadham	2026-11-24 07:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	DOM	Raid
 DOM-W1-L4	group	A	1	1	liquid	nuclear	2026-11-24 07:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	DOM	Raid
 DOM-W1-L5	group	B	1	1	blitz-raiders	tf141	2026-11-24 07:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	5	DOM	Raid
 DOM-W1-L6	group	B	1	1	j-d-y-s	team-zero	2026-11-24 07:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	6	DOM	Raid
 DOM-W1-L7	group	C	1	1	edge	kid-slayers	2026-11-24 07:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	DOM	Raid
-DOM-W2-L1	group	G	2	1	last-warning	cod-vinashak	2026-11-24 07:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	DOM	Raid
+DOM-W2-L1	group	G	2	1	j2dys	cod-vinashak	2026-11-24 07:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	DOM	Raid
 DOM-W2-L2	group	C	2	1	team-lost	team-crackillusion	2026-11-24 07:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	DOM	Raid
 DOM-W2-L3	group	D	2	1	darkhold	bawts	2026-11-24 07:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	DOM	Raid
 DOM-W2-L4	group	D	2	1	offset	sapne-suhane	2026-11-24 07:20:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	DOM	Raid
@@ -177,7 +177,7 @@ DOM-W4-L5	group	E	4	1	freakuency	money-follows	2026-11-24 08:15:00+00	\N	\N	\N	\
 DOM-W4-L6	group	E	4	1	beatbreakers	gobi-ke-parathe	2026-11-24 08:15:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	6	DOM	Raid
 DOM-W4-L7	group	F	4	1	abcdefghijklmnopqrstuvwxyz	free-kills	2026-11-24 08:15:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	DOM	Raid
 DOM-W5-L1	group	F	5	1	the-comrades	dollar-500	2026-11-24 08:35:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	DOM	Raid
-DOM-W5-L2	group	G	5	1	last-warning	clutch-crew	2026-11-24 08:35:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	DOM	Raid
+DOM-W5-L2	group	G	5	1	j2dys	clutch-crew	2026-11-24 08:35:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	DOM	Raid
 DOM-W5-L3	group	G	5	1	smoke	rvce	2026-11-24 08:35:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	DOM	Raid
 DOM-W5-L4	group	A	5	1	liquid	thaiyirsaadham	2026-11-24 08:35:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	DOM	Raid
 DOM-W5-L5	group	A	5	1	nuclear	barrel-house	2026-11-24 08:35:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	5	DOM	Raid
@@ -192,16 +192,16 @@ DOM-W6-L6	group	E	6	1	freakuency	beatbreakers	2026-11-24 09:10:00+00	\N	\N	\N	\N
 DOM-W6-L7	group	E	6	1	money-follows	gobi-ke-parathe	2026-11-24 09:10:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	DOM	Raid
 DOM-W7-L1	group	F	7	1	free-kills	dollar-500	2026-11-24 09:30:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	DOM	Raid
 DOM-W7-L2	group	F	7	1	the-comrades	abcdefghijklmnopqrstuvwxyz	2026-11-24 09:30:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	DOM	Raid
-DOM-W7-L3	group	G	7	1	last-warning	rvce	2026-11-24 09:30:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	DOM	Raid
+DOM-W7-L3	group	G	7	1	j2dys	rvce	2026-11-24 09:30:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	DOM	Raid
 DOM-W7-L4	group	G	7	1	cod-vinashak	clutch-crew	2026-11-24 09:30:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	DOM	Raid
 SND-W1-L1	group	G	1	1	clutch-crew	rvce	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	SND	Firing Range
-SND-W1-L2	group	G	1	1	last-warning	smoke	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	SND	Firing Range
+SND-W1-L2	group	G	1	1	j2dys	smoke	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	SND	Firing Range
 SND-W1-L3	group	A	1	1	barrel-house	thaiyirsaadham	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	SND	Firing Range
 SND-W1-L4	group	A	1	1	liquid	nuclear	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	SND	Firing Range
 SND-W1-L5	group	B	1	1	blitz-raiders	tf141	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	5	SND	Firing Range
 SND-W1-L6	group	B	1	1	j-d-y-s	team-zero	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	6	SND	Firing Range
 SND-W1-L7	group	C	1	1	edge	kid-slayers	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	SND	Firing Range
-SND-W2-L1	group	G	2	1	last-warning	cod-vinashak	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	SND	Firing Range
+SND-W2-L1	group	G	2	1	j2dys	cod-vinashak	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	SND	Firing Range
 SND-W2-L2	group	C	2	1	team-lost	team-crackillusion	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	SND	Firing Range
 SND-W2-L3	group	D	2	1	darkhold	bawts	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	SND	Firing Range
 SND-W2-L4	group	D	2	1	offset	sapne-suhane	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	SND	Firing Range
@@ -223,7 +223,7 @@ SND-W4-L5	group	E	4	1	freakuency	money-follows	\N	\N	\N	\N	\N	2026-11-22 10:52:5
 SND-W4-L6	group	E	4	1	beatbreakers	gobi-ke-parathe	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	6	SND	Firing Range
 SND-W4-L7	group	F	4	1	abcdefghijklmnopqrstuvwxyz	free-kills	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	SND	Firing Range
 SND-W5-L1	group	F	5	1	the-comrades	dollar-500	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	SND	Firing Range
-SND-W5-L2	group	G	5	1	last-warning	clutch-crew	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	SND	Firing Range
+SND-W5-L2	group	G	5	1	j2dys	clutch-crew	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	SND	Firing Range
 SND-W5-L3	group	G	5	1	smoke	rvce	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	SND	Firing Range
 SND-W5-L4	group	A	5	1	liquid	thaiyirsaadham	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	SND	Firing Range
 SND-W5-L5	group	A	5	1	nuclear	barrel-house	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	5	SND	Firing Range
@@ -238,16 +238,16 @@ SND-W6-L6	group	E	6	1	freakuency	beatbreakers	\N	\N	\N	\N	\N	2026-11-22 10:52:58
 SND-W6-L7	group	E	6	1	money-follows	gobi-ke-parathe	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	7	SND	Firing Range
 SND-W7-L1	group	F	7	1	free-kills	dollar-500	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	1	SND	Firing Range
 SND-W7-L2	group	F	7	1	the-comrades	abcdefghijklmnopqrstuvwxyz	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	2	SND	Firing Range
-SND-W7-L3	group	G	7	1	last-warning	rvce	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	SND	Firing Range
+SND-W7-L3	group	G	7	1	j2dys	rvce	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	3	SND	Firing Range
 SND-W7-L4	group	G	7	1	cod-vinashak	clutch-crew	\N	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	4	SND	Firing Range
-QF1	qf	\N	\N	3	S1	S8	2026-11-27 05:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	\N	\N	\N
-QF2	qf	\N	\N	3	S4	S5	2026-11-27 07:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	\N	\N	\N
-QF3	qf	\N	\N	3	S2	S7	2026-11-27 09:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	\N	\N	\N
-QF4	qf	\N	\N	3	S3	S6	2026-11-27 11:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	\N	\N	\N
-SF1	sf	\N	\N	3	W:QF1	W:QF2	2026-11-28 05:30:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	\N	\N	\N
-SF2	sf	\N	\N	3	W:QF3	W:QF4	2026-11-28 08:30:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	\N	\N	\N
-THIRD	third	\N	\N	3	L:SF1	L:SF2	2026-11-29 06:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	\N	\N	\N
-FINAL	final	\N	\N	5	W:SF1	W:SF2	2026-11-29 09:30:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	\N	\N	\N
+QF1	qf	\N	\N	3	S1	S8	2026-11-27 16:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	\N	\N	\N
+QF2	qf	\N	\N	3	S4	S5	2026-11-27 16:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	\N	\N	\N
+QF3	qf	\N	\N	3	S2	S7	2026-11-27 16:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	\N	\N	\N
+QF4	qf	\N	\N	3	S3	S6	2026-11-27 16:00:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	\N	\N	\N
+SF1	sf	\N	\N	3	W:QF1	W:QF2	2026-11-29 05:30:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	\N	\N	\N
+SF2	sf	\N	\N	3	W:QF3	W:QF4	2026-11-29 07:30:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	\N	\N	\N
+THIRD	third	\N	\N	3	L:SF1	L:SF2	2026-11-29 09:30:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	\N	\N	\N
+FINAL	final	\N	\N	5	W:SF1	W:SF2	2026-11-29 11:30:00+00	\N	\N	\N	\N	2026-11-22 10:52:58.912252+00	codm	\N	\N	\N
 \.
 
 COPY public.teams (id, name, tag, group_name, logo_url, created_at, game_id, status, eligible, eligibility_note, sheet_key, college, locked_fields, missing_since, synced_at) FROM stdin;
@@ -487,7 +487,7 @@ the-comrades	THE COMRADES	TC	F	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t
 abcdefghijklmnopqrstuvwxyz	ABCDEFGHIJKLMNOPQRSTUVWXYZ	ABCD	F	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
 free-kills	Free Kills	FK	F	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
 dollar-500	$500	500	F	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
-last-warning	Last Warning	LW	G	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
+j2dys	j2dys	J2D	G	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
 smoke	Smoke	SMOK	G	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
 cod-vinashak	cod vinashak	CV	G	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
 clutch-crew	Clutch crew	CC	G	\N	2026-11-22 10:52:58.912252+00	codm	confirmed	t	\N	\N	\N	{}	\N	\N
@@ -1649,12 +1649,12 @@ d17a60bf-5b95-47a4-a457-a210dbc8c6f5	dollar-500	500·Viper	6700023037	main	t	\N	
 a542b683-5fb5-457c-b086-8f542f2e02d5	dollar-500	500·Blaze	6700023111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
 cde53d83-13d9-42ad-afd1-9c55fe1f5c91	dollar-500	500·Kairo	6700023148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
 e10cb985-f84d-4859-8bfb-79b3590accfd	dollar-500	500·Specter	6700023185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
-aa9d6214-fa12-43f5-b5b6-4d81a35b2ff7	last-warning	LW·Viper	6700024000	main	t	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
-d8a1c84a-670f-4672-88c6-bda6316d1792	last-warning	LW·Nyx	6700024037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
-a7eb77ff-6299-445b-9094-97aa966fae4a	last-warning	LW·Blaze	6700024074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
-6d645b60-eec7-4c2b-98e2-e80cd84ea23f	last-warning	LW·Kairo	6700024111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
-bf93daab-c318-4f25-ba79-0ca806cf8854	last-warning	LW·Specter	6700024148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
-12eeefe3-e49c-4325-9c3c-282100c5ecd2	last-warning	LW·Rook	6700024185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+aa9d6214-fa12-43f5-b5b6-4d81a35b2ff7	j2dys	J2D·Viper	6700024000	main	t	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+d8a1c84a-670f-4672-88c6-bda6316d1792	j2dys	J2D·Nyx	6700024037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+a7eb77ff-6299-445b-9094-97aa966fae4a	j2dys	J2D·Blaze	6700024074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+6d645b60-eec7-4c2b-98e2-e80cd84ea23f	j2dys	J2D·Kairo	6700024111	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+bf93daab-c318-4f25-ba79-0ca806cf8854	j2dys	J2D·Specter	6700024148	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
+12eeefe3-e49c-4325-9c3c-282100c5ecd2	j2dys	J2D·Rook	6700024185	sub	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
 06c50015-67d3-4e44-88eb-1719227af565	smoke	SMOK·Nyx	6700025000	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
 d574ab14-3576-4158-96a0-5b7256c2f174	smoke	SMOK·Blaze	6700025037	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N
 f265da02-47e2-4db0-bcaa-54f99e4527b3	smoke	SMOK·Kairo	6700025074	main	f	\N	2026-11-22 10:52:58.912252+00	\N	{}	\N

@@ -203,7 +203,7 @@ Free Fire follows the 23–25 Nov Pre-Round Schedule and its group allocations; 
 **CODM** follows the Master Tournament Doc (Final) in `docs/`:
 - 29 teams in 7 groups (six of 4, Group G of 5). Every pair plays once per mode, one mode a day: Hardpoint on Summit (Mon 23 Nov), Domination on Raid (Tue 24), S&D on Firing Range (Wed 25, time TBD). 46 BO1 matches a day across 7 waves × 7 lobbies; a team's wave and lobby stay the same all three days. The schedule is `src/content/codm-schedule.ts`.
 - 1 point per win. Level teams: wins against each other, then a tiebreaker match. Score difference never counts.
-- The 7 group winners (Seeds 1–7, by points then coin toss) and the best runner-up (Seed 8) play the offline bracket on 27–29 Nov. Seeds 7 and 8 swap if Seed 8 shares Seed 1's group.
+- The 7 group winners (Seeds 1–7, by points then coin toss) and the best runner-up (Seed 8) play the bracket on 27 and 29 Nov (Quarterfinals online on 27 Nov at 9:30 PM, Semi-Finals and Grand Final on 29 Nov). Seeds 7 and 8 swap if Seed 8 shares Seed 1's group.
 - Online, captains check in once a day, 30 minutes before the first wave. Offline vetoes are per mode from a 5-map pool: Ban×4, or Ban–Ban–Pick–Pick for the Final's second Hardpoint and S&D.
 
 The details are on `/codm/rules`.

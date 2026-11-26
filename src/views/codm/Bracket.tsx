@@ -5,9 +5,9 @@ import { STAGE_LABEL } from "@/lib/tournament";
 import type { Stage } from "@/lib/types";
 
 const COLUMNS: { stage: Stage; sub: string }[] = [
-  { stage: "qf", sub: "Best of 3, fixed order HP → S&D → Domination" },
-  { stage: "sf", sub: "Best of 3, the higher seed may reorder or swap one mode" },
-  { stage: "final", sub: "Best of 5: HP → S&D → Domination → HP → S&D" },
+  { stage: "qf", sub: "Best of 3: HP - S&D - Control (Random maps)" },
+  { stage: "sf", sub: "Best of 3: HP - S&D - Control (Random maps)" },
+  { stage: "final", sub: "Best of 5" },
 ];
 
 export async function CodmBracket() {
@@ -20,7 +20,7 @@ export async function CodmBracket() {
 
   return (
     <>
-      <PageHeader meta="Online to the Semifinals; the Final at the Gaming Arena" title="Playoff bracket">
+      <PageHeader meta="Quarterfinals on 27 Nov; Semi-Finals & Finals on 29 Nov" title="Playoff bracket">
         Quarterfinal slots fill automatically from the group tables.
         {projected && " Teams marked projected are where the current standings put them, and lock in when the group stage finishes."}
       </PageHeader>

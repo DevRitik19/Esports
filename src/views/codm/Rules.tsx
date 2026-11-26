@@ -168,7 +168,7 @@ export async function CodmRules() {
           <WaveTimes t={t} />
           <p className="mt-3 text-xs text-faint">Tiebreakers, then final standings, seeds and the Quarterfinal bracket follow the last S&amp;D wave on Wed 25 Nov.</p>
 
-          <h3 className="mt-10 mb-4 font-cond text-xl font-bold">Knockouts: online on 27–28 Nov, the {EVENT.venue} on 29 Nov</h3>
+          <h3 className="mt-10 mb-4 font-cond text-xl font-bold">Knockouts: online on 27 Nov, the {EVENT.venue} on 29 Nov</h3>
           <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr] lg:items-start">
             <dl className="panel divide-y divide-line">
               {Object.entries(KNOCKOUT_TIMES).map(([id, at]) => (

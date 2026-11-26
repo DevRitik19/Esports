@@ -13,14 +13,14 @@ export const OFFICIAL_GROUPS: Record<string, string[]> = {
   D: ["Offset", "Darkhold", "Sapne Suhane...", "Bawts"],
   E: ["Freakuency", "beAtBreAkers@!", "Money_follows", "Gobi Ke Parathe"],
   F: ["THE COMRADES", "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "Free Kills", "$500"],
-  G: ["Last Warning", "Smoke", "cod vinashak", "Clutch crew", "RVCE"],
+  G: ["j2dys", "Smoke", "cod vinashak", "Clutch crew", "RVCE"],
 };
 
 /** Wave by wave, lobby 1 first: [group, side A, side B]. An idle lobby is left out. */
 export const WAVES: [string, string, string][][] = [
   [
     ["G", "Clutch crew", "RVCE"],
-    ["G", "Last Warning", "Smoke"],
+    ["G", "j2dys", "Smoke"],
     ["A", "Barrel House", "ThaiyirSaadham"],
     ["A", "LIQUID", "Nuclear"],
     ["B", "Blitz Raiders", "TF141"],
@@ -28,7 +28,7 @@ export const WAVES: [string, string, string][][] = [
     ["C", "EDGE", "Kid Slayers"],
   ],
   [
-    ["G", "Last Warning", "cod vinashak"],
+    ["G", "j2dys", "cod vinashak"],
     ["C", "Team Lost", "Team Crackillusion"],
     ["D", "Darkhold", "Bawts"],
     ["D", "Offset", "Sapne Suhane..."],
@@ -56,7 +56,7 @@ export const WAVES: [string, string, string][][] = [
   ],
   [
     ["F", "THE COMRADES", "$500"],
-    ["G", "Last Warning", "Clutch crew"],
+    ["G", "j2dys", "Clutch crew"],
     ["G", "Smoke", "RVCE"],
     ["A", "LIQUID", "ThaiyirSaadham"],
     ["A", "Nuclear", "Barrel House"],
@@ -75,7 +75,7 @@ export const WAVES: [string, string, string][][] = [
   [
     ["F", "Free Kills", "$500"],
     ["F", "THE COMRADES", "ABCDEFGHIJKLMNOPQRSTUVWXYZ"],
-    ["G", "Last Warning", "RVCE"],
+    ["G", "j2dys", "RVCE"],
     ["G", "cod vinashak", "Clutch crew"],
   ],
 ];
@@ -83,7 +83,7 @@ export const WAVES: [string, string, string][][] = [
 export const LOBBIES = 7;
 
 /** Teams that play two waves in a row: their late clock starts when the earlier match ends. */
-export const BACK_TO_BACK = ["Last Warning", "Smoke", "cod vinashak", "Free Kills"];
+export const BACK_TO_BACK = ["j2dys", "Smoke", "cod vinashak", "Free Kills"];
 
 export interface ModeDay {
   /** YYYY-MM-DD, IST */

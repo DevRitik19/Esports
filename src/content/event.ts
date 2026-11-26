@@ -28,9 +28,8 @@ export const KEY_DATES = [
   { when: "Tue 24 Nov, 9:00 PM", what: "Group Stage Day 2: Domination on Raid, waves 9:30–11:50 PM", where: "Online" },
   { when: "Wed 25 Nov, time TBD", what: "Group Stage Day 3: Search & Destroy on Tunisia, then tiebreakers and final standings", where: "Online" },
   { when: "Wed 25 Nov, after standings", what: "Seeds and Quarterfinal bracket published; knockout map pool and perspective announced", where: "Discord" },
-  { when: "Fri 27 Nov", what: "Quarterfinals, 4 × BO3", where: "Online" },
-  { when: "Sat 28 Nov", what: "Semifinals, 2 × BO3", where: "Online" },
-  { when: "Sun 29 Nov", what: "3rd-place match (BO3), Grand Final (BO5), prize ceremony", where: "Gaming Arena" },
+  { when: "Fri 27 Nov, 9:30 PM", what: "Quarterfinals, 4 × BO3", where: "Online" },
+  { when: "Sun 29 Nov", what: "Semi-Finals (BO3), 3rd-place match (BO3), Grand Final (BO5), prize ceremony", where: "Gaming Arena" },
 ] as const;
 
 export const GROUP_RULES = [
@@ -57,16 +56,16 @@ export const SEEDING_RULES = [
   "Seeds decide the bracket, who starts each map veto, and who holds Semifinal Veto Power.",
 ];
 
-/** Knockout series start times (IST): Quarterfinals and Semifinals online, the 29th at the arena. Check-in is 30 min before. */
+/** Knockout series start times (IST): Quarterfinals online on 27 Nov (9:30 PM), Semi-Finals and Finals on 29 Nov. Check-in is 30 min before. */
 export const KNOCKOUT_TIMES: Record<string, string> = {
-  QF1: "2026-11-27T10:30:00+05:30",
-  QF2: "2026-11-27T12:30:00+05:30",
-  QF3: "2026-11-27T14:30:00+05:30",
-  QF4: "2026-11-27T16:30:00+05:30",
-  SF1: "2026-11-28T11:00:00+05:30",
-  SF2: "2026-11-28T14:00:00+05:30",
-  THIRD: "2026-11-29T11:30:00+05:30",
-  FINAL: "2026-11-29T15:00:00+05:30",
+  QF1: "2026-11-27T21:30:00+05:30",
+  QF2: "2026-11-27T21:30:00+05:30",
+  QF3: "2026-11-27T21:30:00+05:30",
+  QF4: "2026-11-27T21:30:00+05:30",
+  SF1: "2026-11-29T11:00:00+05:30",
+  SF2: "2026-11-29T13:00:00+05:30",
+  THIRD: "2026-11-29T15:00:00+05:30",
+  FINAL: "2026-11-29T17:00:00+05:30",
 };
 
 export const KNOCKOUT_LABEL: Record<string, string> = {
@@ -81,9 +80,9 @@ export const KNOCKOUT_LABEL: Record<string, string> = {
 };
 
 export const ARENA_NOTES = [
-  "The Quarterfinals (Fri 27 Nov) and Semifinals (Sat 28 Nov) are played online, from your own connection.",
-  "Only Sun 29 Nov is at the arena: the 3rd-place match and the Grand Final. Every player shows a valid government or school ID at check-in, 30 minutes before each series.",
-  "Each BO3 gets a 2-hour slot: veto, setup and up to 3 maps. The prize ceremony is about 6:30 PM on Sun 29 Nov.",
+  "The Quarterfinals (Fri 27 Nov) are played online at 9:30 PM.",
+  "Semi-Finals and Finals are played on Sun 29 Nov at the arena. Every player shows a valid government or school ID at check-in, 30 minutes before each series.",
+  "Each BO3 gets a 2-hour slot: setup and up to 3 maps. The prize ceremony is on Sun 29 Nov.",
   "Bring your own phone, charger and headphones. Arena Wi-Fi is provided.",
 ];
 
@@ -101,37 +100,37 @@ export const STAGES = [
     name: "Quarterfinals",
     venue: "Online",
     series: "BO3",
-    modes: "HP → S&D → Domination, fixed order",
-    veto: "One map per mode: Ban–Ban–Ban–Ban, higher seed first",
+    modes: "HP - S&D - Control",
+    veto: "Random",
   },
   {
     key: "sf",
     name: "Semifinals",
     venue: "Online",
     series: "BO3",
-    modes: "HP → S&D → Domination; the higher seed may reorder or swap one mode",
-    veto: "One map per mode: Ban–Ban–Ban–Ban, higher seed first",
+    modes: "HP - S&D - Control",
+    veto: "Random",
   },
   {
     key: "final",
     name: "Grand Final",
     venue: "Offline",
     series: "BO5",
-    modes: "HP → S&D → Domination → HP → S&D, new maps for games 4 and 5",
-    veto: "HP and S&D: Ban–Ban–Pick–Pick. Domination: Ban–Ban–Ban–Ban",
+    modes: "HP → S&D → Control → HP → S&D",
+    veto: "HP and S&D: Ban–Ban–Pick–Pick. Control: Ban–Ban–Ban–Ban",
   },
 ] as const;
 
 export const MODE_ORDER = [
   { stage: "Group Stage", order: "One mode per day, fixed map", power: "None" },
-  { stage: "Quarterfinals", order: "HP → S&D → Domination", power: "None (fixed order)" },
+  { stage: "Quarterfinals", order: "HP - S&D - Control", power: "None (Random maps)" },
   {
     stage: "Semifinals",
-    order: "HP → S&D → Domination by default",
-    power: "The higher seed may reorder or swap one mode, confirmed with the referee 30 min before the series; otherwise the default applies",
+    order: "HP - S&D - Control",
+    power: "None (Random maps)",
   },
-  { stage: "3rd-place match", order: "HP → S&D → Domination", power: "None" },
-  { stage: "Grand Final", order: "HP → S&D → Domination → HP (new map) → S&D (new map)", power: "None" },
+  { stage: "3rd-place match", order: "HP - S&D - Control", power: "None (Random maps)" },
+  { stage: "Grand Final", order: "HP → S&D → Control → HP (new map) → S&D (new map)", power: "None" },
 ];
 
 export const VETO_RULES = [
